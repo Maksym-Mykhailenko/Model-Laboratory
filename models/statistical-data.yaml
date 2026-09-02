@@ -1,0 +1,48 @@
+name: Statistical data and inference studies
+metadata:
+  description: Complete numerical data, weighted linear regression and independent-group inference.
+  tags: [statistics, regression, inference]
+objects:
+  measurements:
+    kind: org.modellab.statistics.dataset
+    kind_version: "1.0"
+    properties:
+      columns: [temperature, pressure, response]
+      column_units: [K, kPa, arbitrary]
+      observation_ids: [m1, m2, m3, m4, m5, m6]
+      data:
+        - [290.0, 98.0, 1.2]
+        - [294.0, 99.0, 1.9]
+        - [298.0, 100.0, 2.5]
+        - [302.0, 101.0, 3.2]
+        - [306.0, 102.0, 3.8]
+        - [310.0, 103.0, 4.6]
+  calibration:
+    kind: org.modellab.statistics.linear-model-study
+    kind_version: "1.0"
+    properties:
+      response_name: measured-output
+      predictor_names: [input, ambient-offset]
+      include_intercept: true
+      observation_ids: [c1, c2, c3, c4, c5, c6, c7, c8]
+      predictors:
+        - [0.0, -1.0]
+        - [1.0, 0.0]
+        - [2.0, 1.0]
+        - [3.0, -1.0]
+        - [4.0, 0.0]
+        - [5.0, 1.0]
+        - [6.0, -1.0]
+        - [7.0, 1.0]
+      response: [1.45, 3.05, 4.55, 7.4, 9.1, 10.55, 13.45, 14.6]
+      weights: [1.0, 1.0, 1.0, 1.0, 0.8, 0.8, 0.6, 0.6]
+  treatment-groups:
+    kind: org.modellab.statistics.grouped-samples
+    kind_version: "1.0"
+    properties:
+      measure_name: response-score
+      unit: points
+      groups:
+        - {name: control, values: [10.1, 9.8, 10.4, 10.0, 9.9]}
+        - {name: treatment-a, values: [11.2, 11.6, 10.9, 11.4, 11.1]}
+        - {name: treatment-b, values: [12.0, 12.4, 11.8, 12.1, 12.3]}

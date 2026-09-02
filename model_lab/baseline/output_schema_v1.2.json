@@ -1,0 +1,57 @@
+{
+  "type": "object",
+  "properties": {
+    "schema": {"type": "string", "const": "model-laboratory-interpreter-output"},
+    "schema_version": {"type": "string", "const": "1.2"},
+    "action": {"type": "string", "enum": ["request_context", "propose_edits", "needs_clarification", "unable"]},
+    "context_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "context_requests": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {"type": "string", "minLength": 1, "maxLength": 128},
+        "minItems": 1,
+        "maxItems": 3
+      },
+      "maxItems": 32
+    },
+    "operations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "op": {"type": "string", "enum": ["set", "remove"]},
+          "path": {
+            "type": "array",
+            "items": {"type": "string", "minLength": 1, "maxLength": 128},
+            "minItems": 1,
+            "maxItems": 3
+          },
+          "value": {}
+        },
+        "required": ["op", "path", "value"],
+        "additionalProperties": false
+      },
+      "maxItems": 128
+    },
+    "explanation": {"type": "string", "maxLength": 16384},
+    "warnings": {
+      "type": "array",
+      "items": {"type": "string", "maxLength": 2048},
+      "maxItems": 32
+    },
+    "clarification_question": {"type": "string", "maxLength": 16384}
+  },
+  "required": [
+    "schema",
+    "schema_version",
+    "action",
+    "context_sha256",
+    "context_requests",
+    "operations",
+    "explanation",
+    "warnings",
+    "clarification_question"
+  ],
+  "additionalProperties": false
+}

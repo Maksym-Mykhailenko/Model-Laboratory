@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <title>Model Laboratory</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script src="./vendor/plotly.min.js" defer></script>
+    <script type="module" src="./app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#workspace-main">Skip to workspace</a>
+
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">M</div>
+        <div>
+          <div class="brand-name">Model Laboratory</div>
+          <div class="brand-subtitle">Reproducible mathematical experiments</div>
+        </div>
+      </div>
+
+      <nav class="top-actions" aria-label="Document actions">
+        <button class="button ghost" id="new-model-button" type="button">New model</button>
+        <button class="button ghost" id="open-model-button" type="button">Open model</button>
+        <button class="button ghost" id="open-experiment-button" type="button">Open experiment</button>
+        <span class="toolbar-rule" aria-hidden="true"></span>
+        <button class="button ghost" id="save-model-button" type="button">Save model</button>
+        <button class="button primary" id="analyse-button" type="button">Run analysis</button>
+      </nav>
+
+      <div class="app-identity">
+        <span class="engine-dot" id="engine-dot" aria-hidden="true"></span>
+        <span id="engine-label">Connecting to scientific engine…</span>
+      </div>
+    </header>
+
+    <div class="app-grid">
+      <aside class="source-pane" aria-label="Model source">
+        <div class="pane-heading">
+          <div>
+            <span class="eyebrow">Document</span>
+            <h1 id="document-title">Untitled model</h1>
+          </div>
+          <span class="status-chip neutral" id="validation-chip">Not validated</span>
+        </div>
+
+        <label class="field-label" for="model-source">Model YAML</label>
+        <textarea
+          id="model-source"
+          class="source-editor"
+          spellcheck="false"
+          aria-describedby="source-help"
+        ></textarea>
+        <div class="editor-footer">
+          <span id="source-help">Validated before any analysis is run</span>
+          <span id="source-position">0 lines</span>
+        </div>
+
+        <div class="source-actions">
+          <button class="button secondary grow" id="validate-button" type="button">Validate model</button>
+          <button class="button icon-button" id="load-example-button" type="button" title="Load example model" aria-label="Load example model">↺</button>
+        </div>
+
+        <section class="source-summary" aria-labelledby="source-summary-heading">
+          <div class="section-kicker" id="source-summary-heading">Model identity</div>
+          <dl class="compact-definition" id="model-identity">
+            <div><dt>Name</dt><dd>—</dd></div>
+            <div><dt>Variables</dt><dd>—</dd></div>
+            <div><dt>Parameters</dt><dd>—</dd></div>
+            <div><dt>Source SHA-256</dt><dd class="hash">—</dd></div>
+          </dl>
+        </section>
+      </aside>
+
+      <main class="workspace" id="workspace-main">
+        <nav class="tab-bar" aria-label="Workspace sections" role="tablist">
+          <button class="tab active" type="button" role="tab" aria-selected="true" data-tab="visualisation">Visualisation</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" data-tab="capabilities">Capabilities</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" data-tab="structure">Structure</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" data-tab="symbolic">Symbolic</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" data-tab="stationary">Stationary points</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" data-tab="sweep">Parameter sweep</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" data-tab="experiment">Experiment</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" data-tab="reproduction">Reproduction</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" data-tab="provenance">Provenance</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" data-tab="interpreter">AI interpreter</button>
+        </nav>
+
+        <section class="tab-panel active" id="panel-visualisation" role="tabpanel">
+          <div class="panel-toolbar">
+            <div>
+              <span class="eyebrow">Current analysis</span>
+              <h2 id="visualisation-title">Model visualisation</h2>
+            </div>
+            <label class="inline-field">
+              <span>View</span>
+              <select id="visualisation-select" disabled></select>
+            </label>
+          </div>
+          <div class="empty-state plot-empty" id="plot-empty">
+            <div class="empty-glyph" aria-hidden="true">ƒ</div>
+            <h3>Validate and analyse a model</h3>
+            <p>The plot is calculated by the isolated scientific engine and rendered locally.</p>
+          </div>
+          <section class="plot-surface hidden" id="model-plot" aria-label="Interactive model plot"></section>
+          <div id="evaluation-diagnostics" class="diagnostic-stack"></div>
+        </section>
+
+        <section class="tab-panel" id="panel-capabilities" role="tabpanel">
+          <div class="panel-heading split-heading">
+            <div>
+              <span class="eyebrow">Installed scientific packs</span>
+              <h2>Capability runner</h2>
+              <p>Runs produce renderer-independent typed artifacts. Only locally installed code can execute.</p>
+            </div>
+            <span class="status-chip neutral" id="capability-status">No run</span>
+          </div>
+          <div class="capability-runner">
+            <label class="field-label" for="capability-select">Capability</label>
+            <select id="capability-select" disabled></select>
+            <div id="capability-description" class="notice neutral">Validate a model to discover applicable capability packs.</div>
+            <label class="field-label" for="capability-settings">Versioned settings (JSON)</label>
+            <textarea id="capability-settings" class="json-input" spellcheck="false">{}</textarea>
+            <div class="experiment-actions">
+              <button class="button primary" id="capability-run-button" type="button" disabled>Run capability</button>
+              <button class="button secondary" id="add-capability-run-button" type="button" disabled>Add to experiment plan</button>
+              <button class="button ghost" id="clear-capability-plan-button" type="button" disabled>Clear plan</button>
+            </div>
+          </div>
+          <section class="content-card">
+            <h3>Official optional packs</h3>
+            <p class="small-note">Scientific implementations are installed locally; experiment files contain only versioned object data, run records, artifacts and renderer configuration.</p>
+            <div id="official-pack-catalogue" class="pack-catalogue empty-content">Validate a model to inspect the official pack catalogue.</div>
+          </section>
+          <section class="content-card" id="capability-plan-card">
+            <h3>Experiment run plan</h3>
+            <div id="capability-plan" class="empty-content">No runs selected.</div>
+          </section>
+          <div id="capability-result" class="content-stack empty-content">No capability has been run.</div>
+          <section class="plot-surface hidden" id="capability-plot" aria-label="Capability artifact view"></section>
+        </section>
+
+        <section class="tab-panel" id="panel-structure" role="tabpanel">
+          <div class="panel-heading">
+            <span class="eyebrow">Validated model</span>
+            <h2>Mathematical structure</h2>
+            <p>Supplied definitions are kept distinct from derived analytical results.</p>
+          </div>
+          <div id="structure-content" class="content-stack empty-content">No validated model is loaded.</div>
+        </section>
+
+        <section class="tab-panel" id="panel-symbolic" role="tabpanel">
+          <div class="panel-heading">
+            <span class="eyebrow">Analytical structure</span>
+            <h2>Symbolic analysis</h2>
+            <p>Expressions are derived from the canonical validated model.</p>
+          </div>
+          <div id="symbolic-content" class="formula-stack empty-content">Run an analysis to derive symbolic results.</div>
+        </section>
+
+        <section class="tab-panel" id="panel-stationary" role="tabpanel">
+          <div class="panel-heading split-heading">
+            <div>
+              <span class="eyebrow">Local geometry</span>
+              <h2>Stationary points</h2>
+              <p>Coordinates, values, classifications, and local diagnostics.</p>
+            </div>
+            <span class="status-chip neutral" id="stationary-status">Not analysed</span>
+          </div>
+          <div id="stationary-content" class="content-stack empty-content">Run an analysis to locate stationary points.</div>
+        </section>
+
+        <section class="tab-panel" id="panel-sweep" role="tabpanel">
+          <div class="panel-heading">
+            <span class="eyebrow">Comparative analysis</span>
+            <h2>Parameter sweep</h2>
+            <p>Aligns each step to an explicit parameter coordinate.</p>
+          </div>
+          <form class="sweep-form" id="sweep-form">
+            <label><span>Parameter</span><select id="sweep-parameter"></select></label>
+            <label><span>Start</span><input id="sweep-start" type="number" step="any"></label>
+            <label><span>End</span><input id="sweep-end" type="number" step="any"></label>
+            <label><span>Steps</span><input id="sweep-steps" type="number" min="2" max="201" value="21"></label>
+            <label><span>View</span><select id="sweep-visualisation"></select></label>
+            <button class="button primary" id="run-sweep-button" type="submit" disabled>Run sweep</button>
+          </form>
+          <div id="sweep-unavailable" class="notice neutral">Load a model with a parameter-sweep capability.</div>
+          <div id="sweep-results" class="hidden">
+            <div class="metric-row" id="sweep-metrics"></div>
+            <section class="plot-surface sweep-plot" id="sweep-plot" aria-label="Interactive parameter sweep plot"></section>
+            <div id="sweep-summary"></div>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="panel-experiment" role="tabpanel">
+          <div class="panel-heading split-heading">
+            <div>
+              <span class="eyebrow">Portable evidence</span>
+              <h2>Experiment authoring</h2>
+              <p>Prepare references, review the frozen state, then explicitly approve publication.</p>
+            </div>
+            <span class="status-chip neutral" id="experiment-status">Draft not prepared</span>
+          </div>
+
+          <div class="notice safe" id="safe-open-notice">
+            Opening an <strong>.mlab</strong> validates and inspects it. Computation starts only when you choose <strong>Reproduce</strong>.
+          </div>
+
+          <section class="content-card state-boundary-card" aria-labelledby="state-boundary-title">
+            <div class="review-header">
+              <div>
+                <span class="eyebrow">Operational state boundary</span>
+                <h3 id="state-boundary-title">Live model vs committed experiment</h3>
+              </div>
+              <div class="state-boundary-chips">
+                <span class="status-chip neutral" id="live-state-status">Live · uncommitted</span>
+                <span class="status-chip neutral" id="committed-state-status">No commit</span>
+              </div>
+            </div>
+            <p class="state-boundary-copy">Interactive edits and analyses always operate on the live state. A commit retains an immutable checksummed experiment snapshot while live work may continue to diverge. Future external execution or physicalisation must consume only a validated committed-state identity, never live controls.</p>
+            <dl class="compact-definition state-boundary-definition">
+              <div><dt>Commit SHA-256</dt><dd class="hash" id="committed-state-hash">—</dd></div>
+              <div><dt>Experiment-state SHA-256</dt><dd class="hash" id="committed-experiment-hash">—</dd></div>
+              <div><dt>Committed at</dt><dd id="committed-at">—</dd></div>
+              <div><dt>Execution authority</dt><dd id="committed-authority">None — live state is never external-execution authority</dd></div>
+            </dl>
+            <div class="experiment-actions">
+              <button class="button ghost" id="open-commit-button" type="button">Open commit receipt</button>
+              <button class="button secondary" id="commit-state-button" type="button" disabled>Commit prepared state</button>
+              <button class="button ghost" id="save-commit-button" type="button" disabled>Save commit receipt</button>
+            </div>
+          </section>
+
+          <div id="opened-experiment" class="hidden experiment-inspection"></div>
+
+          <label class="approval-check experiment-option">
+            <input type="checkbox" id="include-sweep">
+            <span>Include the configured parameter sweep in this experiment.</span>
+          </label>
+
+          <div class="experiment-actions" id="authoring-actions">
+            <button class="button primary" id="prepare-experiment-button" type="button" disabled>Prepare reference state</button>
+            <button class="button secondary" id="save-draft-button" type="button" disabled>Save draft .mlab</button>
+            <button class="button ghost" id="save-state-button" type="button" disabled>Save legacy JSON</button>
+          </div>
+
+          <div id="author-review" class="review-card hidden">
+            <div class="review-header">
+              <div>
+                <span class="eyebrow">Canonical author review</span>
+                <h3>Freeze this reference state</h3>
+              </div>
+              <span class="hash-badge" id="review-hash"></span>
+            </div>
+            <div id="review-summary" class="review-summary"></div>
+            <details>
+              <summary>Inspect complete canonical review</summary>
+              <pre id="review-json" class="json-document"></pre>
+            </details>
+            <label class="approval-check">
+              <input type="checkbox" id="approve-review">
+              <span>I approve this exact model, configuration, tolerance policy, environment record, and reference state for publication.</span>
+            </label>
+            <button class="button primary" id="publish-experiment-button" type="button" disabled>Freeze and save publishable .mlab</button>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="panel-reproduction" role="tabpanel">
+          <div class="panel-heading">
+            <span class="eyebrow">Independent verification</span>
+            <h2>Reproduction report</h2>
+            <p>Mathematical result identity and environment identity are reported separately.</p>
+          </div>
+          <div id="reproduction-content" class="empty-state compact-empty">
+            <div class="empty-glyph" aria-hidden="true">✓</div>
+            <h3>No reproduction has been run</h3>
+            <p>Open an experiment, inspect its workload, then explicitly reproduce it.</p>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="panel-provenance" role="tabpanel">
+          <div class="panel-heading">
+            <span class="eyebrow">Scientific lineage</span>
+            <h2>Provenance</h2>
+            <p>Supplied, derived, and numerically computed quantities remain distinguishable.</p>
+          </div>
+          <div id="provenance-content" class="content-stack empty-content">Run an analysis to construct the provenance record.</div>
+        </section>
+
+        <section class="tab-panel" id="panel-interpreter" role="tabpanel">
+          <div class="panel-heading">
+            <span class="eyebrow">Local inference prototype</span>
+            <h2>AI model interpreter</h2>
+            <p>Qwen proposes a bounded typed edit program locally. A deterministic compiler applies it to the complete model before scientific validation and explicit acceptance.</p>
+          </div>
+          <div class="interpreter-layout">
+            <div class="interpreter-card">
+              <div class="interpreter-runtime-row">
+                <div class="interpreter-status unavailable" id="interpreter-status"><span></span><strong>Checking local runtime…</strong></div>
+                <button class="text-button" id="interpreter-refresh-button" type="button">Refresh</button>
+              </div>
+              <h3>Qwen3 4B Instruct 2507</h3>
+              <dl class="compact-definition interpreter-definition">
+                <div><dt>Runtime</dt><dd id="interpreter-runtime">Ollama · loopback only</dd></div>
+                <div><dt>Configured model tag</dt><dd id="interpreter-model">qwen3:4b-instruct-2507-q4_K_M</dd></div>
+                <div><dt>Observed Ollama digest</dt><dd class="hash" id="interpreter-model-digest">—</dd></div>
+                <div><dt>Candidate lifecycle</dt><dd id="interpreter-candidate-lifecycle">Frozen base</dd></div>
+                <div><dt>Training report</dt><dd class="hash" id="interpreter-training-report">—</dd></div>
+                <div><dt>Evaluation report</dt><dd class="hash" id="interpreter-evaluation-report">—</dd></div>
+              </dl>
+              <p id="interpreter-runtime-message">Ollama and the configured model artifact must be available before inference. Model Laboratory verifies the local manifest and every referenced blob before use.</p>
+              <button class="button secondary hidden" id="interpreter-pull-button" type="button">Pull configured model (~2.5 GB)</button>
+
+              <label class="field-label interpreter-request-label" for="interpreter-instruction">Describe the model or requested change</label>
+              <textarea id="interpreter-instruction" maxlength="65536" placeholder="For example: Add a bounded damping parameter and explicitly record whether air resistance is neglected."></textarea>
+              <section class="interpreter-attachments" aria-labelledby="interpreter-attachments-label">
+                <div class="interpreter-attachment-heading">
+                  <div>
+                    <span class="field-label" id="interpreter-attachments-label">Reference files</span>
+                    <p>Optional local TXT, Markdown, YAML, JSON, CSV, TSV, or text-based PDF. Files are extracted locally and supplied to Qwen in bounded, checksum-bound chunks.</p>
+                  </div>
+                  <button class="button secondary" id="interpreter-attach-button" type="button">Attach file</button>
+                </div>
+                <div id="interpreter-attachment-list" class="interpreter-attachment-list" aria-live="polite">
+                  <p class="interpreter-attachment-empty">No reference files attached.</p>
+                </div>
+              </section>
+              <div class="interpreter-actions">
+                <button class="button primary" id="interpreter-request-button" type="button" disabled>Request validated proposal</button>
+                <button class="button ghost hidden" id="interpreter-cancel-button" type="button">Cancel local operation</button>
+              </div>
+              <p class="small-note">The full source remains in the deterministic engine. Inference sees only bounded exact context, cannot run analysis, and cannot edit the document. Source changes only after you review and accept a checksum-bound compiled proposal.</p>
+
+              <section class="interpreter-clarification hidden" id="interpreter-clarification" aria-live="polite">
+                <span class="eyebrow">Clarification required</span>
+                <h3 id="interpreter-clarification-question"></h3>
+                <div id="interpreter-clarification-history" class="clarification-history"></div>
+                <label class="field-label" for="interpreter-clarification-answer">Your answer</label>
+                <textarea id="interpreter-clarification-answer" maxlength="8192" placeholder="Answer only the question above. Your answer will be checksum-bound into the next interpreter context."></textarea>
+                <div class="interpreter-actions">
+                  <button class="button primary" id="interpreter-clarification-continue" type="button">Continue with this answer</button>
+                  <button class="button ghost" id="interpreter-clarification-cancel" type="button">Cancel dialogue</button>
+                </div>
+              </section>
+
+              <section class="interpreter-proposal hidden" id="interpreter-proposal" aria-live="polite">
+                <div class="review-header">
+                  <div><span class="eyebrow">Validated proposal</span><h3>Review before changing the model</h3></div>
+                  <span class="hash-badge" id="interpreter-proposal-hash"></span>
+                </div>
+                <div id="interpreter-proposal-metrics" class="review-summary"></div>
+                <section class="proposal-section"><h4>Interpreter explanation</h4><p id="interpreter-explanation"></p></section>
+                <section class="proposal-section hidden" id="interpreter-warnings-section"><h4>Warnings</h4><div id="interpreter-warnings" class="diagnostic-stack"></div></section>
+                <details open><summary>Inspect deterministic source diff</summary><pre id="interpreter-diff" class="source-diff"></pre></details>
+                <details><summary>Inspect proposed validated structure</summary><div id="interpreter-model-summary" class="content-stack"></div></details>
+                <label class="approval-check">
+                  <input type="checkbox" id="approve-interpreter-proposal">
+                  <span>I reviewed this exact proposal and approve replacing the current model source. No analysis will run automatically.</span>
+                </label>
+                <div class="interpreter-actions">
+                  <button class="button primary" id="interpreter-accept-button" type="button" disabled>Accept proposal</button>
+                  <button class="button ghost" id="interpreter-reject-button" type="button">Reject and clear</button>
+                </div>
+              </section>
+            </div>
+            <ol class="boundary-list">
+              <li><strong>Propose</strong><span>AI output is a typed edit program, never replacement YAML.</span></li>
+              <li><strong>Compile</strong><span>The local deterministic compiler applies exact paths to the complete source.</span></li>
+              <li><strong>Validate</strong><span>The canonical parser and mathematical validator remain authoritative.</span></li>
+              <li><strong>Review</strong><span>Changes and ambiguities are shown to the user.</span></li>
+              <li><strong>Accept</strong><span>Only checksum-bound explicit acceptance changes source.</span></li>
+              <li><strong>Record</strong><span>The exact manifest, GGUF, provider, clarification-turn chain, request hash, and acceptance are preserved as checksum-bound provenance.</span></li>
+            </ol>
+          </div>
+        </section>
+      </main>
+
+      <aside class="settings-pane" aria-label="Experiment settings">
+        <section class="settings-section">
+          <div class="settings-heading">
+            <div>
+              <span class="eyebrow">Experiment</span>
+              <h2>Parameters</h2>
+            </div>
+            <button class="text-button" id="reset-parameters-button" type="button" disabled>Reset</button>
+          </div>
+          <div id="parameter-controls" class="empty-setting">No validated parameters.</div>
+        </section>
+
+        <section class="settings-section">
+          <details open>
+            <summary>Numerical settings</summary>
+            <div class="settings-form">
+              <label><span>1D evaluation points</span><input id="points-1d" type="number" min="2" max="200000" value="1000"></label>
+              <label><span>2D points per axis</span><input id="points-2d" type="number" min="2" max="1000" value="150"></label>
+              <label><span>1D stationary samples</span><input id="samples-1d" type="number" min="10" max="200001" value="2001"></label>
+              <label><span>2D seeds per axis</span><input id="seeds-2d" type="number" min="3" max="101" value="11"></label>
+              <label><span>Root tolerance</span><input id="root-tolerance" type="number" min="0" step="any" value="1e-9"></label>
+            </div>
+          </details>
+        </section>
+
+        <section class="settings-section">
+          <details>
+            <summary>Reproduction tolerances</summary>
+            <div class="settings-form">
+              <label><span>Relative tolerance (rtol)</span><input id="relative-tolerance" type="number" min="0" max="0.0001" step="any" value="1e-8"></label>
+              <label><span>Absolute tolerance (atol)</span><input id="absolute-tolerance" type="number" min="0" max="0.000001" step="any" value="1e-11"></label>
+            </div>
+            <p class="small-note">Tolerances are frozen with the reference state and cannot be selected after observing a reproduction error.</p>
+          </details>
+        </section>
+
+        <section class="settings-section">
+          <div class="section-kicker">Workload estimate</div>
+          <div id="workload-content" class="empty-setting">Calculated before execution.</div>
+        </section>
+
+        <section class="settings-section">
+          <div class="section-kicker">Available capabilities</div>
+          <div id="capability-list" class="tag-list"><span class="tag muted">Validate a model</span></div>
+        </section>
+      </aside>
+    </div>
+
+    <footer class="status-bar" role="status" aria-live="polite">
+      <span id="status-message">Starting Model Laboratory…</span>
+      <span class="status-context" id="status-context">Desktop v1.17.0</span>
+    </footer>
+
+    <div class="busy-layer hidden" id="busy-layer" aria-live="assertive" aria-busy="true">
+      <div class="busy-card">
+        <span class="spinner" aria-hidden="true"></span>
+        <div><strong id="busy-title">Working…</strong><span id="busy-detail">The scientific engine is processing the request.</span></div>
+      </div>
+    </div>
+
+    <div class="toast-region" id="toast-region" aria-live="polite"></div>
+  </body>
+</html>

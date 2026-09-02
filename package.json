@@ -1,0 +1,17 @@
+{
+  "name": "model-laboratory-desktop",
+  "private": true,
+  "version": "1.17.0",
+  "description": "Native Model Laboratory desktop shell",
+  "license": "Apache-2.0",
+  "scripts": {
+    "desktop:dev": "tauri dev",
+    "desktop:build:sidecar": "python scripts/build_sidecar.py",
+    "desktop:build": "npm run desktop:build:sidecar && tauri build",
+    "test": "npm run test:frontend",
+    "test:frontend": "node --test tests/frontend/*.test.mjs"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "2.11.4"
+  }
+}

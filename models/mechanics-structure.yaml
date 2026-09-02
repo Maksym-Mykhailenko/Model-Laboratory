@@ -1,0 +1,40 @@
+name: Elastic material and triangular truss
+metadata:
+  description: Isotropic constitutive data with a stable two-dimensional static/modal truss.
+  tags: [mechanics, structures, materials]
+objects:
+  structural-steel:
+    kind: org.modellab.material.isotropic-linear-elastic
+    kind_version: "1.1"
+    properties:
+      youngs_modulus: 210000000000.0
+      poissons_ratio: 0.3
+      density: 7850.0
+      yield_strength: 355000000.0
+      thermal_expansion: 0.000012
+      unit_system: SI
+  roof-truss:
+    kind: org.modellab.mechanics.truss-structure
+    kind_version: "1.1"
+    properties:
+      dimension: 2
+      coordinate_unit: m
+      force_unit: N
+      stress_unit: Pa
+      nodes:
+        - {id: A, coordinates: [0.0, 0.0]}
+        - {id: B, coordinates: [2.0, 0.0]}
+        - {id: C, coordinates: [1.0, 1.0]}
+      elements:
+        - {id: AB, start: A, end: B, area: 0.001, youngs_modulus: 210000000000.0, density: 7850.0}
+        - {id: AC, start: A, end: C, area: 0.001, youngs_modulus: 210000000000.0, density: 7850.0}
+        - {id: BC, start: B, end: C, area: 0.001, youngs_modulus: 210000000000.0, density: 7850.0}
+      supports:
+        - {node: A, fixed: [true, true]}
+        - {node: B, fixed: [false, true]}
+      load_cases:
+        - name: asymmetric-snow
+          loads:
+            - {node: C, force: [2500.0, -10000.0]}
+      nodal_masses:
+        - {node: C, mass: 100.0}

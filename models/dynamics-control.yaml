@@ -1,0 +1,39 @@
+name: Damped oscillator and state-space control
+metadata:
+  description: Nonlinear ODE and equivalent linear control-system examples.
+  tags: [dynamics, ode, control]
+objects:
+  damped-oscillator:
+    kind: org.modellab.dynamics.ode-system
+    kind_version: "1.0"
+    properties:
+      states: [position, velocity]
+      initial_state: [1.0, 0.0]
+      time_span: [0.0, 20.0]
+      time_symbol: t
+      equations:
+        - velocity
+        - -damping*velocity - stiffness*position
+      parameters:
+        - {name: damping, value: 0.3}
+        - {name: stiffness, value: 2.0}
+  controlled-oscillator:
+    kind: org.modellab.control.state-space-system
+    kind_version: "1.0"
+    properties:
+      states: [position, velocity]
+      inputs: [force]
+      outputs: [position, velocity]
+      A:
+        - [0.0, 1.0]
+        - [-2.0, -0.3]
+      B:
+        - [0.0]
+        - [1.0]
+      C:
+        - [1.0, 0.0]
+        - [0.0, 1.0]
+      D:
+        - [0.0]
+        - [0.0]
+      initial_state: [1.0, 0.0]

@@ -1,0 +1,62 @@
+name: Machine learning and computational intelligence
+metadata:
+  description: Supervised classification, seeded clustering, neural inference and transparent fuzzy inference.
+  tags: [machine-learning, computational-intelligence, official-pack]
+objects:
+  labelled-observations:
+    kind: org.modellab.learning.supervised-study
+    kind_version: "1.0"
+    properties:
+      feature_names: [signal-a, signal-b]
+      feature_units: [dimensionless, dimensionless]
+      sample_ids: [s1, s2, s3, s4, s5, s6, s7, s8]
+      features:
+        - [-2.0, -1.0]
+        - [-1.5, -2.0]
+        - [-1.0, -1.5]
+        - [-0.5, -1.0]
+        - [0.5, 1.0]
+        - [1.0, 1.5]
+        - [1.5, 1.0]
+        - [2.0, 2.0]
+      target_name: regime
+      task: classification
+      targets: [low, low, low, low, high, high, high, high]
+  explicit-classifier:
+    kind: org.modellab.learning.feedforward-network
+    kind_version: "1.0"
+    properties:
+      input_names: [signal-a, signal-b]
+      output_names: [low, high]
+      weights:
+        - [[-1.0, -0.5], [0.5, 1.0], [1.0, -1.0]]
+        - [[1.0, -1.0, 0.2], [-1.0, 1.0, -0.2]]
+      biases:
+        - [0.0, 0.0, 0.0]
+        - [0.0, 0.0]
+      activations: [tanh, softmax]
+  transparent-controller:
+    kind: org.modellab.intelligence.fuzzy-rule-system
+    kind_version: "1.0"
+    properties:
+      inputs:
+        - name: error
+          minimum: 0.0
+          maximum: 10.0
+          sets: {low: [0.0, 0.0, 7.0], medium: [0.0, 5.0, 10.0], high: [3.0, 10.0, 10.0]}
+        - name: change
+          minimum: 0.0
+          maximum: 10.0
+          sets: {low: [0.0, 0.0, 7.0], medium: [0.0, 5.0, 10.0], high: [3.0, 10.0, 10.0]}
+      output_name: control
+      output_singletons: {low: 0.0, medium: 0.5, high: 1.0}
+      rules:
+        - {antecedents: {error: low, change: low}, consequent: low}
+        - {antecedents: {error: low, change: medium}, consequent: low}
+        - {antecedents: {error: low, change: high}, consequent: medium}
+        - {antecedents: {error: medium, change: low}, consequent: medium}
+        - {antecedents: {error: medium, change: medium}, consequent: medium}
+        - {antecedents: {error: medium, change: high}, consequent: high}
+        - {antecedents: {error: high, change: low}, consequent: medium}
+        - {antecedents: {error: high, change: medium}, consequent: high}
+        - {antecedents: {error: high, change: high}, consequent: high}

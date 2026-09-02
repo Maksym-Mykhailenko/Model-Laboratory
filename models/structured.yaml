@@ -1,0 +1,35 @@
+name: Structured scalar example
+metadata:
+  description: A scalar function using the expanded Model IR fields.
+  tags: [structured, demonstration]
+
+variables:
+  x:
+    domain: [-5, 5]
+    initial: 0
+    label: Input
+    description: Independent scalar variable.
+
+parameters:
+  a:
+    default: 1
+    domain: [-3, 3]
+    label: Scale
+
+constants:
+  c:
+    value: 1
+    label: Offset
+
+# Declared derived quantities are resolved deterministically before the supplied
+# scalar function is evaluated.
+derived_quantities:
+  q:
+    expression: a*x
+    label: Scaled input
+
+functions:
+  y:
+    expression: q**2 + c
+    label: Response
+    description: Main scalar function.

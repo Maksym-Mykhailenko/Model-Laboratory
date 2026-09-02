@@ -1,0 +1,45 @@
+{
+  "schema": "model-laboratory-base-model-lock",
+  "schema_version": "1.0",
+  "upstream": {
+    "repository": "Qwen/Qwen3-4B-Instruct-2507",
+    "revision": "abcc171021d4f320b2e7f47c6f0deca67ded870c",
+    "license_spdx": "Apache-2.0",
+    "copyright": "Copyright 2024 Alibaba Cloud",
+    "tokenizer": {
+      "filename": "tokenizer.json",
+      "sha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4"
+    },
+    "weight_files": [
+      {
+        "filename": "model-00001-of-00003.safetensors",
+        "sha256": "75311d91bb08cf0b882913da464a1e722a31fb44db35208663487efb7a3d8ed6"
+      },
+      {
+        "filename": "model-00002-of-00003.safetensors",
+        "sha256": "0b48adbb1f60e901153d91907ba11ce63bd4b8b584482e730f48808d055dfba1"
+      },
+      {
+        "filename": "model-00003-of-00003.safetensors",
+        "sha256": "7dd39ccca5e4de123c74c14af44c9bf2eb75df33b4614382af0134528e060d5d"
+      }
+    ]
+  },
+  "ollama": {
+    "model_tag": "qwen3:4b-instruct-2507-q4_K_M",
+    "quantization": "Q4_K_M",
+    "registry_manifest_digest_prefix": "sha256:0edcdef34593",
+    "model_blob_sha256": "85e4a5b7b8ef0e48af0e8658f5aaab9c2324c76c1641493f4d1e25fce54b18b9",
+    "required_layer_digest_prefixes": {
+      "application/vnd.ollama.image.template": "sha256:eade0a07cac7",
+      "application/vnd.ollama.image.license": "sha256:d18a5cc71b84",
+      "application/vnd.ollama.image.params": "sha256:0914c7781e00"
+    },
+    "expected_layer_media_types": [
+      "application/vnd.ollama.image.model",
+      "application/vnd.ollama.image.template",
+      "application/vnd.ollama.image.license",
+      "application/vnd.ollama.image.params"
+    ]
+  }
+}

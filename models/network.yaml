@@ -1,0 +1,19 @@
+name: Directed research network
+metadata:
+  description: Weighted directed topology with a discoverable Markov blanket.
+  tags: [official-pack, graph]
+objects:
+  dependency-network:
+    kind: org.modellab.graph.network
+    kind_version: "1.0"
+    value_type: {kind: graph, element_kind: real}
+    properties:
+      nodes: [hypothesis, method, observation, confounder, conclusion]
+      directed: true
+      multigraph: false
+      edges:
+        - {source: hypothesis, target: method, weight: 1}
+        - {source: method, target: observation, weight: 1}
+        - {source: confounder, target: observation, weight: 2}
+        - {source: observation, target: conclusion, weight: 1}
+        - {source: hypothesis, target: conclusion, weight: 4}
