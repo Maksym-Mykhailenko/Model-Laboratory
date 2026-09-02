@@ -1,0 +1,54 @@
+{
+  "schema": "model-laboratory-interpreter-qlora-config",
+  "schema_version": "1.7",
+  "seed": 20260826,
+  "training_environment_lock": "training/interpreter_training_environment_v1.2.json",
+  "training_environment_receipt": "training/interpreter_training_environment_receipt.json",
+  "base_model": {
+    "repository": "Qwen/Qwen3-4B-Instruct-2507",
+    "revision": "abcc171021d4f320b2e7f47c6f0deca67ded870c",
+    "lock_file": "model_lab/baseline/base_model_lock_v1.1.json"
+  },
+  "corpus": {
+    "directory": "training/interpreter_corpus_v1.5",
+    "require_completed_human_review": true,
+    "require_valid_full_baseline": true,
+    "content_sha256": "bfee076b5501a75311f0d85247a3109a7e8d66910a11ba3dfb59ee72931df28b",
+    "train_sha256": "5f396dec5eceb14f4c7aa9cf1cc9c58c92e8ac8a3bef7a2508191e44e0f01576",
+    "validation_sha256": "8e6b05ce1b669fd39897889b93e7794ce04786210d5cbeb0a6b6a4078fdc43eb"
+  },
+  "quantization": {
+    "method": "qlora-nf4",
+    "load_in_4bit": true,
+    "quant_type": "nf4",
+    "double_quantization": true,
+    "compute_dtype": "auto-bf16-or-fp16"
+  },
+  "lora": {
+    "rank": 16,
+    "alpha": 32,
+    "dropout": 0.05,
+    "target_modules": "all-linear",
+    "bias": "none"
+  },
+  "sequence": {
+    "maximum_tokens": 16384,
+    "truncate": false,
+    "assistant_completion_only": true,
+    "packing": false
+  },
+  "optimization": {
+    "epochs": 1,
+    "learning_rate": 0.0001,
+    "micro_batch_size": 1,
+    "gradient_accumulation_steps": 8,
+    "optimizer": "paged_adamw_8bit",
+    "scheduler": "cosine",
+    "warmup_ratio": 0.03,
+    "weight_decay": 0.01,
+    "maximum_gradient_norm": 1.0,
+    "gradient_checkpointing": true,
+    "evaluation_strategy": "epoch",
+    "save_strategy": "epoch"
+  }
+}

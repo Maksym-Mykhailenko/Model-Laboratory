@@ -1,0 +1,40 @@
+name: Multidimensional quantities demonstration
+metadata:
+  description: Labelled arrays, tensor contraction and dimensioned quantities.
+  tags: [official-pack, multidimensional]
+objects:
+  response-matrix:
+    kind: org.modellab.multidimensional.array
+    kind_version: "1.1"
+    value_type: {kind: matrix, shape: [2, 3], element_kind: real}
+    properties:
+      shape: [2, 3]
+      values: [1, 2, 3, 4, 5, 6]
+      axis_labels: [[trial-a, trial-b], [x, y, z]]
+      unit: V
+      dimension_exponents: [2, 1, -3, -1, 0, 0, 0]
+  projection:
+    kind: org.modellab.multidimensional.array
+    kind_version: "1.1"
+    value_type: {kind: vector, shape: [3], element_kind: real}
+    properties:
+      shape: [3]
+      values: [0.5, 0.25, -0.5]
+  length-centimetres:
+    kind: org.modellab.multidimensional.quantity
+    kind_version: "1.1"
+    properties:
+      value: 125
+      unit: cm
+      dimension_exponents: [1, 0, 0, 0, 0, 0, 0]
+      scale_to_base: 0.01
+      standard_uncertainty: 0.2
+  length-metres:
+    kind: org.modellab.multidimensional.quantity
+    kind_version: "1.1"
+    properties:
+      value: 1.25
+      unit: m
+      dimension_exponents: [1, 0, 0, 0, 0, 0, 0]
+      scale_to_base: 1
+      standard_uncertainty: 0.002

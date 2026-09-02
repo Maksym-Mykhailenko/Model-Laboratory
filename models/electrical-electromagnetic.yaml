@@ -1,0 +1,45 @@
+name: Linear circuit, diode and electrostatic field
+metadata:
+  description: Modified-nodal circuit analysis, an ideal diode curve and a point-charge field.
+  tags: [electrical, electronics, electromagnetics]
+objects:
+  rc-divider:
+    kind: org.modellab.electrical.linear-circuit
+    kind_version: "1.1"
+    properties:
+      nodes: [ground, input, output]
+      ground: ground
+      voltage_unit: V
+      current_unit: A
+      frequencies_hz: [1.0, 10.0, 100.0, 1000.0, 10000.0]
+      elements:
+        - {id: supply, type: voltage-source, from: input, to: ground, value: 5.0}
+        - {id: series-resistor, type: resistor, from: input, to: output, value: 1000.0}
+        - {id: load-resistor, type: resistor, from: output, to: ground, value: 2000.0}
+        - {id: shunt-capacitor, type: capacitor, from: output, to: ground, value: 0.000001}
+  silicon-diode:
+    kind: org.modellab.electronics.shockley-diode
+    kind_version: "1.0"
+    properties:
+      saturation_current: 1.0e-12
+      ideality_factor: 1.8
+      temperature_kelvin: 300.0
+      voltage_span: [-0.2, 0.8]
+      area_scale: 1.0
+  electric-dipole:
+    kind: org.modellab.electromagnetics.point-charge-system
+    kind_version: "1.1"
+    properties:
+      dimension: 2
+      coordinate_unit: m
+      charge_unit: C
+      charges:
+        - {id: positive, charge: 1.0e-9, position: [-0.5, 0.0]}
+        - {id: negative, charge: -1.0e-9, position: [0.5, 0.0]}
+      evaluation_points:
+        - [-1.0, -0.5]
+        - [-1.0, 0.5]
+        - [0.0, -0.75]
+        - [0.0, 0.75]
+        - [1.0, -0.5]
+        - [1.0, 0.5]

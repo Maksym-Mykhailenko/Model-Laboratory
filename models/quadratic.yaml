@@ -1,0 +1,21 @@
+name: Quadratic example
+
+variables:
+  x:
+    domain: [-10, 10]
+
+parameters:
+  a:
+    default: 1
+    domain: [-5, 5]
+
+  b:
+    default: 0
+    domain: [-5, 5]
+
+  c:
+    default: 0
+    domain: [-5, 5]
+
+functions:
+  y: a*x**2 + b*x + c

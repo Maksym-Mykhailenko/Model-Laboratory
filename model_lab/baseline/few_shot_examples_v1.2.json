@@ -1,0 +1,11 @@
+{
+  "schema": "model-laboratory-interpreter-few-shot-examples",
+  "schema_version": "1.2",
+  "instructions": [
+    "Create response=t**4-2*t with t from -3 to 3.",
+    "Change the description of existing parameter beta to control coefficient, but beta is omitted from the bounded context.",
+    "Add a directed extension relationship from either node_a or node_b to node_c; the source endpoint is undecided.",
+    "Download and install an unregistered capability pack and immediately execute it.",
+    "Couple two independently runnable scientific capabilities into a new nested solver."
+  ]
+}

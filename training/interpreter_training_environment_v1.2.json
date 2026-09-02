@@ -1,0 +1,50 @@
+{
+  "schema": "model-laboratory-interpreter-training-environment-lock",
+  "schema_version": "1.2",
+  "python": {
+    "implementation": "CPython",
+    "minimum_version": "3.10",
+    "maximum_exclusive_version": "3.14",
+    "hash_seed": "0"
+  },
+  "direct_packages": {
+    "torch": "2.8.0",
+    "transformers": "5.15.1",
+    "accelerate": "1.12.0",
+    "peft": "0.20.0",
+    "bitsandbytes": "0.50.1",
+    "huggingface-hub": "1.5.0",
+    "safetensors": "0.8.0",
+    "packaging": "26.0"
+  },
+  "platform": {
+    "allowed_systems": ["Windows", "Linux"],
+    "allowed_machines": ["AMD64", "x86_64"]
+  },
+  "runtime": {
+    "cuda_required": true,
+    "minimum_gpu_memory_bytes": 12884901888,
+    "cublas_workspace_config": ":4096:8",
+    "freeze_cuda_version": true,
+    "freeze_cudnn_version": true,
+    "freeze_gpu_identity": true
+  },
+  "environment_receipt": {
+    "schema": "model-laboratory-interpreter-training-environment-receipt",
+    "schema_version": "1.0",
+    "require_complete_distribution_inventory": true,
+    "require_distribution_record_hashes": true,
+    "require_distribution_content_hashes": true,
+    "require_python_executable_sha256": true,
+    "must_precede_training": true
+  },
+  "determinism": {
+    "seed_source": "qlora-config",
+    "torch_deterministic_algorithms": true,
+    "transformers_full_determinism": true,
+    "cuda_tf32": false,
+    "cudnn_tf32": false,
+    "cudnn_benchmark": false,
+    "dataloader_workers": 0
+  }
+}

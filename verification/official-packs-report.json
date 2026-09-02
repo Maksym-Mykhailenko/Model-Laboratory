@@ -1,0 +1,481 @@
+{
+  "suite": "official-packs",
+  "version": "1.17.0",
+  "passed": 54,
+  "total": 54,
+  "checks": [
+    {
+      "name": "official manifest count",
+      "passed": true,
+      "evidence": 13
+    },
+    {
+      "name": "official kind count",
+      "passed": true,
+      "evidence": 34
+    },
+    {
+      "name": "official capability count",
+      "passed": true,
+      "evidence": 45
+    },
+    {
+      "name": "matrix rank",
+      "passed": true,
+      "evidence": 2
+    },
+    {
+      "name": "tensor contraction",
+      "passed": true,
+      "evidence": [
+        -0.5,
+        0.25
+      ]
+    },
+    {
+      "name": "quantity conversion",
+      "passed": true,
+      "evidence": [
+        {
+          "object_id": "length-centimetres",
+          "source_value": 125.0,
+          "source_unit": "cm",
+          "source_scale_to_base": 0.01,
+          "source_offset_to_base": 0.0,
+          "source_standard_uncertainty": 0.2,
+          "base_value": 1.25,
+          "base_standard_uncertainty": 0.002,
+          "dimension_exponents": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "object_id": "length-metres",
+          "source_value": 1.25,
+          "source_unit": "m",
+          "source_scale_to_base": 1.0,
+          "source_offset_to_base": 0.0,
+          "source_standard_uncertainty": 0.002,
+          "base_value": 1.25,
+          "base_standard_uncertainty": 0.002,
+          "dimension_exponents": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "name": "distribution variance",
+      "passed": true,
+      "evidence": 0.4
+    },
+    {
+      "name": "Markov normalisation",
+      "passed": true,
+      "evidence": 1.6653345369377348e-16
+    },
+    {
+      "name": "stochastic reference",
+      "passed": true,
+      "evidence": "4b2136c958a19994a195d2892b871c46791c37723b7f35daefc7d47f6fa6bc9b"
+    },
+    {
+      "name": "statistical equivalence",
+      "passed": true,
+      "evidence": "STATISTICALLY EQUIVALENT"
+    },
+    {
+      "name": "generic exact reproduction",
+      "passed": true,
+      "evidence": "EXACT REPRODUCTION"
+    },
+    {
+      "name": "network shortest path",
+      "passed": true,
+      "evidence": [
+        "hypothesis",
+        "method",
+        "observation",
+        "conclusion"
+      ]
+    },
+    {
+      "name": "network DAG",
+      "passed": true,
+      "evidence": false
+    },
+    {
+      "name": "HMM posterior normalisation",
+      "passed": true,
+      "evidence": [
+        "safe",
+        "risky",
+        "risky"
+      ]
+    },
+    {
+      "name": "POMDP belief plan",
+      "passed": true,
+      "evidence": "repair"
+    },
+    {
+      "name": "Markov blanket",
+      "passed": true,
+      "evidence": [
+        "action",
+        "observation"
+      ]
+    },
+    {
+      "name": "active-inference posterior",
+      "passed": true,
+      "evidence": [
+        0.0037560517891000347,
+        0.17140012687660403,
+        0.8248438213342959
+      ]
+    },
+    {
+      "name": "active-inference event probability",
+      "passed": true,
+      "evidence": [
+        {
+          "policy": "wait",
+          "event": "danger",
+          "terminal_probability": 0.3219,
+          "reach_probability": 0.4896999999999999
+        },
+        {
+          "policy": "act-now",
+          "event": "danger",
+          "terminal_probability": 0.21361000000000002,
+          "reach_probability": 0.44434000000000007
+        },
+        {
+          "policy": "sustained-action",
+          "event": "danger",
+          "terminal_probability": 0.128329,
+          "reach_probability": 0.3949480000000001
+        }
+      ]
+    },
+    {
+      "name": "ODE trajectory",
+      "passed": true,
+      "evidence": 1061
+    },
+    {
+      "name": "ODE equilibrium stability",
+      "passed": true,
+      "evidence": [
+        "asymptotically stable"
+      ]
+    },
+    {
+      "name": "state-space control structure",
+      "passed": true,
+      "evidence": [
+        2,
+        2
+      ]
+    },
+    {
+      "name": "state-space response",
+      "passed": true,
+      "evidence": 716
+    },
+    {
+      "name": "scalar-field differential operators",
+      "passed": true,
+      "evidence": 4.0
+    },
+    {
+      "name": "vector-field divergence and curl",
+      "passed": true,
+      "evidence": [
+        0.0,
+        2.0
+      ]
+    },
+    {
+      "name": "diffusion boundary",
+      "passed": true,
+      "evidence": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "Poisson residual",
+      "passed": true,
+      "evidence": 0.0
+    },
+    {
+      "name": "point-cloud rank and diameter",
+      "passed": true,
+      "evidence": [
+        3,
+        1.4142135623730951
+      ]
+    },
+    {
+      "name": "mesh topology and volume",
+      "passed": true,
+      "evidence": [
+        2,
+        0.16666666666666666
+      ]
+    },
+    {
+      "name": "mesh shortest path",
+      "passed": true,
+      "evidence": [
+        0,
+        3
+      ]
+    },
+    {
+      "name": "material constitutive analysis",
+      "passed": true,
+      "evidence": 80769230769.23077
+    },
+    {
+      "name": "truss force balance",
+      "passed": true,
+      "evidence": [
+        -4.547473508864641e-13,
+        0.0
+      ]
+    },
+    {
+      "name": "truss modes",
+      "passed": true,
+      "evidence": [
+        137.83616034570318,
+        183.9976047237917,
+        594.7009220460003
+      ]
+    },
+    {
+      "name": "dataset covariance and PCA",
+      "passed": true,
+      "evidence": [
+        0.9996864940814825,
+        0.0003135059185175253,
+        0.0
+      ]
+    },
+    {
+      "name": "linear-model inference",
+      "passed": true,
+      "evidence": [
+        3,
+        0.9999098078813022
+      ]
+    },
+    {
+      "name": "group inference",
+      "passed": true,
+      "evidence": 6.206424160831093e-08
+    },
+    {
+      "name": "constrained optimum",
+      "passed": true,
+      "evidence": [
+        [
+          1.5,
+          -1.4999999999999998
+        ],
+        0.0
+      ]
+    },
+    {
+      "name": "nonlinear parameter estimation",
+      "passed": true,
+      "evidence": [
+        1.9900000000000002,
+        1.059999999999999
+      ]
+    },
+    {
+      "name": "weighted inverse solution",
+      "passed": true,
+      "evidence": [
+        2,
+        2.3808806248876513
+      ]
+    },
+    {
+      "name": "DC modified-nodal solution",
+      "passed": true,
+      "evidence": [
+        0.0,
+        5.0,
+        3.333333333333333
+      ]
+    },
+    {
+      "name": "AC phasor sweep",
+      "passed": true,
+      "evidence": [
+        5,
+        3
+      ]
+    },
+    {
+      "name": "Shockley diode characteristic",
+      "passed": true,
+      "evidence": [
+        -9.864038644132127e-13,
+        2.9264293074826228e-05
+      ]
+    },
+    {
+      "name": "electrostatic dipole",
+      "passed": true,
+      "evidence": [
+        -1e-09,
+        0.0
+      ]
+    },
+    {
+      "name": "reaction-network structure",
+      "passed": true,
+      "evidence": [
+        2,
+        0
+      ]
+    },
+    {
+      "name": "mass-action conservation",
+      "passed": true,
+      "evidence": [
+        8.229747412196044,
+        164.97641187640772,
+        826.7938407172672
+      ]
+    },
+    {
+      "name": "compartment stability",
+      "passed": true,
+      "evidence": -7.994043043082609e-06
+    },
+    {
+      "name": "compartment trajectory",
+      "passed": true,
+      "evidence": [
+        7.249582666094165e-06,
+        3.05352416622806e-05
+      ]
+    },
+    {
+      "name": "population coexistence",
+      "passed": true,
+      "evidence": "asymptotically stable"
+    },
+    {
+      "name": "population trajectory",
+      "passed": true,
+      "evidence": [
+        0.8000040402412097,
+        0.39999594468090754
+      ]
+    },
+    {
+      "name": "supervised learning",
+      "passed": true,
+      "evidence": {
+        "accuracy": 1.0,
+        "cross_entropy": 6.42734153790901e-07
+      }
+    },
+    {
+      "name": "seeded canonical clustering",
+      "passed": true,
+      "evidence": [
+        4,
+        4
+      ]
+    },
+    {
+      "name": "feed-forward inference",
+      "passed": true,
+      "evidence": [
+        [
+          0.9733160371581414,
+          0.026683962841858505
+        ],
+        [
+          0.9843543790676399,
+          0.015645620932360053
+        ],
+        [
+          0.9819368509344413,
+          0.01806314906555877
+        ],
+        [
+          0.9678480641571774,
+          0.032151935842822714
+        ],
+        [
+          0.032151935842822714,
+          0.9678480641571774
+        ],
+        [
+          0.01806314906555877,
+          0.9819368509344413
+        ],
+        [
+          0.025933111817574645,
+          0.9740668881824254
+        ],
+        [
+          0.018338947440230086,
+          0.9816610525597699
+        ]
+      ]
+    },
+    {
+      "name": "fuzzy inference",
+      "passed": true,
+      "evidence": [
+        0.09459459459459459,
+        0.5578512396694215,
+        0.9821037253469685
+      ]
+    },
+    {
+      "name": "official renderers",
+      "passed": true,
+      "evidence": 41
+    },
+    {
+      "name": "interpreter context budget",
+      "passed": true,
+      "evidence": [
+        21121,
+        20145,
+        20087,
+        19806,
+        21501,
+        20012,
+        20415,
+        20326,
+        20934,
+        20121
+      ]
+    }
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "schema": "model-laboratory-interpreter-baseline-report",
+  "schema_version": "1.4",
+  "status": "benchmark_validated_model_not_run",
+  "created_at_utc": "2026-09-02T22:23:28+00:00",
+  "baseline_contract": {
+    "schema": "model-laboratory-interpreter-baseline",
+    "schema_version": "1.4",
+    "prompt_template_version": "1.3",
+    "system_prompt_sha256": "dc81ad9c5746ef30c32c9653ab1600e0f124ef7b6d372ca156a915bbb7ffde97",
+    "user_prompt_template_sha256": "82f03030123199fcb96b2949ee188dcf23a0e2f1246c391a1a81b26955916c24",
+    "output_schema_sha256": "ae476a60ef863775d08f7b62b2937f4238969dcc479db12dde3abc3b1caeb0c0",
+    "base_model_lock_sha256": "1b73f807ea8c2a53088ae5e38b9b376f3cd9acd8213bf7c881af728018c7f38e",
+    "few_shot_registry_sha256": "72111f996b8e5bfbc1353ab93eb1a3f9c55be491a270d70a89e05eee4b10c3aa",
+    "expected_base_model": "Qwen/Qwen3-4B-Instruct-2507",
+    "model_tag": "qwen3:4b-instruct-2507-q4_K_M",
+    "expected_quantization": "Q4_K_M",
+    "upstream_revision": "abcc171021d4f320b2e7f47c6f0deca67ded870c",
+    "endpoint": "http://127.0.0.1:11434",
+    "production_generation_options": {
+      "seed": 0,
+      "temperature": 0.7,
+      "top_p": 0.8,
+      "top_k": 20,
+      "min_p": 0.0,
+      "num_ctx": 32768,
+      "num_predict": 4096
+    },
+    "production_generation_profiles": [
+      {
+        "seed": 0,
+        "temperature": 0.7,
+        "top_p": 0.8,
+        "top_k": 20,
+        "min_p": 0.0,
+        "num_ctx": 32768,
+        "num_predict": 4096
+      },
+      {
+        "seed": 0,
+        "temperature": 0.7,
+        "top_p": 0.8,
+        "top_k": 20,
+        "min_p": 0.0,
+        "num_ctx": 65536,
+        "num_predict": 8192
+      },
+      {
+        "seed": 0,
+        "temperature": 0.7,
+        "top_p": 0.8,
+        "top_k": 20,
+        "min_p": 0.0,
+        "num_ctx": 131072,
+        "num_predict": 8192
+      }
+    ],
+    "production_profile_selection": "smallest conservative request-size fit",
+    "evaluation_generation_options": {
+      "seed": 0,
+      "temperature": 0.0,
+      "top_p": 0.8,
+      "top_k": 20,
+      "min_p": 0.0,
+      "num_ctx": 32768,
+      "num_predict": 4096
+    },
+    "evaluation_sampling": "greedy deterministic profile with fixed seed=0",
+    "adapters_permitted": false,
+    "scorer_version": "1.4"
+  },
+  "implementation_identity": {
+    "laboratory_version": "1.17.0",
+    "source_tree_sha256": "17f527f9080f04d52314a77e570dce708ecb8306e7030d904774feb613833f9d",
+    "git_commit_or_build_id": "unavailable",
+    "evaluator_source_sha256": "69a5e3222ab17c7090ebe33714362e660a1f09d2d60b5ab7c8b0a4a580915af8",
+    "interpreter_compiler_source_sha256": "20d5aaf6831ed783d279d17aece3e9c4c44d20c1a20a7feb8f71f64fa2f07346",
+    "scientific_dependency_sha256": {
+      "interpreter.py": "20d5aaf6831ed783d279d17aece3e9c4c44d20c1a20a7feb8f71f64fa2f07346",
+      "validator.py": "82b9dda229f0eaef80f752e2a33c7cfa65e65c34a2d18c19dc1384ffb490cb36",
+      "parser.py": "87684e7f1ab48cb6dc235da21c8e975f2289993c2715ed6a01e83eb5ceba101f",
+      "model_graph.py": "71480d0b2b1c8998d46f46465103952be88abf3d7722247992a9152b97b1d78c",
+      "model.py": "44fb8a8f7f5d877e3165b45537fd6bf937a8a78320471d8cdc0ac159545dd342",
+      "canonical.py": "2e41e2e0ade0f0b75f3cdd35a3feb4f7cbcb15e886a447b55904903f15d943b9",
+      "expression.py": "54542c5ac2b1d199821188b027f232075cc62cb805e69f140468f9c4556a1541"
+    },
+    "scorer_version": "1.4"
+  },
+  "benchmark": {
+    "benchmark_sha256": "e84cf6c7bab332253dc33a4e2fc5c30d97667e8bc41bbfcd1d97e117c44ecde0",
+    "review": {
+      "status": "internal-curated",
+      "provenance": "The 140 v1.5 cases are retained and ten deterministic capability-boundary cases are added. The benchmark is compiler-checked but is not claimed to be independently expert-reviewed."
+    },
+    "training_exclusion": true,
+    "case_count": 150,
+    "family_counts": {
+      "ambiguity-recording": 4,
+      "clarification": 8,
+      "constraints": 6,
+      "context-negotiation": 4,
+      "derived-assumptions": 6,
+      "edit": 8,
+      "metadata-units": 4,
+      "model-graph": 5,
+      "multivariate-create": 6,
+      "official-dynamics": 4,
+      "official-electrical": 5,
+      "official-fields": 6,
+      "official-generative": 5,
+      "official-geometry": 4,
+      "official-graphs": 3,
+      "official-learning": 6,
+      "official-mechanics": 4,
+      "official-multidimensional": 4,
+      "official-optimisation": 5,
+      "official-probability": 4,
+      "official-reactions": 5,
+      "official-statistics": 5,
+      "roles": 6,
+      "safety-unsupported": 6,
+      "scalar-create": 8,
+      "scientific-capability-boundary": 10,
+      "structured-assets": 3,
+      "vector-matrix": 6
+    }
+  },
+  "reason": "A live score is intentionally absent until the exact frozen Ollama artifact passes local manifest/blob verification and inference is run."
+}

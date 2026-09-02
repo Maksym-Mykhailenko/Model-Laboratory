@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+env/
+
+# JavaScript
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Generic generated output
+dist/
+build/
+
+# Rust and Tauri
+src-tauri/target/
+src-tauri/gen/
+src-tauri/binaries/*
+!src-tauri/binaries/.gitkeep
+
+# Native installers and packaged applications
+*.msi
+*.exe
+*.dmg
+*.AppImage
+*.deb
+*.rpm
+
+# Downloaded models, adapters, and training output
+*.gguf
+*.safetensors
+*.pt
+*.pth
+*.onnx
+training/base-model/
+training/adapters/
+training/candidates/
+training/exports/
+training/runs/
+verification/current-campaign/
+training/interpreter_training_environment_receipt.json
+promotion-consumption-ledger.json*
+
+# Local editor and operating-system state
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo

@@ -1,0 +1,16 @@
+name: Two-variable surface
+
+variables:
+  x:
+    domain: [-5, 5]
+
+  y:
+    domain: [-5, 5]
+
+parameters:
+  a:
+    default: 1
+    domain: [-3, 3]
+
+functions:
+  z: sin(a*x)*cos(y)

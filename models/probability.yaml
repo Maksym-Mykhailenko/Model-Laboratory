@@ -1,0 +1,23 @@
+name: Probability and stochastic-process demonstration
+metadata:
+  description: A finite distribution and a reproducible Markov process.
+  tags: [official-pack, probability]
+objects:
+  measurement:
+    kind: org.modellab.probability.discrete-distribution
+    kind_version: "1.0"
+    properties:
+      outcomes: [low, nominal, high]
+      probabilities: [0.2, 0.6, 0.2]
+      numeric_values: [-1, 0, 1]
+  weather:
+    kind: org.modellab.probability.markov-chain
+    kind_version: "1.0"
+    properties:
+      states: [clear, cloudy, rain]
+      initial: [0.7, 0.2, 0.1]
+      transition:
+        - [0.75, 0.20, 0.05]
+        - [0.30, 0.50, 0.20]
+        - [0.15, 0.35, 0.50]
+      state_values: [1, 0, -1]

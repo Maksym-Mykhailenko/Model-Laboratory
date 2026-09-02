@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use Model Laboratory in research or teaching, please cite this software."
+type: software
+title: "Model Laboratory"
+version: 1.17.0
+date-released: 2026-09-02
+authors:
+  - family-names: "Mykhailenko"
+    given-names: "Maksym"
+    orcid: "https://orcid.org/0009-0009-5987-7660"
+abstract: >-
+  Model Laboratory is a local-first native desktop environment for creating, analysing,
+  preserving, and reproducing mathematical experiments through typed model, run, artifact,
+  provenance, and experiment-bundle protocols.
+keywords:
+  - reproducible research
+  - mathematical modelling
+  - scientific software
+  - research software
+  - local-first software
+  - computational science
+license: Apache-2.0

@@ -1,0 +1,147 @@
+{
+  "schema": "model-laboratory-interpreter-qlora-preflight",
+  "schema_version": "1.1",
+  "laboratory_version": "1.17.0",
+  "status": "BLOCKED",
+  "experimental_overrides": {
+    "allow_unreviewed": false,
+    "allow_missing_baseline": false
+  },
+  "config_sha256": "47eddd1b58b8951d596575e9e3ea88c2143020d5832dc2bdfc822def882b208f",
+  "training_environment_lock_sha256": "483c28888ecccfc04053726697101e610acbb8c0f8624d60534709c16d68fc77",
+  "training_environment_receipt_sha256": null,
+  "official_frozen_config": true,
+  "corpus_validation_depth": "deep",
+  "deep_validation_evidence": {
+    "source": "current-preflight",
+    "status": "PASS",
+    "deep": true,
+    "report_sha256": null,
+    "corpus_manifest_file_sha256": "90c23d08c81ddb12fd743ac3c7c8363099824c09b029e715cf60479b4486e37a",
+    "bound_to_current_corpus": true
+  },
+  "corpus": {
+    "manifest_sha256": "90c23d08c81ddb12fd743ac3c7c8363099824c09b029e715cf60479b4486e37a",
+    "train_records": 5039,
+    "validation_records": 1261,
+    "review_records": 725,
+    "review_counts": {
+      "pending-human-review": 725,
+      "accepted": 0,
+      "corrected": 0,
+      "rejected": 0
+    },
+    "review_complete": false
+  },
+  "baseline": {
+    "valid": false,
+    "reason": "no valid full untouched-model baseline: live 150-case baseline has not been run",
+    "report_sha256": "57a1048665b0367366908f78f757b522c1ba78793922784741fa1586ba8d1cdc",
+    "status": "benchmark_validated_model_not_run"
+  },
+  "dependencies": {
+    "torch": false,
+    "transformers": false,
+    "accelerate": false,
+    "peft": false,
+    "bitsandbytes": false,
+    "huggingface_hub": false,
+    "safetensors": false,
+    "packaging": false
+  },
+  "dependency_details": {
+    "torch": {
+      "distribution": "torch",
+      "required": "==2.8.0",
+      "installed": false,
+      "importable": false,
+      "compatible": false,
+      "version": null,
+      "error": "PackageNotFoundError: No package metadata was found for torch"
+    },
+    "transformers": {
+      "distribution": "transformers",
+      "required": "==5.15.1",
+      "installed": false,
+      "importable": false,
+      "compatible": false,
+      "version": null,
+      "error": "PackageNotFoundError: No package metadata was found for transformers"
+    },
+    "accelerate": {
+      "distribution": "accelerate",
+      "required": "==1.12.0",
+      "installed": false,
+      "importable": false,
+      "compatible": false,
+      "version": null,
+      "error": "PackageNotFoundError: No package metadata was found for accelerate"
+    },
+    "peft": {
+      "distribution": "peft",
+      "required": "==0.20.0",
+      "installed": false,
+      "importable": false,
+      "compatible": false,
+      "version": null,
+      "error": "PackageNotFoundError: No package metadata was found for peft"
+    },
+    "bitsandbytes": {
+      "distribution": "bitsandbytes",
+      "required": "==0.50.1",
+      "installed": false,
+      "importable": false,
+      "compatible": false,
+      "version": null,
+      "error": "PackageNotFoundError: No package metadata was found for bitsandbytes"
+    },
+    "huggingface_hub": {
+      "distribution": "huggingface-hub",
+      "required": "==1.5.0",
+      "installed": false,
+      "importable": false,
+      "compatible": false,
+      "version": null,
+      "error": "PackageNotFoundError: No package metadata was found for huggingface-hub"
+    },
+    "safetensors": {
+      "distribution": "safetensors",
+      "required": "==0.8.0",
+      "installed": false,
+      "importable": false,
+      "compatible": false,
+      "version": null,
+      "error": "PackageNotFoundError: No package metadata was found for safetensors"
+    },
+    "packaging": {
+      "distribution": "packaging",
+      "required": "==26.0",
+      "installed": true,
+      "importable": true,
+      "compatible": false,
+      "version": "26.3",
+      "error": ""
+    }
+  },
+  "training_environment": {
+    "lock_sha256": "483c28888ecccfc04053726697101e610acbb8c0f8624d60534709c16d68fc77",
+    "receipt_sha256": null,
+    "status": "not-frozen"
+  },
+  "hardware": {
+    "platform": "Linux-6.18.35-x86_64-with-glibc2.39",
+    "python": "3.12.13",
+    "cuda_available": false,
+    "gpu": null,
+    "gpu_memory_bytes": 0,
+    "reason": "PyTorch is not installed in this environment."
+  },
+  "blockers": [
+    "human review incomplete: 725 of 725 queue records remain pending",
+    "immutable training environment receipt is missing; run scripts/freeze_interpreter_training_environment.py first",
+    "no valid full untouched-model baseline: live 150-case baseline has not been run",
+    "missing or non-importable optional training dependencies: accelerate, bitsandbytes, huggingface_hub, peft, safetensors, torch, transformers",
+    "installed optional training dependencies have incompatible versions: packaging",
+    "PyTorch is not installed in this environment."
+  ]
+}

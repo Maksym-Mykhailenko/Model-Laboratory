@@ -1,0 +1,44 @@
+name: Constrained optimisation and parameter estimation
+metadata:
+  description: Smooth constrained optimisation, nonlinear residual fitting and a weighted inverse problem.
+  tags: [optimisation, estimation, inverse-problem]
+objects:
+  bounded-design:
+    kind: org.modellab.optimisation.nonlinear-problem
+    kind_version: "1.0"
+    properties:
+      variables: [x, y]
+      initial: [0.5, 0.5]
+      bounds: [[-4.0, 4.0], [-4.0, 4.0]]
+      objective: (x - 1)**2 + (y + 2)**2
+      objective_sense: minimise
+      constraints:
+        - {name: nonnegative-sum, relation: greater-equal, expression: x + y}
+  nonlinear-calibration:
+    kind: org.modellab.estimation.nonlinear-least-squares
+    kind_version: "1.0"
+    properties:
+      variables: [a, b]
+      initial: [1.0, 0.0]
+      bounds: [[-10.0, 10.0], [-10.0, 10.0]]
+      residual_names: [r0, r1, r2, r3, r4]
+      residuals:
+        - b - 1.0
+        - a + b - 3.1
+        - 2*a + b - 5.0
+        - 3*a + b - 7.2
+        - 4*a + b - 8.9
+  sensor-inverse:
+    kind: org.modellab.inverse.linear-problem
+    kind_version: "1.0"
+    properties:
+      parameter_names: [source-a, source-b]
+      observation_names: [sensor-1, sensor-2, sensor-3, sensor-4]
+      design_matrix:
+        - [1.0, 0.2]
+        - [0.5, 1.0]
+        - [1.5, -0.3]
+        - [0.2, 1.4]
+      observations: [2.42, 3.18, 2.09, 3.31]
+      standard_deviations: [0.1, 0.1, 0.15, 0.12]
+      reference_parameters: [0.0, 0.0]

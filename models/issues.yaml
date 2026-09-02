@@ -1,0 +1,34 @@
+name: Assumption and ambiguity example
+metadata:
+  description: A simple scalar model containing explicit assumptions and a resolved ambiguity.
+
+variables:
+  x:
+    domain: [-4, 4]
+    label: Input
+
+parameters:
+  a:
+    default: 1
+    domain: [0.25, 2]
+    label: Scale
+
+functions:
+  y:
+    expression: a*x**2
+    label: Response
+
+assumptions:
+  declared_domain:
+    statement: The declared interval is the domain relevant to the present analysis.
+    affects: [x, y]
+
+ambiguities:
+  scale_interpretation:
+    statement: Two descriptions of the scale parameter were considered.
+    options:
+      - dimensionless scale
+      - dimensional coefficient
+    resolution: dimensionless scale
+    blocking: true
+    affects: [a]

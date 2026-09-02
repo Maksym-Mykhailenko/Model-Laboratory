@@ -1,0 +1,302 @@
+{
+  "laboratory_version": "1.17.0",
+  "checks": 49,
+  "passed": 49,
+  "failed": 0,
+  "results": [
+    {
+      "name": "parabola",
+      "category": "1D stationary points",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "inverted parabola",
+      "category": "1D stationary points",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "shifted quadratic",
+      "category": "1D stationary points",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "cubic turning points",
+      "category": "1D stationary points",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "double-well quartic",
+      "category": "1D stationary points",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "flat quartic",
+      "category": "1D stationary points",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "sixth-order polynomial",
+      "category": "1D stationary points",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "monotone exponential",
+      "category": "1D stationary points",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "bounded rational",
+      "category": "1D stationary points",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "sine over two periods",
+      "category": "1D stationary points",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "cosine including boundary stationary points",
+      "category": "1D stationary points",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "absolute-value cusp",
+      "category": "1D pathological",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "parameterised quadratic sign change",
+      "category": "1D parameter behaviour",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "circular bowl",
+      "category": "2D stationary points",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "inverted circular bowl",
+      "category": "2D stationary points",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "hyperbolic saddle",
+      "category": "2D stationary points",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "shifted bowl",
+      "category": "2D stationary points",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "two-dimensional double well",
+      "category": "2D stationary points",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "Rosenbrock",
+      "category": "2D stationary points",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "Booth",
+      "category": "2D stationary points",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "Matyas",
+      "category": "2D stationary points",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "four-well surface",
+      "category": "2D stationary points",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "Himmelblau nine critical points",
+      "category": "2D stationary points",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "rank-deficient stationary line",
+      "category": "2D pathological",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "two-dimensional cusp",
+      "category": "2D pathological",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "linear plane",
+      "category": "2D pathological",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "exact linear grid evaluation",
+      "category": "numerical evaluation",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "parameter override evaluation",
+      "category": "numerical evaluation",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "constant scalar broadcast",
+      "category": "numerical evaluation",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "exact 2D plane grid evaluation",
+      "category": "numerical evaluation",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "derived quantity and constant evaluation",
+      "category": "numerical evaluation",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "partially undefined logarithm",
+      "category": "numerical evaluation",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "polynomial symbolic derivatives",
+      "category": "symbolic analysis",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "trigonometric symbolic derivative",
+      "category": "symbolic analysis",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "2D gradient and Hessian",
+      "category": "symbolic analysis",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "quadratic stationary-position sweep",
+      "category": "parameter sweep",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "quartic structural-transition sweep",
+      "category": "parameter sweep",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "experiment-state round trip",
+      "category": "reproducibility",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "shifted cubic flat stationary point",
+      "category": "1D stationary points",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "positive logarithm",
+      "category": "1D stationary points",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "square-root boundary singularity",
+      "category": "1D pathological",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "cross-coupled positive-definite quadratic",
+      "category": "2D stationary points",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "two-dimensional flat quartic",
+      "category": "2D stationary points",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "rotated rank-deficient stationary line",
+      "category": "2D pathological",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "constant surface",
+      "category": "2D pathological",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "parameterised 2D curvature change",
+      "category": "2D parameter behaviour",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "exact quadratic grid evaluation",
+      "category": "numerical evaluation",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "2D parameter override evaluation",
+      "category": "numerical evaluation",
+      "passed": true,
+      "detail": "matched reference result"
+    },
+    {
+      "name": "symbolic derived-quantity chain",
+      "category": "symbolic analysis",
+      "passed": true,
+      "detail": "matched reference result"
+    }
+  ]
+}

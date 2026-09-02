@@ -1,0 +1,51 @@
+name: Reaction, compartment and population systems
+metadata:
+  description: Mass-action kinetics, biological transfer compartments and interacting populations.
+  tags: [chemistry, reactions, biology]
+objects:
+  sequential-reaction:
+    kind: org.modellab.chemistry.mass-action-network
+    kind_version: "1.1"
+    properties:
+      species: [A, B, C]
+      initial_concentrations: [1.0, 0.0, 0.0]
+      time_span: [0.0, 12.0]
+      concentration_unit: mol/L
+      time_unit: s
+      reactions:
+        - id: A-to-B
+          reactants: [{species: A, stoichiometry: 1.0}]
+          products: [{species: B, stoichiometry: 1.0}]
+          rate_constant: 0.4
+        - id: B-to-C
+          reactants: [{species: B, stoichiometry: 1.0}]
+          products: [{species: C, stoichiometry: 1.0}]
+          rate_constant: 0.2
+  two-compartment:
+    kind: org.modellab.biological.compartment-system
+    kind_version: "1.1"
+    properties:
+      compartments: [central, peripheral]
+      initial_amounts: [100.0, 0.0]
+      transfers:
+        - {from: central, to: peripheral, rate: 0.3}
+        - {from: peripheral, to: central, rate: 0.1}
+      losses:
+        - {compartment: central, rate: 0.15}
+      constant_inputs: [0.0, 0.0]
+      time_span: [0.0, 24.0]
+      amount_unit: mg
+      time_unit: h
+  interacting-populations:
+    kind: org.modellab.biological.population-interaction-system
+    kind_version: "1.1"
+    properties:
+      populations: [prey, predator]
+      initial_populations: [0.6, 0.3]
+      intrinsic_growth: [1.0, -0.2]
+      interaction_matrix:
+        - [-1.0, -0.5]
+        - [0.5, -0.5]
+      time_span: [0.0, 30.0]
+      population_unit: scaled-density
+      time_unit: day

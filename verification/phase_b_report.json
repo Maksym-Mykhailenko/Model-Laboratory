@@ -1,0 +1,262 @@
+{
+  "checks": [
+    {
+      "detail": "",
+      "name": "quadratic.yaml: exact status",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "quadratic.yaml: every result strict",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "quadratic.yaml: environment captured",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "quadratic.yaml: .mlab explicit reproduction",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "quadratic.yaml: JSON report schema",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "quadratic.yaml: text report",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "surface.yaml: exact status",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "surface.yaml: every result strict",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "surface.yaml: environment captured",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "surface.yaml: .mlab explicit reproduction",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "surface.yaml: JSON report schema",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "surface.yaml: text report",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "structured.yaml: exact status",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "structured.yaml: every result strict",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "structured.yaml: environment captured",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "structured.yaml: .mlab explicit reproduction",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "structured.yaml: JSON report schema",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "structured.yaml: text report",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "issues.yaml: exact status",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "issues.yaml: every result strict",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "issues.yaml: environment captured",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "issues.yaml: .mlab explicit reproduction",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "issues.yaml: JSON report schema",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "issues.yaml: text report",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "exact result survives different environment",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "different environment is explicit",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "laboratory version difference is explicit",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "within-tolerance result is numerical reproduction",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "numerical result differs strictly",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "numerical comparator accepts saved tolerance",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "numerical deviation is reported",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "outside-tolerance result is rejected",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "mixed reproduced/non-reproduced result is partial",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "outside-tolerance deviation is reported",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "strict-only symbolic mismatch is rejected",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "strict-only mismatch prevents numerical overall status",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "reordered sweep loses strict fingerprint",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "reordered sweep reproduces numerically",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "per-result inability has UNABLE status",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "mixed inability produces partial overall status",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "execution failure detail preserved",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "over-budget reproduction is refused",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "over-budget reproduction performs no evaluation",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "over-budget report explains refusal",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "no successful result with execution failures is unable",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "diagnostic message wording is presentation-only",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "strict diagnostic fingerprint excludes message wording",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "diagnostic detail order is scientifically irrelevant",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "saved diagnostic message remains preserved",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "different scientific diagnostic details are rejected",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "Hessian eigenvalue order is semantically irrelevant",
+      "passed": true
+    }
+  ],
+  "passed": 51,
+  "title": "Model Laboratory Phase-B reproduction verification",
+  "total": 51
+}

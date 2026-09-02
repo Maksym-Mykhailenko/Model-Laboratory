@@ -1,0 +1,123 @@
+name: Cross-platform reproducibility
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "model_lab/**"
+      - "tests/**"
+      - "frontend/**"
+      - "desktop_engine.py"
+      - "verification/run_cross_platform_campaign.py"
+      - "requirements.txt"
+      - "requirements-dev.txt"
+      - "constraints-tested.txt"
+      - "package.json"
+      - "package-lock.json"
+      - "src-tauri/**"
+      - "scripts/verify_native_interpreter.ps1"
+      - "scripts/verify_native_interpreter.sh"
+
+jobs:
+  verify:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python: "3.11"
+            artifact: linux-x86_64-py311
+          - os: ubuntu-latest
+            python: "3.12"
+            artifact: linux-x86_64-py312
+          - os: ubuntu-latest
+            python: "3.13"
+            artifact: linux-x86_64-py313
+          - os: windows-latest
+            python: "3.12"
+            artifact: windows-x86_64-py312
+          - os: macos-14
+            python: "3.12"
+            artifact: macos-arm64-py312
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -r requirements-dev.txt -c constraints-tested.txt
+      - run: python -m pytest -q
+      - name: Record real reproduction evidence
+        run: python verification/run_cross_platform_campaign.py --output compatibility-observation.json
+      - name: Upload runner evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: compatibility-observation.json
+          if-no-files-found: error
+
+  frontend-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - run: npm run test:frontend
+
+  native-interpreter:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable-x86_64-pc-windows-msvc
+      - run: python -m pip install -r requirements-dev.txt -c constraints-tested.txt
+      - run: npm ci
+      - name: Compile and test native interpreter bridge
+        shell: pwsh
+        run: ./scripts/verify_native_interpreter.ps1
+
+  publish-matrix:
+    if: always()
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -r requirements.txt -c constraints-tested.txt
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: "*-py*"
+          path: observations
+          merge-multiple: true
+      - name: Merge without inferring missing evidence
+        run: >-
+          python verification/run_cross_platform_campaign.py
+          --merge observations/*.json
+          --report-json compatibility-matrix.json
+          --report-markdown COMPATIBILITY_MATRIX.md
+      - name: Upload compatibility matrix
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: compatibility-matrix
+          path: |
+            compatibility-matrix.json
+            COMPATIBILITY_MATRIX.md
+          if-no-files-found: error

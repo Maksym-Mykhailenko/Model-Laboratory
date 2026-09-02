@@ -1,0 +1,8 @@
+pydantic>=2.8,<3
+PyYAML>=6,<7
+ruamel.yaml>=0.18.16,<0.19
+pypdf>=5,<7
+sympy>=1.13,<2
+numpy>=2,<3
+scipy>=1.14,<2
+plotly>=5.24,<7

@@ -1,0 +1,192 @@
+{
+  "checks": [
+    {
+      "detail": "",
+      "name": "quadratic.yaml: bundle loads",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "quadratic.yaml: exact state round-trip",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "quadratic.yaml: canonical Model IR round-trip",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "quadratic.yaml: canonical experiment round-trip",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "quadratic.yaml: model source exact",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "quadratic.yaml: stored references reproduce",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "quadratic.yaml: reference class coverage",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "quadratic.yaml: manifest/model identity",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "surface.yaml: bundle loads",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "surface.yaml: exact state round-trip",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "surface.yaml: canonical Model IR round-trip",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "surface.yaml: canonical experiment round-trip",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "surface.yaml: model source exact",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "surface.yaml: stored references reproduce",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "surface.yaml: reference class coverage",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "surface.yaml: manifest/model identity",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "structured.yaml: bundle loads",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "structured.yaml: exact state round-trip",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "structured.yaml: canonical Model IR round-trip",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "structured.yaml: canonical experiment round-trip",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "structured.yaml: model source exact",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "structured.yaml: stored references reproduce",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "structured.yaml: reference class coverage",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "structured.yaml: manifest/model identity",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "issues.yaml: bundle loads",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "issues.yaml: exact state round-trip",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "issues.yaml: canonical Model IR round-trip",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "issues.yaml: canonical experiment round-trip",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "issues.yaml: model source exact",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "issues.yaml: stored references reproduce",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "issues.yaml: reference class coverage",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "issues.yaml: manifest/model identity",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "deterministic bundle bytes",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "manifest checksums and sizes",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "tampered member rejected",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "unexpected member rejected",
+      "passed": true
+    },
+    {
+      "detail": "",
+      "name": "reference storage policy complete",
+      "passed": true
+    }
+  ],
+  "passed": 37,
+  "title": "Model Laboratory Phase-A bundle verification",
+  "total": 37
+}
