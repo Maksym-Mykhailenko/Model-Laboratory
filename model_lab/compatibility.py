@@ -86,6 +86,7 @@ class CompatibilityTarget:
 DEFAULT_COMPATIBILITY_TARGETS = (
     CompatibilityTarget("Linux", "x86_64", "3.11"),
     CompatibilityTarget("Linux", "x86_64", "3.12"),
+    CompatibilityTarget("Linux", "x86_64", "3.13"),
     CompatibilityTarget("Windows", "x86_64", "3.12"),
     CompatibilityTarget("macOS", "arm64", "3.12"),
 )

@@ -42,5 +42,4 @@ The repository root README provides the short project introduction and developme
 
 - [Contributing](../CONTRIBUTING.md)
 - [Security](../SECURITY.md)
-- [Generative-AI development disclosure](../GENERATIVE_AI.md)
 - [Licensing](../LICENSING.md)

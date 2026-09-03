@@ -56,7 +56,7 @@ def test_campaign_keeps_missing_platforms_visible() -> None:
     )
 
     assert not report.campaign_complete
-    assert len(report.missing_targets) == 3
+    assert len(report.missing_targets) == len(DEFAULT_COMPATIBILITY_TARGETS) - 1
     assert "MISSING" in report.to_markdown()
 
 

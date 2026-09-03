@@ -129,9 +129,6 @@ Start with the [documentation index](docs/README.md). Principal references inclu
 Contribution guidance is in [CONTRIBUTING.md](CONTRIBUTING.md). Security reports follow
 [SECURITY.md](SECURITY.md). Citation metadata is provided in [CITATION.cff](CITATION.cff).
 
-The project's human-directed, AI-assisted development workflow is disclosed in
-[GENERATIVE_AI.md](GENERATIVE_AI.md).
-
 ## Licence
 
 Unless a file states otherwise, original Model Laboratory source code, tests, documentation,
