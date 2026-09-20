@@ -127,7 +127,7 @@ if ($CertificateThumbprint) {
 } elseif ($RequireSigned) {
     throw "-RequireSigned was supplied without -CertificateThumbprint."
 } else {
-    Write-Warning "Building unsigned installers. Configure a certificate thumbprint for public distribution."
+    Write-Warning "Building unsigned installers. Windows may display an Unknown publisher or SmartScreen warning."
 }
 
 & $TauriCli @BuildArguments

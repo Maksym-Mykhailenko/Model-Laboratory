@@ -108,7 +108,7 @@ powershell -ExecutionPolicy Bypass -File scripts/build_windows.ps1
 
 The build script verifies its prerequisites, packages the Python sidecar, generates an immutable
 build-identity manifest, builds NSIS and MSI installers, verifies their signatures when signing is
-required, and writes a SHA-256 checksum manifest. See the
+configured, and writes a SHA-256 checksum manifest. See the
 [Windows release guide](docs/windows-release.md) for local and GitHub release instructions.
 
 ## Documentation

@@ -26,7 +26,7 @@ def test_release_tag_mismatch_is_rejected() -> None:
         MODULE.verify("v9.9.9")
 
 
-def test_release_workflows_pin_actions_and_require_signed_tags() -> None:
+def test_release_workflows_pin_actions_and_support_optional_signing() -> None:
     workflows = list((ROOT / ".github" / "workflows").glob("*.yml"))
     uses = []
     for workflow in workflows:
@@ -39,8 +39,12 @@ def test_release_workflows_pin_actions_and_require_signed_tags() -> None:
     assert all(re.fullmatch(r"[^@\s]+@[0-9a-f]{40}(?:\s+#.*)?", value) for value in uses)
 
     release = (ROOT / ".github" / "workflows" / "windows-release.yml").read_text(encoding="utf-8")
-    assert 'throw "Tagged releases require WINDOWS_CERTIFICATE_BASE64."' in release
+    assert "WINDOWS_CERTIFICATE_BASE64 and WINDOWS_CERTIFICATE_PASSWORD must be configured together" in release
+    assert '"MODEL_LAB_INSTALLERS_SIGNED=false"' in release
+    assert 'if ($env:MODEL_LAB_CERTIFICATE_THUMBPRINT)' in release
     assert "$Parameters.RequireSigned = $true" in release
+    assert 'if ($env:IS_TAGGED_RELEASE -eq "true")' not in release
+    assert "are not Authenticode-signed" in release
     assert "RunInstallerSmoke = $true" in release
     assert "scripts/verify_release_version.py --expected-version" in release
     assert "Discover previous NSIS release for upgrade smoke test" in release

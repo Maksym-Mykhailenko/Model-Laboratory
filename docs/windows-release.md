@@ -14,7 +14,9 @@ Use a Windows machine with Python 3.11+, Node.js 20+, and the Rust MSVC toolchai
 ```
 
 The script writes installers and `SHA256SUMS.txt` under
-`src-tauri/target/release/bundle`. Unsigned output is suitable for internal testing only.
+`src-tauri/target/release/bundle`. Unsigned output is functional and may be distributed, but
+Windows can display **Unknown publisher** or SmartScreen warnings. Disclose that status and have
+users verify downloads against `SHA256SUMS.txt`.
 
 For Authenticode signing, import a code-signing certificate into the current user's certificate
 store and pass its thumbprint:
@@ -61,14 +63,15 @@ verification command is checked immediately; the release stops at the first fail
 The scientific sidecar is built before Cargo evaluates Tauri's external-binary configuration, so a
 clean checkout does not depend on an ignored, pre-existing executable.
 
-For public distribution, configure these repository secrets:
+Authenticode signing is optional. To enable it, configure both repository secrets:
 
 - `WINDOWS_CERTIFICATE_BASE64`: raw base64-encoded PFX bytes (without PEM headers), generated
   with `[Convert]::ToBase64String([IO.File]::ReadAllBytes("certificate.pfx"))`.
 - `WINDOWS_CERTIFICATE_PASSWORD`: password for that PFX.
 
-Tagged builds fail when either signing secret is absent. The workflow imports the certificate
-temporarily, signs both installers with SHA-256 and a timestamp, requires valid signatures, and
-runs clean-install smoke tests for NSIS and MSI before creating a draft. A manual run without
-secrets may still produce an explicitly unsigned internal-test artifact. Workflow actions are
-pinned to immutable commit SHAs; update those pins deliberately during dependency maintenance.
+When both secrets exist, the workflow imports the certificate temporarily, signs both installers
+with SHA-256 and a timestamp, and requires valid signatures. Supplying only one secret is treated
+as a configuration error. When neither secret exists, manual and tagged builds continue with
+unsigned installers and the generated draft release carries an explicit warning. Both paths run
+the same clean-install smoke tests for NSIS and MSI. Workflow actions are pinned to immutable
+commit SHAs; update those pins deliberately during dependency maintenance.

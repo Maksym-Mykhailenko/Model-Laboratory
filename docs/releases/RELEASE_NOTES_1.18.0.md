@@ -18,8 +18,8 @@ remaining application-side reliability gaps found during the 1.17 review.
 ## Windows release pipeline
 
 - NSIS and MSI installer builds run version/tag consistency checks before packaging.
-- Tagged releases require an imported Authenticode certificate and valid signatures; manual CI
-  runs may still create clearly unsigned internal-test artifacts.
+- Tagged releases support optional Authenticode signing. Without configured certificate secrets,
+  the same verified installers are released unsigned and the draft release displays a warning.
 - Installer smoke automation covers clean installation, executable launch, `.mlab`, `.yaml`, and
   `.yml` open-command registration, and uninstall for both package formats. It automatically
   discovers an earlier published NSIS build when available and exercises the upgrade path.

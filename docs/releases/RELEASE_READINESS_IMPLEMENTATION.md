@@ -18,9 +18,10 @@ This source package contains the release-critical work completed for version 1.1
 - First-run experience: a guided Define → Validate → Analyse introduction, reusable example
   gallery, eight safe-ID bundled examples, explicit blank/open paths, and no automatic computation
   before the user selects a starting action.
-- Windows distribution: verified NSIS and MSI builds, mandatory Authenticode signing for version
-  tags, SHA-256 manifests, clean-install/launch/association/uninstall smoke tests, pinned GitHub
-  Actions dependencies, strict tag/version consistency, and draft GitHub releases.
+- Windows distribution: verified NSIS and MSI builds, optional Authenticode signing, SHA-256
+  manifests, clean-install/launch/association/uninstall smoke tests, pinned GitHub Actions
+  dependencies, strict tag/version consistency, and draft GitHub releases that disclose unsigned
+  artifacts.
 
 ## Verification completed in the implementation environment
 
@@ -33,6 +34,6 @@ This source package contains the release-critical work completed for version 1.1
 
 The implementation environment did not include Rust or Windows, so native Rust compilation and
 installer production are delegated to the included Windows workflow. Before publishing, run that
-workflow with the Authenticode secrets configured, install both outputs on a clean Windows machine,
-exercise Save/close recovery and file associations, verify both signatures, and compare the
-downloaded files with `SHA256SUMS.txt`.
+workflow, install both outputs on a clean Windows machine, exercise Save/close recovery and file
+associations, verify signatures when signing is configured, and compare the downloaded files with
+`SHA256SUMS.txt`.
