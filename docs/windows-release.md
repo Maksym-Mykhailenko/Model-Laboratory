@@ -37,7 +37,10 @@ identity, individual clean-install/upgrade outcomes, timestamps, and any failure
 checks require both the installed executable and its registered open commands to be removed. The
 smoke harness normalizes quoted registry paths written by either installer and attempts a quiet
 cleanup if a later assertion fails, so a failed run still leaves actionable evidence without
-contaminating subsequent package checks.
+contaminating subsequent package checks. Executable discovery accounts for Tauri's distinct
+product and Cargo binary names: WiX installs the Cargo-named executable under the product-named
+directory. A constrained scan of the recorded install directory handles future binary renames,
+and a failure records every candidate path in the receipt.
 
 ## GitHub release build
 

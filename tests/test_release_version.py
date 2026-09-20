@@ -95,8 +95,12 @@ def test_windows_release_inputs_are_locked_and_smoke_paths_are_normalized() -> N
 
     smoke = (ROOT / "scripts" / "smoke_test_windows_installers.ps1").read_text(encoding="utf-8")
     assert "function ConvertFrom-RegistryPathValue" in smoke
+    assert "function Get-AppExecutableNames" in smoke
     assert "ConvertFrom-RegistryPathValue -Value $Record.InstallLocation" in smoke
-    assert 'Join-Path -Path $InstallLocation -ChildPath "Model Laboratory.exe"' in smoke
+    assert '$ManifestPath = Join-Path $ProjectRoot "src-tauri\\Cargo.toml"' in smoke
+    assert 'foreach ($FallbackName in @("Model Laboratory.exe", "model-laboratory.exe"))' in smoke
+    assert 'Get-ChildItem -LiteralPath $InstallLocation -Filter "*.exe" -File' in smoke
+    assert "candidates checked: $CandidateSummary" in smoke
     assert "Remove-InstalledApplicationBestEffort" in smoke
 
     workflow = (ROOT / ".github" / "workflows" / "cross-platform-verification.yml").read_text(

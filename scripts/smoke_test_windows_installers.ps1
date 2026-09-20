@@ -110,18 +110,97 @@ function Wait-ForInstall([bool]$Present) {
     throw "Model Laboratory remained in the uninstall registry after uninstall."
 }
 
-function Resolve-AppExecutable($Record) {
-    $Candidates = @()
-    $DisplayIcon = ConvertFrom-RegistryPathValue -Value $Record.DisplayIcon -RemoveIconIndex
-    if ($DisplayIcon) { $Candidates += $DisplayIcon }
-    $InstallLocation = ConvertFrom-RegistryPathValue -Value $Record.InstallLocation
-    if ($InstallLocation) {
-        $Candidates += Join-Path -Path $InstallLocation -ChildPath "Model Laboratory.exe"
+function Get-AppExecutableNames {
+    $Names = [Collections.Generic.List[string]]::new()
+
+    $ConfigPath = Join-Path $ProjectRoot "src-tauri\tauri.conf.json"
+    if (Test-Path $ConfigPath -PathType Leaf) {
+        $Config = Get-Content $ConfigPath -Raw | ConvertFrom-Json
+        foreach ($ConfiguredName in @($Config.mainBinaryName, $Config.productName)) {
+            if (-not $ConfiguredName) { continue }
+            $ExecutableName = [string]$ConfiguredName
+            if (-not $ExecutableName.EndsWith(".exe", [StringComparison]::OrdinalIgnoreCase)) {
+                $ExecutableName += ".exe"
+            }
+            if (-not $Names.Contains($ExecutableName)) { $Names.Add($ExecutableName) | Out-Null }
+        }
     }
-    $Candidates += Join-Path $env:LOCALAPPDATA "Model Laboratory\Model Laboratory.exe"
-    $Candidates += Join-Path $env:ProgramFiles "Model Laboratory\Model Laboratory.exe"
+
+    # Tauri's default WiX template keeps the Cargo binary filename even when productName differs.
+    $ManifestPath = Join-Path $ProjectRoot "src-tauri\Cargo.toml"
+    if (Test-Path $ManifestPath -PathType Leaf) {
+        $InPackageSection = $false
+        foreach ($Line in Get-Content $ManifestPath) {
+            if ($Line -match '^\s*\[([^]]+)\]\s*$') {
+                $InPackageSection = $Matches[1] -eq "package"
+                continue
+            }
+            if ($InPackageSection -and $Line -match '^\s*name\s*=\s*"([^"]+)"') {
+                $ExecutableName = "$($Matches[1]).exe"
+                if (-not $Names.Contains($ExecutableName)) { $Names.Add($ExecutableName) | Out-Null }
+                break
+            }
+        }
+    }
+
+    foreach ($FallbackName in @("Model Laboratory.exe", "model-laboratory.exe")) {
+        if (-not $Names.Contains($FallbackName)) { $Names.Add($FallbackName) | Out-Null }
+    }
+    return $Names.ToArray()
+}
+
+function Add-ExecutableCandidate {
+    param(
+        [Collections.Generic.List[string]]$Candidates,
+        [AllowNull()][string]$Path
+    )
+    if ($Path -and -not $Candidates.Contains($Path)) { $Candidates.Add($Path) | Out-Null }
+}
+
+function Resolve-AppExecutable($Record) {
+    $Candidates = [Collections.Generic.List[string]]::new()
+    $ExecutableNames = @(Get-AppExecutableNames)
+    $DisplayIcon = ConvertFrom-RegistryPathValue -Value $Record.DisplayIcon -RemoveIconIndex
+    if ($DisplayIcon -and [IO.Path]::GetExtension($DisplayIcon) -eq ".exe") {
+        Add-ExecutableCandidate -Candidates $Candidates -Path $DisplayIcon
+    }
+
+    $InstallLocation = ConvertFrom-RegistryPathValue -Value $Record.InstallLocation
+    $InstallRoots = [Collections.Generic.List[string]]::new()
+    if ($InstallLocation) { $InstallRoots.Add($InstallLocation) | Out-Null }
+    if ($env:LOCALAPPDATA) {
+        $InstallRoots.Add((Join-Path $env:LOCALAPPDATA "Model Laboratory")) | Out-Null
+        $InstallRoots.Add((Join-Path $env:LOCALAPPDATA "Programs\Model Laboratory")) | Out-Null
+    }
+    foreach ($ProgramFilesRoot in @($env:ProgramW6432, $env:ProgramFiles, ${env:ProgramFiles(x86)})) {
+        if ($ProgramFilesRoot) {
+            $CandidateRoot = Join-Path $ProgramFilesRoot "Model Laboratory"
+            if (-not $InstallRoots.Contains($CandidateRoot)) { $InstallRoots.Add($CandidateRoot) | Out-Null }
+        }
+    }
+
+    foreach ($InstallRoot in $InstallRoots) {
+        foreach ($ExecutableName in $ExecutableNames) {
+            Add-ExecutableCandidate -Candidates $Candidates -Path (
+                Join-Path -Path $InstallRoot -ChildPath $ExecutableName
+            )
+        }
+    }
+
+    # If the binary is renamed later, constrain fallback discovery to the installer's own directory.
+    if ($InstallLocation -and (Test-Path $InstallLocation -PathType Container)) {
+        Get-ChildItem -LiteralPath $InstallLocation -Filter "*.exe" -File |
+            Where-Object { $_.Name -notmatch '^(?i:unins|uninstall|model-lab-engine)' } |
+            ForEach-Object {
+                Add-ExecutableCandidate -Candidates $Candidates -Path $_.FullName
+            }
+    }
+
     $Executable = $Candidates | Where-Object { $_ -and (Test-Path $_ -PathType Leaf) } | Select-Object -First 1
-    if (-not $Executable) { throw "Could not locate the installed Model Laboratory executable." }
+    if (-not $Executable) {
+        $CandidateSummary = if ($Candidates.Count) { $Candidates -join "; " } else { "<none>" }
+        throw "Could not locate the installed Model Laboratory executable. InstallLocation='$InstallLocation'; DisplayIcon='$DisplayIcon'; candidates checked: $CandidateSummary"
+    }
     return $Executable
 }
 
