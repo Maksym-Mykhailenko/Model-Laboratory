@@ -31,7 +31,9 @@ remaining application-side reliability gaps found during the 1.17 review.
   executable discovery. Clean builds create the ignored scientific sidecar before Cargo validates
   Tauri's external binary, and failed smoke tests attempt package cleanup before publishing evidence.
 - MSI smoke discovery now resolves Tauri's Cargo-named `model-laboratory.exe` inside the
-  product-named installation directory and records all attempted paths if discovery fails.
+  product-named installation directory and records all attempted paths if discovery fails. The
+  association gate recognizes WiX's advertised Windows Installer descriptors as well as literal
+  NSIS open commands, while still checking that uninstall removes either representation.
 - The compatibility campaign now treats Linux CPython 3.13 as an expected target, with a regression
   check that keeps the report contract synchronized with the GitHub Actions runner matrix.
 - GitHub Actions dependencies are pinned to immutable commits, and draft releases are created with

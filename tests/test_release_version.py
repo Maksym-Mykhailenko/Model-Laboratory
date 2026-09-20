@@ -101,6 +101,14 @@ def test_windows_release_inputs_are_locked_and_smoke_paths_are_normalized() -> N
     assert 'foreach ($FallbackName in @("Model Laboratory.exe", "model-laboratory.exe"))' in smoke
     assert 'Get-ChildItem -LiteralPath $InstallLocation -Filter "*.exe" -File' in smoke
     assert "candidates checked: $CandidateSummary" in smoke
+    assert "function Get-ShellAssociationExecutable" in smoke
+    assert 'DllImport("Shlwapi.dll"' in smoke
+    assert "ASSOCSTR_EXECUTABLE" in smoke
+    assert "function Test-EquivalentExecutablePath" in smoke
+    assert 'Get-ShellAssociationExecutable $ProgId' in smoke
+    assert '$ExpectedProgId = "Model Laboratory$Extension"' in smoke
+    assert '$AdvertisedDescriptor = $CommandKey.GetValue("command")' in smoke
+    assert "advertised descriptor=$AdvertisedSummary" in smoke
     assert "Remove-InstalledApplicationBestEffort" in smoke
 
     workflow = (ROOT / ".github" / "workflows" / "cross-platform-verification.yml").read_text(

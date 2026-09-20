@@ -85,6 +85,73 @@ function ConvertFrom-RegistryPathValue {
     return $Text.Trim('"')
 }
 
+function Get-ShellAssociationExecutable([string]$Association) {
+    try {
+        if (-not ("ModelLaboratory.ShellAssociation" -as [type])) {
+            Add-Type -TypeDefinition @'
+using System;
+using System.Runtime.InteropServices;
+using System.Text;
+
+namespace ModelLaboratory
+{
+    public static class ShellAssociation
+    {
+        private const uint ASSOCSTR_EXECUTABLE = 2;
+
+        [DllImport("Shlwapi.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
+        private static extern int AssocQueryStringW(
+            uint flags,
+            uint str,
+            string association,
+            string extra,
+            StringBuilder output,
+            ref uint outputLength);
+
+        public static string GetExecutable(string association)
+        {
+            uint outputLength = 0;
+            AssocQueryStringW(0, ASSOCSTR_EXECUTABLE, association, "open", null, ref outputLength);
+            if (outputLength == 0)
+            {
+                return null;
+            }
+
+            var output = new StringBuilder(checked((int)outputLength));
+            var result = AssocQueryStringW(
+                0,
+                ASSOCSTR_EXECUTABLE,
+                association,
+                "open",
+                output,
+                ref outputLength);
+            return result == 0 ? output.ToString() : null;
+        }
+    }
+}
+'@
+        }
+        return [ModelLaboratory.ShellAssociation]::GetExecutable($Association)
+    } catch {
+        return $null
+    }
+}
+
+function Test-EquivalentExecutablePath {
+    param(
+        [AllowNull()][string]$Expected,
+        [AllowNull()][string]$Actual
+    )
+    if (-not $Expected -or -not $Actual) { return $false }
+    try {
+        $ExpectedPath = [IO.Path]::GetFullPath($Expected)
+        $ActualPath = [IO.Path]::GetFullPath($Actual)
+        return $ExpectedPath.Equals($ActualPath, [StringComparison]::OrdinalIgnoreCase)
+    } catch {
+        return $false
+    }
+}
+
 function Get-ModelLaboratoryInstall {
     $Roots = @(
         "HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*",
@@ -212,23 +279,48 @@ function Assert-FileAssociation([string]$Extension, [string]$Executable) {
     $ExtensionKey = Get-Item $ExtensionKeyPath
     $ProgIds = [Collections.Generic.List[string]]::new()
     $DefaultProgId = [string]$ExtensionKey.GetValue("")
-    if ($DefaultProgId) { $ProgIds.Add($DefaultProgId) }
+    if ($DefaultProgId) { $ProgIds.Add($DefaultProgId) | Out-Null }
     $OpenWithPath = Join-Path $ExtensionKeyPath "OpenWithProgids"
     if (Test-Path $OpenWithPath) {
         (Get-Item $OpenWithPath).GetValueNames() | ForEach-Object {
-            if ($_ -and -not $ProgIds.Contains($_)) { $ProgIds.Add($_) }
+            if ($_ -and -not $ProgIds.Contains($_)) { $ProgIds.Add($_) | Out-Null }
         }
     }
     $ExecutableName = [IO.Path]::GetFileName($Executable)
+    $ExpectedProgId = "Model Laboratory$Extension"
+    $Diagnostics = [Collections.Generic.List[string]]::new()
     foreach ($ProgId in $ProgIds) {
         $CommandPath = "Registry::HKEY_CLASSES_ROOT\$ProgId\shell\open\command"
-        if (-not (Test-Path $CommandPath)) { continue }
-        $Command = [string](Get-Item $CommandPath).GetValue("")
+        if (-not (Test-Path $CommandPath)) {
+            $Diagnostics.Add("$ProgId (open command key missing)") | Out-Null
+            continue
+        }
+        $CommandKey = Get-Item $CommandPath
+        $Command = [string]$CommandKey.GetValue("")
         if ($Command -and $Command.IndexOf($ExecutableName, [StringComparison]::OrdinalIgnoreCase) -ge 0) {
             return $ProgId
         }
+
+        # WiX emits advertised MSI ProgId/Extension/Verb rows. Windows Installer represents
+        # their command with a Darwin descriptor instead of a literal executable command.
+        $ResolvedExecutable = Get-ShellAssociationExecutable $ProgId
+        if (Test-EquivalentExecutablePath -Expected $Executable -Actual $ResolvedExecutable) {
+            return $ProgId
+        }
+        $AdvertisedDescriptor = $CommandKey.GetValue("command")
+        $IsExpectedProgId = $ProgId.Equals($ExpectedProgId, [StringComparison]::OrdinalIgnoreCase)
+        if ($IsExpectedProgId -and $null -ne $AdvertisedDescriptor) {
+            return $ProgId
+        }
+
+        $ResolvedSummary = if ($ResolvedExecutable) { $ResolvedExecutable } else { "<unresolved>" }
+        $AdvertisedSummary = if ($null -ne $AdvertisedDescriptor) { "present" } else { "absent" }
+        $Diagnostics.Add(
+            "$ProgId (default='$Command'; shell='$ResolvedSummary'; advertised descriptor=$AdvertisedSummary)"
+        ) | Out-Null
     }
-    throw "$Extension is not registered with an open command for $ExecutableName."
+    $DiagnosticSummary = if ($Diagnostics.Count) { $Diagnostics -join "; " } else { "<no ProgIDs>" }
+    throw "$Extension is not registered to open with $ExecutableName. Checked: $DiagnosticSummary"
 }
 
 function Assert-InstalledApplication([string]$PackageKind) {
@@ -310,8 +402,13 @@ function Assert-UninstalledApplication($InstallInfo) {
     foreach ($ProgId in $InstallInfo.associations) {
         $CommandPath = "Registry::HKEY_CLASSES_ROOT\$ProgId\shell\open\command"
         if (-not (Test-Path $CommandPath)) { continue }
-        $Command = [string](Get-Item $CommandPath).GetValue("")
-        if ($Command -and $Command.IndexOf([IO.Path]::GetFileName($InstallInfo.executable), [StringComparison]::OrdinalIgnoreCase) -ge 0) {
+        $CommandKey = Get-Item $CommandPath
+        $Command = [string]$CommandKey.GetValue("")
+        $AdvertisedDescriptor = $CommandKey.GetValue("command")
+        if (
+            ($Command -and $Command.IndexOf([IO.Path]::GetFileName($InstallInfo.executable), [StringComparison]::OrdinalIgnoreCase) -ge 0) -or
+            $null -ne $AdvertisedDescriptor
+        ) {
             throw "The $ProgId open command remained registered after uninstall."
         }
     }

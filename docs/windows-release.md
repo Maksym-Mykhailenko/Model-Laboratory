@@ -40,7 +40,11 @@ cleanup if a later assertion fails, so a failed run still leaves actionable evid
 contaminating subsequent package checks. Executable discovery accounts for Tauri's distinct
 product and Cargo binary names: WiX installs the Cargo-named executable under the product-named
 directory. A constrained scan of the recorded install directory handles future binary renames,
-and a failure records every candidate path in the receipt.
+and a failure records every candidate path in the receipt. Association validation supports both
+NSIS's literal open commands and WiX's advertised MSI associations. For advertised associations,
+the harness asks the Windows Shell to resolve the registered ProgID and also recognizes the
+product-owned Windows Installer command descriptor; uninstall validation rejects either form if
+it remains registered.
 
 ## GitHub release build
 
