@@ -44,7 +44,8 @@ and a failure records every candidate path in the receipt. Association validatio
 NSIS's literal open commands and WiX's advertised MSI associations. For advertised associations,
 the harness asks the Windows Shell to resolve the registered ProgID and also recognizes the
 product-owned Windows Installer command descriptor; uninstall validation rejects either form if
-it remains registered.
+it remains registered. The deterministic product ProgID is checked directly even when Windows
+retains an empty extension key that does not expose a default or `OpenWithProgids` entry.
 
 ## GitHub release build
 

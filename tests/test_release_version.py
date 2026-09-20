@@ -107,7 +107,9 @@ def test_windows_release_inputs_are_locked_and_smoke_paths_are_normalized() -> N
     assert "function Test-EquivalentExecutablePath" in smoke
     assert 'Get-ShellAssociationExecutable $ProgId' in smoke
     assert '$ExpectedProgId = "Model Laboratory$Extension"' in smoke
+    assert '$ProgIds.Add($ExpectedProgId) | Out-Null' in smoke
     assert '$AdvertisedDescriptor = $CommandKey.GetValue("command")' in smoke
+    assert 'Extension default=\'$DefaultSummary\'' in smoke
     assert "advertised descriptor=$AdvertisedSummary" in smoke
     assert "Remove-InstalledApplicationBestEffort" in smoke
 

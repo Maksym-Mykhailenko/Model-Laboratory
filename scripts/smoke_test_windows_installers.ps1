@@ -286,13 +286,22 @@ function Assert-FileAssociation([string]$Extension, [string]$Executable) {
             if ($_ -and -not $ProgIds.Contains($_)) { $ProgIds.Add($_) | Out-Null }
         }
     }
-    $ExecutableName = [IO.Path]::GetFileName($Executable)
     $ExpectedProgId = "Model Laboratory$Extension"
+    # Windows can retain an empty extension key after another package is removed. WiX still owns
+    # a deterministic advertised ProgID, so validate that key directly even when the extension's
+    # default value and OpenWithProgids do not enumerate it.
+    if (-not $ProgIds.Contains($ExpectedProgId)) { $ProgIds.Add($ExpectedProgId) | Out-Null }
+    $ExecutableName = [IO.Path]::GetFileName($Executable)
     $Diagnostics = [Collections.Generic.List[string]]::new()
     foreach ($ProgId in $ProgIds) {
+        $ResolvedExecutable = Get-ShellAssociationExecutable $ProgId
+        if (Test-EquivalentExecutablePath -Expected $Executable -Actual $ResolvedExecutable) {
+            return $ProgId
+        }
+        $ResolvedSummary = if ($ResolvedExecutable) { $ResolvedExecutable } else { "<unresolved>" }
         $CommandPath = "Registry::HKEY_CLASSES_ROOT\$ProgId\shell\open\command"
         if (-not (Test-Path $CommandPath)) {
-            $Diagnostics.Add("$ProgId (open command key missing)") | Out-Null
+            $Diagnostics.Add("$ProgId (open command key missing; shell='$ResolvedSummary')") | Out-Null
             continue
         }
         $CommandKey = Get-Item $CommandPath
@@ -303,24 +312,20 @@ function Assert-FileAssociation([string]$Extension, [string]$Executable) {
 
         # WiX emits advertised MSI ProgId/Extension/Verb rows. Windows Installer represents
         # their command with a Darwin descriptor instead of a literal executable command.
-        $ResolvedExecutable = Get-ShellAssociationExecutable $ProgId
-        if (Test-EquivalentExecutablePath -Expected $Executable -Actual $ResolvedExecutable) {
-            return $ProgId
-        }
         $AdvertisedDescriptor = $CommandKey.GetValue("command")
         $IsExpectedProgId = $ProgId.Equals($ExpectedProgId, [StringComparison]::OrdinalIgnoreCase)
         if ($IsExpectedProgId -and $null -ne $AdvertisedDescriptor) {
             return $ProgId
         }
 
-        $ResolvedSummary = if ($ResolvedExecutable) { $ResolvedExecutable } else { "<unresolved>" }
         $AdvertisedSummary = if ($null -ne $AdvertisedDescriptor) { "present" } else { "absent" }
         $Diagnostics.Add(
             "$ProgId (default='$Command'; shell='$ResolvedSummary'; advertised descriptor=$AdvertisedSummary)"
         ) | Out-Null
     }
     $DiagnosticSummary = if ($Diagnostics.Count) { $Diagnostics -join "; " } else { "<no ProgIDs>" }
-    throw "$Extension is not registered to open with $ExecutableName. Checked: $DiagnosticSummary"
+    $DefaultSummary = if ($DefaultProgId) { $DefaultProgId } else { "<empty>" }
+    throw "$Extension is not registered to open with $ExecutableName. Extension default='$DefaultSummary'; checked: $DiagnosticSummary"
 }
 
 function Assert-InstalledApplication([string]$PackageKind) {
