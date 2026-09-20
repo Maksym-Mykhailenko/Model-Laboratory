@@ -1,6 +1,6 @@
 # Untouched-Qwen interpreter baseline
 
-Model Laboratory 1.17.0 retains the corrected Stage-5 evaluation contract for the local
+Model Laboratory 1.18.0 retains the corrected Stage-5 evaluation contract for the local
 authoring interpreter. Its purpose is to measure the **untouched, frozen** Qwen artifact before
 any LoRA/QLoRA training begins. The held-out benchmark, scorer, prompt assets, compiler
 identity, and decoding profile are versioned so the same campaign can later be rerun against

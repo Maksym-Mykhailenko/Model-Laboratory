@@ -1,6 +1,7 @@
 import {
   base64ToText,
   defaultExperimentName,
+  documentDisplayTitle,
   escapeHtml,
   metricHtml,
   reportTone,
@@ -27,6 +28,7 @@ const elements = {
   statusContext: byId("status-context"),
   engineDot: byId("engine-dot"),
   engineLabel: byId("engine-label"),
+  openPendingDocumentButton: byId("open-pending-document-button"),
   busyLayer: byId("busy-layer"),
   busyTitle: byId("busy-title"),
   busyDetail: byId("busy-detail"),
@@ -128,7 +130,21 @@ const state = {
   interpreterClarificationHistory: [],
   pendingInterpreterQuestion: null,
   interpreterAttachments: [],
+  examples: [],
+  dirty: false,
+  closeApproved: false,
 };
+
+function renderDocumentTitle() {
+  const title = documentDisplayTitle(state.sourceName, state.dirty);
+  elements.documentTitle.textContent = title;
+  document.title = `${title} — Model Laboratory`;
+}
+
+function setDirty(dirty) {
+  state.dirty = Boolean(dirty);
+  renderDocumentTitle();
+}
 
 function setStatus(message, context = null) {
   elements.statusMessage.textContent = message;
@@ -186,9 +202,13 @@ async function native(command, payload = {}) {
 
 async function engine(action, payload = {}) {
   state.requestCounter += 1;
-  const request = JSON.stringify({ id: state.requestCounter, action, payload });
+  const requestId = state.requestCounter;
+  const request = JSON.stringify({ id: requestId, action, payload });
   const raw = await native("engine_request", { requestJson: request });
   const response = JSON.parse(raw);
+  if (response.id !== requestId) {
+    throw new Error("The scientific engine returned a response for the wrong request.");
+  }
   if (!response.ok) throw new Error(response.error?.message || "The scientific engine rejected the request.");
   return response.result;
 }
@@ -449,7 +469,7 @@ function invalidateModel() {
   renderCommittedBoundary();
 }
 
-function setSource(source, name = "Untitled model", path = null) {
+function setSource(source, name = "Untitled model", path = null, { dirty = false } = {}) {
   clearInterpreterProposal();
   clearInterpreterClarification(true);
   clearInterpreterLineage();
@@ -457,7 +477,7 @@ function setSource(source, name = "Untitled model", path = null) {
   state.sourceName = name;
   state.sourcePath = path;
   elements.source.value = source;
-  elements.documentTitle.textContent = name;
+  setDirty(dirty);
   updateSourcePosition();
   invalidateModel();
   setChip(elements.validationChip, "Not validated", "neutral");
@@ -1160,7 +1180,7 @@ async function inspectExperiment(document) {
   state.openedDocument = document;
   state.experimentInspection = inspection;
   state.reproduction = null;
-  setSource(inspection.model_source, document.name, document.path);
+  setSource(inspection.model_source, defaultExperimentName(inspection.model.name, ".yaml"), null);
   state.interpreterAcceptances = inspection.interpreter_acceptances || [];
   applyModel(inspection.model, {
     initialValues: inspection.parameter_values,
@@ -1399,6 +1419,7 @@ async function saveCommittedReceipt() {
 }
 
 async function openCommittedReceipt() {
+  if (!(await confirmDocumentReplacement("opening a committed state"))) return;
   const document = await native("open_document", { kind: "commit" });
   if (!document) return;
   const commitJson = base64ToText(document.dataBase64);
@@ -1411,7 +1432,7 @@ async function openCommittedReceipt() {
   state.experimentInspection = null;
   state.reproduction = null;
   elements.openedExperiment.classList.add("hidden");
-  setSource(inspected.model_source, document.name, document.path);
+  setSource(inspected.model_source, defaultExperimentName(inspected.model.name, ".yaml"), null);
   state.interpreterAcceptances = inspected.interpreter_acceptances || [];
   applyModel(inspected.model, {
     initialValues: inspected.parameter_values,
@@ -1451,13 +1472,14 @@ async function finalizeExperiment() {
   }
 }
 
-async function saveEncoded(kind, suggestedName, dataBase64) {
-  const path = await native("save_document", { kind, suggestedName, dataBase64 });
-  if (path) setStatus(`Saved ${path}`);
-  return path;
+async function saveEncoded(kind, suggestedName, dataBase64, path = null) {
+  const savedPath = await native("save_document", { kind, suggestedName, dataBase64, path });
+  if (savedPath) setStatus(`Saved ${savedPath}`);
+  return savedPath;
 }
 
 async function openModel() {
+  if (!(await confirmDocumentReplacement("opening another model"))) return;
   const document = await native("open_document", { kind: "model" });
   if (!document) return;
   const source = base64ToText(document.dataBase64);
@@ -1469,15 +1491,46 @@ async function openModel() {
 }
 
 async function openExperiment() {
+  if (!(await confirmDocumentReplacement("opening an experiment"))) return;
   const document = await native("open_document", { kind: "experiment" });
   if (!document) return;
   await inspectExperiment({ name: document.name, path: document.path, dataBase64: document.dataBase64 });
 }
 
-async function saveModel() {
+async function saveModel({ saveAs = false } = {}) {
   const name = state.sourceName.match(/\.ya?ml$/i) ? state.sourceName : defaultExperimentName(state.model?.name || "model", ".yaml");
-  const path = await saveEncoded("model", name, textToBase64(elements.source.value));
-  if (path) toast("Model source saved.");
+  const path = await saveEncoded(
+    "model",
+    name,
+    textToBase64(elements.source.value),
+    saveAs ? null : state.sourcePath,
+  );
+  if (path) {
+    state.sourcePath = path;
+    state.sourceName = path.split(/[\\/]/).pop() || name;
+    state.source = elements.source.value;
+    setDirty(false);
+    toast("Model source saved safely.");
+  }
+  return path;
+}
+
+function requestUnsavedDecision(action) {
+  const dialog = byId("unsaved-dialog");
+  byId("unsaved-message").textContent = `“${state.sourceName}” has changes that have not been saved. Save before ${action}?`;
+  dialog.returnValue = "cancel";
+  dialog.showModal();
+  return new Promise((resolve) => {
+    dialog.addEventListener("close", () => resolve(dialog.returnValue || "cancel"), { once: true });
+  });
+}
+
+async function confirmDocumentReplacement(action) {
+  if (!state.dirty) return true;
+  const decision = await requestUnsavedDecision(action);
+  if (decision === "discard") return true;
+  if (decision === "save") return Boolean(await saveModel());
+  return false;
 }
 
 function formatByteSize(value) {
@@ -1827,7 +1880,7 @@ async function acceptInterpreterProposal() {
   state.openedDocument = null;
   state.experimentInspection = null;
   elements.openedExperiment.classList.add("hidden");
-  setSource(result.source, sourceName, null);
+  setSource(result.source, sourceName, state.sourcePath, { dirty: true });
   state.interpreterAcceptances = lineage;
   applyModel(result.model, {
     initialValues: retainedParameterValues,
@@ -1845,14 +1898,53 @@ async function cancelInterpreterOperation() {
   if (result.cancelled) setStatus("Cancelling the local interpreter operation…");
 }
 
-async function loadExample() {
-  const result = await withBusy("Loading example", "Opening the bundled validated quadratic model…", () => engine("example_model"));
+function startBlankModel() {
   state.openedDocument = null;
   state.experimentInspection = null;
   elements.openedExperiment.classList.add("hidden");
-  setSource(result.source, "quadratic.yaml");
+  setSource("name: Untitled model\n\nvariables:\n  x:\n    domain: [-10, 10]\n\nfunctions:\n  y: x**2\n", "Untitled model");
+  setStatus("Blank model ready. Edit the YAML, then validate it before analysis.");
+}
+
+function renderExampleGallery(examples) {
+  const gallery = byId("example-gallery");
+  gallery.innerHTML = examples.map((example) => `
+    <article class="example-card">
+      <div>
+        <span class="category">${escapeHtml(example.category)}</span>
+        <h4>${escapeHtml(example.title)}</h4>
+        <p>${escapeHtml(example.description)}</p>
+      </div>
+      <button class="button secondary" type="button" data-example-id="${escapeHtml(example.id)}">Open and run</button>
+    </article>
+  `).join("");
+}
+
+async function showExampleGallery() {
+  const dialog = byId("welcome-dialog");
+  if (!state.examples.length) {
+    const result = await engine("example_catalogue");
+    state.examples = result.examples;
+    renderExampleGallery(state.examples);
+  }
+  if (!dialog.open) dialog.showModal();
+}
+
+async function loadExample(exampleId = "quadratic") {
+  const welcome = byId("welcome-dialog");
+  const reopenWelcome = welcome.open;
+  if (reopenWelcome) welcome.close();
+  if (!(await confirmDocumentReplacement("loading an example"))) {
+    if (reopenWelcome) welcome.showModal();
+    return;
+  }
+  const result = await withBusy("Loading example", "Opening and validating the selected bundled model…", () => engine("example_model", { example_id: exampleId }));
+  state.openedDocument = null;
+  state.experimentInspection = null;
+  elements.openedExperiment.classList.add("hidden");
+  setSource(result.source, result.filename);
   applyModel(result.model);
-  await runAnalysis();
+  await runPrimaryAnalysis();
 }
 
 async function initialize() {
@@ -1869,9 +1961,19 @@ async function initialize() {
     elements.engineLabel.textContent = `Scientific engine ${health.version}`;
     elements.statusContext.textContent = `Desktop v${health.version}`;
     refreshInterpreterStatus().catch(() => {});
-    const opened = await drainPendingDocuments();
+    let opened = false;
+    try {
+      opened = await drainPendingDocuments();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      setStatus(message);
+      toast(message, "error");
+    }
     if (!opened) {
-      await loadExample();
+      startBlankModel();
+      let onboarded = false;
+      try { onboarded = window.localStorage.getItem("model-laboratory.onboarding.v1") === "complete"; } catch (_) { /* storage may be disabled */ }
+      if (!onboarded) await showExampleGallery();
     }
   } catch (error) {
     elements.engineDot.classList.add("error");
@@ -1880,6 +1982,7 @@ async function initialize() {
 }
 
 async function handleAssociatedDocument(document) {
+  if (!(await confirmDocumentReplacement(`opening “${document.name}”`))) return false;
   if (/\.mlab$|\.json$/i.test(document.name)) {
     await inspectExperiment({ name: document.name, path: document.path, dataBase64: document.dataBase64 });
   } else {
@@ -1887,26 +1990,65 @@ async function handleAssociatedDocument(document) {
     setSource(source, document.name, document.path);
     await withBusy("Validating model", "Opening the associated model source…", () => validateCurrentModel());
   }
+  return true;
 }
 
 async function drainPendingDocuments() {
   let opened = false;
   while (true) {
-    const document = await native("startup_document");
-    if (!document) return opened;
+    let document;
+    try {
+      document = await native("startup_document");
+    } catch (error) {
+      elements.openPendingDocumentButton.classList.remove("hidden");
+      throw error;
+    }
+    if (!document) {
+      elements.openPendingDocumentButton.classList.add("hidden");
+      return opened;
+    }
+    if (!(await handleAssociatedDocument(document))) {
+      elements.openPendingDocumentButton.classList.remove("hidden");
+      setStatus("An externally opened file is waiting. Your current document was not replaced.");
+      return opened;
+    }
+    const acknowledged = await native("ack_startup_document", { path: document.path });
+    if (!acknowledged) {
+      throw new Error("The pending file changed before it could be acknowledged. Try opening it again.");
+    }
     opened = true;
-    await handleAssociatedDocument(document);
   }
 }
 
 async function boot() {
   if (window.__TAURI__?.event?.listen) {
     await window.__TAURI__.event.listen("external-document", () => {
-      drainPendingDocuments().catch(() => {});
+      drainPendingDocuments().catch((error) => {
+        const message = error instanceof Error ? error.message : String(error);
+        setStatus(message);
+        toast(message, "error");
+      });
+    });
+  }
+  const appWindow = window.__TAURI__?.window?.getCurrentWindow?.();
+  if (appWindow?.onCloseRequested) {
+    await appWindow.onCloseRequested(async (event) => {
+      if (state.closeApproved || !state.dirty) return;
+      event.preventDefault();
+      if (await confirmDocumentReplacement("closing Model Laboratory")) {
+        state.closeApproved = true;
+        await appWindow.close();
+      }
     });
   }
   await initialize();
 }
+
+window.addEventListener("beforeunload", (event) => {
+  if (!state.dirty || state.closeApproved) return;
+  event.preventDefault();
+  event.returnValue = "";
+});
 
 document.querySelectorAll(".tab").forEach((tab) => tab.addEventListener("click", () => activateTab(tab.dataset.tab)));
 
@@ -1915,6 +2057,7 @@ elements.source.addEventListener("input", () => {
   clearInterpreterClarification(true);
   clearInterpreterLineage();
   state.source = elements.source.value;
+  setDirty(true);
   state.openedDocument = null;
   state.experimentInspection = null;
   elements.openedExperiment.classList.add("hidden");
@@ -1941,16 +2084,47 @@ byId("clear-capability-plan-button").addEventListener("click", () => {
 byId("run-sweep-button").addEventListener("click", (event) => { event.preventDefault(); runSweep().catch(() => {}); });
 elements.sweepForm.addEventListener("submit", (event) => { event.preventDefault(); runSweep().catch(() => {}); });
 byId("new-model-button").addEventListener("click", () => {
-  state.openedDocument = null;
-  state.experimentInspection = null;
-  elements.openedExperiment.classList.add("hidden");
-  setSource("name: Untitled model\n\nvariables:\n  x:\n    domain: [-10, 10]\n\nfunctions:\n  y: x**2\n", "Untitled model");
-  setStatus("New model source created.");
+  (async () => {
+    if (!(await confirmDocumentReplacement("creating a new model"))) return;
+    startBlankModel();
+  })().catch(() => {});
 });
 byId("open-model-button").addEventListener("click", () => openModel().catch(() => {}));
 byId("open-experiment-button").addEventListener("click", () => openExperiment().catch(() => {}));
+elements.openPendingDocumentButton.addEventListener("click", () => {
+  drainPendingDocuments().catch((error) => {
+    const message = error instanceof Error ? error.message : String(error);
+    setStatus(message);
+    toast(message, "error");
+  });
+});
 byId("save-model-button").addEventListener("click", () => saveModel().catch(() => {}));
-byId("load-example-button").addEventListener("click", () => loadExample().catch(() => {}));
+byId("save-model-as-button").addEventListener("click", () => saveModel({ saveAs: true }).catch(() => {}));
+byId("load-example-button").addEventListener("click", () => showExampleGallery().catch(() => {}));
+byId("examples-button").addEventListener("click", () => showExampleGallery().catch(() => {}));
+byId("welcome-close").addEventListener("click", () => byId("welcome-dialog").close());
+byId("welcome-blank").addEventListener("click", () => {
+  (async () => {
+    const welcome = byId("welcome-dialog");
+    welcome.close();
+    if (!(await confirmDocumentReplacement("starting a blank model"))) {
+      welcome.showModal();
+      return;
+    }
+    startBlankModel();
+  })().catch(() => {});
+});
+byId("welcome-open").addEventListener("click", () => {
+  byId("welcome-dialog").close();
+  openModel().catch(() => {});
+});
+byId("welcome-dialog").addEventListener("close", () => {
+  try { window.localStorage.setItem("model-laboratory.onboarding.v1", "complete"); } catch (_) { /* storage may be disabled */ }
+});
+byId("example-gallery").addEventListener("click", (event) => {
+  const button = event.target.closest("[data-example-id]");
+  if (button) loadExample(button.dataset.exampleId).catch(() => {});
+});
 byId("prepare-experiment-button").addEventListener("click", () => prepareExperiment().catch(() => {}));
 byId("save-draft-button").addEventListener("click", () => {
   if (!state.prepared) return;

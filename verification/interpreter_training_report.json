@@ -1,7 +1,7 @@
 {
   "schema": "model-laboratory-interpreter-training-validation-report",
   "schema_version": "1.0",
-  "laboratory_version": "1.17.0",
+  "laboratory_version": "1.18.0",
   "status": "PASS",
   "deep": true,
   "corpus_manifest_file_sha256": "90c23d08c81ddb12fd743ac3c7c8363099824c09b029e715cf60479b4486e37a",

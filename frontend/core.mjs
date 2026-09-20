@@ -40,6 +40,11 @@ export function shortHash(value, leading = 10, trailing = 6) {
   return `${text.slice(0, leading)}…${text.slice(-trailing)}`;
 }
 
+export function documentDisplayTitle(name, dirty = false) {
+  const title = String(name || "Untitled model");
+  return dirty ? `${title} •` : title;
+}
+
 export function reportTone(status) {
   if (status === "EXACT REPRODUCTION") return "exact";
   if (status === "NUMERICALLY REPRODUCED") return "numerical";

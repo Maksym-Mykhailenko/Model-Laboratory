@@ -1,6 +1,6 @@
 [package]
 name = "model-laboratory"
-version = "1.17.0"
+version = "1.18.0"
 description = "Model Laboratory academic desktop application"
 authors = ["Model Laboratory contributors"]
 edition = "2021"

@@ -2,7 +2,7 @@
   "schema": "model-laboratory-interpreter-baseline-report",
   "schema_version": "1.4",
   "status": "benchmark_validated_model_not_run",
-  "created_at_utc": "2026-09-02T22:23:28+00:00",
+  "created_at_utc": "2026-09-17T21:14:44+00:00",
   "baseline_contract": {
     "schema": "model-laboratory-interpreter-baseline",
     "schema_version": "1.4",
@@ -70,8 +70,8 @@
     "scorer_version": "1.4"
   },
   "implementation_identity": {
-    "laboratory_version": "1.17.0",
-    "source_tree_sha256": "17f527f9080f04d52314a77e570dce708ecb8306e7030d904774feb613833f9d",
+    "laboratory_version": "1.18.0",
+    "source_tree_sha256": "324bbd98a012044c025ea276fe1f3472143ff468379b03e3df7c917d2288541a",
     "git_commit_or_build_id": "unavailable",
     "evaluator_source_sha256": "69a5e3222ab17c7090ebe33714362e660a1f09d2d60b5ab7c8b0a4a580915af8",
     "interpreter_compiler_source_sha256": "20d5aaf6831ed783d279d17aece3e9c4c44d20c1a20a7feb8f71f64fa2f07346",

@@ -10,6 +10,7 @@ done
 
 cargo check --manifest-path src-tauri/Cargo.toml --locked
 cargo test --manifest-path src-tauri/Cargo.toml --locked interpreter::tests
+cargo test --manifest-path src-tauri/Cargo.toml --locked response_
 python3 -m pytest -q tests/test_desktop_interpreter_contract.py tests/test_interpreter.py tests/test_desktop_engine.py
 npm run test:frontend
 

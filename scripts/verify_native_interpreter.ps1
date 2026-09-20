@@ -24,6 +24,7 @@ if ($IsWindows -and $RustHost -notmatch 'pc-windows-msvc$') {
 Write-Host "Checking native interpreter Rust bridge..."
 cargo check --manifest-path src-tauri/Cargo.toml --locked
 cargo test --manifest-path src-tauri/Cargo.toml --locked interpreter::tests
+cargo test --manifest-path src-tauri/Cargo.toml --locked response_
 
 Write-Host "Checking Python/compiler and webview contracts..."
 python -m pytest -q tests/test_desktop_interpreter_contract.py tests/test_interpreter.py tests/test_desktop_engine.py

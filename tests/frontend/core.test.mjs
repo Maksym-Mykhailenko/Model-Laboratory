@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import {
   base64ToText,
   defaultExperimentName,
+  documentDisplayTitle,
   escapeHtml,
   reportTone,
   resultInvalidationForInput,
@@ -52,7 +53,14 @@ test("scientific settings are validated before crossing the process boundary", (
 
 test("portable filenames and compact hashes are deterministic", () => {
   assert.equal(defaultExperimentName("Reaction Model 7"), "reaction-model-7.mlab");
+  assert.equal(defaultExperimentName("Bad:/ Name*", ".yaml"), "bad-name.yaml");
   assert.equal(shortHash("1234567890abcdefgh", 4, 3), "1234…fgh");
+});
+
+test("dirty documents are visibly distinguished without changing their filename", () => {
+  assert.equal(documentDisplayTitle("model.yaml", false), "model.yaml");
+  assert.equal(documentDisplayTitle("model.yaml", true), "model.yaml •");
+  assert.equal(documentDisplayTitle("", true), "Untitled model •");
 });
 
 test("every experiment input invalidates the result class that depends on it", () => {

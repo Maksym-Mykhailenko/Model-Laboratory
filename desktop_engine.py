@@ -125,7 +125,48 @@ from model_lab.workload import WorkloadEstimate, estimate_experiment_workload
 
 
 ROOT = Path(__file__).resolve().parent
-EXAMPLE_MODEL = ROOT / "models" / "quadratic.yaml"
+EXAMPLE_MODELS = {
+    "quadratic": {
+        "filename": "quadratic.yaml",
+        "category": "Getting started",
+        "description": "A one-variable function with symbolic and stationary-point analysis.",
+    },
+    "surface": {
+        "filename": "surface.yaml",
+        "category": "Calculus",
+        "description": "A two-variable surface with gradients, curvature, and an interactive plot.",
+    },
+    "probability": {
+        "filename": "probability.yaml",
+        "category": "Probability",
+        "description": "Distributions and stochastic-process structures with reproducible settings.",
+    },
+    "dynamics-control": {
+        "filename": "dynamics-control.yaml",
+        "category": "Dynamics",
+        "description": "A damped oscillator and state-space control example.",
+    },
+    "optimisation-inverse": {
+        "filename": "optimisation-inverse.yaml",
+        "category": "Optimisation",
+        "description": "Constrained optimisation and parameter-estimation workflows.",
+    },
+    "statistical-data": {
+        "filename": "statistical-data.yaml",
+        "category": "Statistics",
+        "description": "Statistical data, inference, and diagnostic records.",
+    },
+    "network": {
+        "filename": "network.yaml",
+        "category": "Networks",
+        "description": "A directed research network with graph-oriented capabilities.",
+    },
+    "spatial-fields": {
+        "filename": "spatial-fields.yaml",
+        "category": "Fields",
+        "description": "Structured spatial fields and continuum problems.",
+    },
+}
 MAX_REQUEST_BYTES = 192 * 1024 * 1024
 MAX_CACHE_BYTES = 32 * 1024 * 1024
 MAX_CACHE_ITEM_BYTES = 8 * 1024 * 1024
@@ -1656,7 +1697,7 @@ def _health() -> dict[str, Any]:
         "application": "Model Laboratory",
         "version": __version__,
         "engine": "python-sidecar",
-        "protocol_version": 7,
+        "protocol_version": 8,
         "process_mode": "persistent",
         "cache": _RESPONSE_CACHE.status(),
         "content_store": _OPENED_CONTENT.status(),
@@ -1858,17 +1899,42 @@ def _dispatch_cacheable(action: str, payload: Mapping[str, Any]) -> dict[str, An
 def dispatch(request: Mapping[str, Any]) -> dict[str, Any]:
     """Execute one validated desktop request and return a JSON-safe result."""
     action = request.get("action")
-    payload = request.get("payload") or {}
+    payload = request.get("payload", {})
+    if payload is None:
+        payload = {}
     if not isinstance(action, str):
         raise DesktopEngineError("A request action is required.")
     if not isinstance(payload, Mapping):
         raise DesktopEngineError("The request payload must be an object.")
     if action == "health":
         return _health()
+    if action == "example_catalogue":
+        catalogue: list[dict[str, str]] = []
+        for example_id, metadata in EXAMPLE_MODELS.items():
+            source = (ROOT / "models" / metadata["filename"]).read_text(encoding="utf-8")
+            model = _compile_model(source)
+            catalogue.append(
+                {
+                    "id": example_id,
+                    "filename": metadata["filename"],
+                    "title": model.name,
+                    "category": metadata["category"],
+                    "description": metadata["description"],
+                }
+            )
+        return {"examples": catalogue}
     if action == "example_model":
-        source = EXAMPLE_MODEL.read_text(encoding="utf-8")
+        example_id = payload.get("example_id", "quadratic")
+        if not isinstance(example_id, str) or example_id not in EXAMPLE_MODELS:
+            raise DesktopEngineError("The requested bundled example is not available.")
+        filename = EXAMPLE_MODELS[example_id]["filename"]
+        source = (ROOT / "models" / filename).read_text(encoding="utf-8")
         model = _compile_model(source)
-        return {"source": source, "model": _model_document(source, model)}
+        return {
+            "source": source,
+            "filename": filename,
+            "model": _model_document(source, model),
+        }
     if action in _CACHEABLE_ACTIONS:
         cache_key = _payload_cache_key(payload)
         if cache_key is not None:
@@ -1921,6 +1987,8 @@ def handle_request(raw: bytes) -> bytes:
         if not isinstance(value, dict):
             raise DesktopEngineError("A desktop request must be a JSON object.")
         request_id = value.get("id")
+        if isinstance(request_id, bool) or not isinstance(request_id, int) or request_id < 1:
+            raise DesktopEngineError("A desktop request id must be a positive integer.")
         response = {"id": request_id, "ok": True, "result": dispatch(value)}
     except (
         DesktopEngineError,
@@ -1960,6 +2028,20 @@ def handle_request(raw: bytes) -> bytes:
     ).encode("utf-8")
 
 
+def protocol_error(message: str) -> bytes:
+    return (
+        json.dumps(
+            {
+                "id": None,
+                "ok": False,
+                "error": {"type": "ProtocolError", "message": message},
+            },
+            sort_keys=True,
+        )
+        + "\n"
+    ).encode("utf-8")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Model Laboratory desktop scientific engine")
     parser.add_argument("--once", action="store_true", help="handle one JSON request")
@@ -1968,11 +2050,19 @@ def main() -> int:
         raw = sys.stdin.buffer.readline(MAX_REQUEST_BYTES + 2)
         if not raw:
             break
-        if raw.endswith(b"\n"):
+        if not raw.endswith(b"\n"):
+            if len(raw) > MAX_REQUEST_BYTES:
+                while raw and not raw.endswith(b"\n"):
+                    raw = sys.stdin.buffer.readline(64 * 1024)
+                response = protocol_error("The desktop request exceeds the safe size limit.")
+            else:
+                response = protocol_error("The desktop request ended before its newline frame delimiter.")
+        else:
             raw = raw[:-1]
             if raw.endswith(b"\r"):
                 raw = raw[:-1]
-        sys.stdout.buffer.write(handle_request(raw))
+            response = handle_request(raw)
+        sys.stdout.buffer.write(response)
         sys.stdout.buffer.flush()
         if args.once:
             break

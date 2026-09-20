@@ -1,7 +1,7 @@
 {
   "schema": "model-laboratory-interpreter-qlora-preflight",
   "schema_version": "1.1",
-  "laboratory_version": "1.17.0",
+  "laboratory_version": "1.18.0",
   "status": "BLOCKED",
   "experimental_overrides": {
     "allow_unreviewed": false,
@@ -36,7 +36,7 @@
   "baseline": {
     "valid": false,
     "reason": "no valid full untouched-model baseline: live 150-case baseline has not been run",
-    "report_sha256": "57a1048665b0367366908f78f757b522c1ba78793922784741fa1586ba8d1cdc",
+    "report_sha256": "1e25986bd978160479260cbfbd8e4c4d822f95f8761dc92b269f2f7e16ccf918",
     "status": "benchmark_validated_model_not_run"
   },
   "dependencies": {
@@ -129,8 +129,8 @@
     "status": "not-frozen"
   },
   "hardware": {
-    "platform": "Linux-6.18.35-x86_64-with-glibc2.39",
-    "python": "3.12.13",
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.39",
+    "python": "3.12.14",
     "cuda_available": false,
     "gpu": null,
     "gpu_memory_bytes": 0,

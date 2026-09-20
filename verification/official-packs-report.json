@@ -1,6 +1,6 @@
 {
   "suite": "official-packs",
-  "version": "1.17.0",
+  "version": "1.18.0",
   "passed": 54,
   "total": 54,
   "checks": [

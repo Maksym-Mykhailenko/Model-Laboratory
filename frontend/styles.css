@@ -104,6 +104,7 @@ button { color: inherit; }
 .button:disabled { opacity: .44; cursor: not-allowed; }
 .button.primary { color: white; border-color: var(--teal-600); background: var(--teal-600); }
 .button.primary:hover:not(:disabled) { background: var(--teal-700); }
+.button.danger { color: white; border-color: var(--red-700); background: var(--red-700); }
 .button.secondary { color: var(--ink-900); border-color: var(--ink-300); background: white; }
 .button.secondary:hover:not(:disabled) { border-color: var(--teal-600); color: var(--teal-700); }
 .button.ghost { color: inherit; border-color: rgba(255,255,255,.17); background: rgba(255,255,255,.06); }
@@ -320,6 +321,31 @@ input[type="range"] { width: 100%; accent-color: var(--teal-600); }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .toast-region { position: fixed; z-index: 700; right: 15px; bottom: 39px; display: grid; gap: 8px; }
+.app-dialog { width: min(480px, calc(100vw - 32px)); padding: 0; border: 1px solid var(--ink-200); border-radius: 12px; color: var(--ink-950); background: white; box-shadow: 0 24px 70px rgba(16,42,67,.28); }
+.app-dialog::backdrop { background: rgba(9,30,45,.55); backdrop-filter: blur(2px); }
+.app-dialog form { padding: 24px; }
+.app-dialog h2 { margin: 7px 0 9px; font: 600 22px/1.2 Georgia, Cambria, serif; }
+.app-dialog p { margin: 0; color: var(--ink-700); font-size: 13px; line-height: 1.55; }
+.dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 22px; }
+.welcome-dialog { width: min(860px, calc(100vw - 32px)); max-height: calc(100vh - 40px); overflow: auto; }
+.welcome-content { padding: 26px; }
+.welcome-heading { display: flex; justify-content: space-between; gap: 24px; }
+.welcome-heading h2 { margin: 7px 0 9px; font: 600 27px/1.18 Georgia, Cambria, serif; }
+.welcome-heading p { max-width: 690px; }
+.dialog-close { width: 34px; height: 34px; flex: 0 0 34px; border: 1px solid var(--ink-200); border-radius: 50%; color: var(--ink-700); background: var(--ink-50); cursor: pointer; font-size: 22px; line-height: 1; }
+.welcome-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin: 20px 0 24px; padding: 0; list-style: none; }
+.welcome-steps li { padding: 12px; border: 1px solid var(--ink-200); border-radius: 8px; background: var(--ink-50); }
+.welcome-steps strong, .welcome-steps span { display: block; }
+.welcome-steps strong { color: var(--teal-700); font-size: 11px; }
+.welcome-steps span { margin-top: 4px; color: var(--ink-600); font-size: 10px; line-height: 1.4; }
+.welcome-gallery-heading { display: flex; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 10px; }
+.welcome-gallery-heading h3 { margin: 4px 0 0; font: 600 18px/1.2 Georgia, Cambria, serif; }
+.example-gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; }
+.example-card { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--ink-200); border-radius: 8px; background: white; }
+.example-card h4 { margin: 3px 0 4px; font-size: 12px; }
+.example-card p { font-size: 10px; line-height: 1.4; }
+.example-card .category { color: var(--teal-700); font-size: 9px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.welcome-actions { padding-top: 18px; border-top: 1px solid var(--ink-100); }
 .toast { max-width: 410px; padding: 11px 14px; border: 1px solid var(--ink-200); border-left: 4px solid var(--teal-600); border-radius: 8px; color: var(--ink-800); background: white; box-shadow: var(--shadow); font-size: 10.5px; line-height: 1.45; animation: toast-in .18s ease-out; }
 .toast.error { border-left-color: var(--red-700); }
 @keyframes toast-in { from { opacity: 0; transform: translateY(5px); } }
@@ -339,6 +365,7 @@ input[type="range"] { width: 100%; accent-color: var(--teal-600); }
   .app-grid { grid-template-columns: 250px minmax(0,1fr); }
   .settings-pane { display: none; }
   .report-grid, .interpreter-layout { grid-template-columns: 1fr; }
+  .example-gallery { grid-template-columns: 1fr; }
 }
 .state-boundary-card { margin: 16px 0; border-left: 4px solid var(--ink-700); }
 .state-boundary-chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }

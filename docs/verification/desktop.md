@@ -1,13 +1,13 @@
-# Version 1.17.0 desktop and scientific verification
+# Version 1.18.0 desktop and scientific verification
 
-Verification date: 2026-09-02 UTC
+Verification date: 2026-09-17 UTC
 
 ## Completed checks
 
 | Layer | Result |
 |---|---|
-| Python regression suite | 444/444 passed |
-| Frontend contract | 8/8 passed; `node --check` passed for `app.js` and `core.mjs` |
+| Python regression suite | 451/451 passed |
+| Frontend contract | 9/9 passed; `node --check` passed for `app.js` and `core.mjs` |
 | Reference verification | 49/49 passed |
 | Bundle verification | 37/37 passed |
 | Reproduction verification | 51/51 passed |
@@ -32,6 +32,11 @@ Committed experiment receipts now have a complete safe-open path. Opening a rece
 immutable envelope and embedded experiment state, recompiles and checks the model identity, restores
 parameters and numerical controls, and marks the restored live revision as matching the commit. It
 does not execute reproduction or analysis.
+
+Sidecar requests have finite operation-class timeouts, and protocol failures terminate the process
+before a later request starts a clean replacement. Associated documents stay queued until an exact
+frontend acknowledgement; cancelling replacement preserves the pending file for retry. Atomic-save
+cleanup matches only stale temporary names created for the same target.
 
 ## Runtime-dependent checks
 

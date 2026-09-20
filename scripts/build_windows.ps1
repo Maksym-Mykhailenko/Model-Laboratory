@@ -1,3 +1,11 @@
+param(
+    [string]$CertificateThumbprint = "",
+    [string]$TimestampUrl = "http://timestamp.digicert.com",
+    [switch]$RequireSigned,
+    [switch]$RunInstallerSmoke,
+    [string]$PreviousNsisInstaller = ""
+)
+
 $ErrorActionPreference = "Stop"
 
 $ProjectRoot = Split-Path -Parent $PSScriptRoot
@@ -57,8 +65,13 @@ if ($RustHost -notmatch 'pc-windows-msvc$') {
 
 Write-Host "Prerequisites: Python $PythonVersionText; Node.js $NodeVersionText; Rust host $RustHost"
 
+python scripts/verify_release_version.py
+if ($LASTEXITCODE -ne 0) { throw "Release metadata consistency verification failed." }
 cargo check --manifest-path src-tauri/Cargo.toml --locked
 cargo test --manifest-path src-tauri/Cargo.toml --locked interpreter::tests
+cargo test --manifest-path src-tauri/Cargo.toml --locked response_
+cargo test --manifest-path src-tauri/Cargo.toml --locked pending_document_
+cargo test --manifest-path src-tauri/Cargo.toml --locked document_temp_
 python -m pip install --upgrade -r requirements-dev.txt -c constraints-tested.txt
 npm ci
 npm run test:frontend
@@ -69,6 +82,54 @@ python verification/run_reproduction_verification.py
 python verification/run_expression_ast_verification.py
 python verification/run_model_graph_protocol_verification.py
 python verification/run_official_packs_verification.py
-npm run desktop:build
+python scripts/build_sidecar.py
+
+$TauriCli = Join-Path $ProjectRoot "node_modules\.bin\tauri.cmd"
+if (-not (Test-Path $TauriCli -PathType Leaf)) {
+    throw "The local Tauri CLI was not installed by npm ci."
+}
+$BuildArguments = @("build", "--bundles", "nsis,msi")
+if ($CertificateThumbprint) {
+    $SigningConfiguration = @{
+        bundle = @{
+            windows = @{
+                certificateThumbprint = $CertificateThumbprint
+                digestAlgorithm = "sha256"
+                timestampUrl = $TimestampUrl
+                tsp = $false
+            }
+        }
+    } | ConvertTo-Json -Depth 5 -Compress
+    $BuildArguments += @("--config", $SigningConfiguration)
+    Write-Host "Authenticode signing enabled for certificate $CertificateThumbprint."
+} elseif ($RequireSigned) {
+    throw "-RequireSigned was supplied without -CertificateThumbprint."
+} else {
+    Write-Warning "Building unsigned installers. Configure a certificate thumbprint for public distribution."
+}
+
+& $TauriCli @BuildArguments
+if ($LASTEXITCODE -ne 0) {
+    throw "The Tauri Windows installer build failed."
+}
+
+$VerificationScript = Join-Path $PSScriptRoot "verify_windows_bundle.ps1"
+if ($RequireSigned) {
+    & $VerificationScript -RequireSigned
+} else {
+    & $VerificationScript
+}
+
+if ($RunInstallerSmoke) {
+    $ReleaseVersion = (Get-Content (Join-Path $ProjectRoot "src-tauri\tauri.conf.json") -Raw | ConvertFrom-Json).version
+    $SmokeParameters = @{
+        ExpectedVersion = $ReleaseVersion
+        EvidencePath = Join-Path $ProjectRoot "src-tauri\target\release\bundle\INSTALLER_SMOKE_TEST.json"
+    }
+    if ($PreviousNsisInstaller) {
+        $SmokeParameters.PreviousNsisInstaller = $PreviousNsisInstaller
+    }
+    & (Join-Path $PSScriptRoot "smoke_test_windows_installers.ps1") @SmokeParameters
+}
 
 Write-Host "Installers are available under src-tauri\target\release\bundle."

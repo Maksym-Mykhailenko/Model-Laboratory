@@ -32,7 +32,7 @@ def test_desktop_versions_are_consistent() -> None:
     tauri = json.loads((ROOT / "src-tauri" / "tauri.conf.json").read_text(encoding="utf-8"))
     cargo = tomllib.loads((ROOT / "src-tauri" / "Cargo.toml").read_text(encoding="utf-8"))
 
-    assert __version__ == package["version"] == tauri["version"] == cargo["package"]["version"] == "1.17.0"
+    assert __version__ == package["version"] == tauri["version"] == cargo["package"]["version"] == "1.18.0"
 
 
 def test_interpreter_review_controls_exist_and_are_not_placeholder_disabled() -> None:
@@ -81,7 +81,6 @@ def test_live_and_committed_state_boundary_is_explicit_in_desktop_contract() -> 
         "save-commit-button",
     }
     assert required <= set(parser.ids)
-
     frontend = (ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
     engine = (ROOT / "desktop_engine.py").read_text(encoding="utf-8")
     assert 'engine("commit_experiment_state"' in frontend
@@ -94,6 +93,28 @@ def test_live_and_committed_state_boundary_is_explicit_in_desktop_contract() -> 
     assert '"commit" => ("Committed experiment receipt", &["json"])' in (
         ROOT / "src-tauri" / "src" / "main.rs"
     ).read_text(encoding="utf-8")
+
+
+def test_desktop_exposes_safe_document_and_first_run_controls() -> None:
+    parser = _IdParser()
+    parser.feed((ROOT / "frontend" / "index.html").read_text(encoding="utf-8"))
+
+    assert {
+        "save-model-button",
+        "save-model-as-button",
+        "unsaved-dialog",
+        "welcome-dialog",
+        "example-gallery",
+        "welcome-open",
+        "welcome-blank",
+        "open-pending-document-button",
+    } <= set(parser.ids)
+
+    frontend = (ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
+    native = (ROOT / "src-tauri" / "src" / "main.rs").read_text(encoding="utf-8")
+    assert 'native("ack_startup_document", { path: document.path })' in frontend
+    assert "acknowledge_pending_document" in native
+    assert ".front()" in native
 
 
 def test_webview_has_no_direct_ollama_or_general_network_permission() -> None:
@@ -213,7 +234,7 @@ def test_native_interpreter_compile_verification_is_mandatory_in_ci_and_builds()
     verifier = (ROOT / "scripts" / "verify_native_interpreter.ps1").read_text(encoding="utf-8")
 
     assert "native-interpreter:" in workflow
-    assert "dtolnay/rust-toolchain@stable" in workflow
+    assert "rustup toolchain install stable-x86_64-pc-windows-msvc --profile minimal" in workflow
     assert "verify_native_interpreter.ps1" in workflow
     for source in (windows, unix, verifier):
         assert "cargo check --manifest-path src-tauri/Cargo.toml --locked" in source

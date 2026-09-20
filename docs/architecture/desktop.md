@@ -1,4 +1,4 @@
-# Model Laboratory 1.16.0 desktop architecture
+# Model Laboratory desktop architecture
 
 Model Laboratory is a Tauri 2 desktop application. It is not a website or a packaged web
 service. The WebView renders the workspace, Rust owns native dialogs and the process
@@ -29,9 +29,11 @@ Python sidecar
 ```
 
 Python, SymPy, SciPy, and a PyInstaller one-file payload initialise once. Requests are
-serialized by the Rust-side mutex. If the protocol fails, the host terminates that process;
-the next request starts a clean replacement. Deterministic legacy analysis responses use a
-32 MiB, entry-bounded LRU.
+serialized by the Rust-side mutex. Protocol version 8 uses raw stdout and accumulates bytes
+until a complete newline-delimited response is available; limits apply to the complete frame,
+not an arbitrary process-output chunk. Empty, oversized, invalid UTF-8, unsolicited, or
+wrong-request responses fail closed and restart the sidecar. Deterministic legacy analysis
+responses use a 32 MiB, entry-bounded LRU.
 
 ## Scientific layers
 
@@ -52,9 +54,9 @@ references to required local packs; they never contain executable plugin code.
 
 ## Desktop actions
 
-The sidecar protocol is version 6. Principal actions are:
+The sidecar protocol is version 8. Principal actions are:
 
-- `health`, `example_model`, and `inspect_model`;
+- `health`, `example_catalogue`, `example_model`, and `inspect_model`;
 - legacy convenience actions `analyse_model` and `run_sweep`;
 - generic `run_capability`;
 - `prepare_run_experiment`, `finalize_experiment`, `inspect_experiment`, and
@@ -94,6 +96,12 @@ numerical-setting changes clear every dependent legacy and generic result. An as
 result commits only if its captured revision still matches. Resetting parameters is treated
 as an input change. This prevents controls for one experiment state from coexisting with an
 authoritative plot from another.
+
+Model-source lifecycle state is separate from analytical state. Source edits mark the document
+dirty; New, Open, Example, external file-open, and application-close paths require an explicit
+Save, Discard, or Cancel decision. Save reuses only an existing YAML path, while Save As obtains a
+new native path. Native writes are flushed to a same-directory temporary file and atomically
+replace the destination so interrupted writes cannot leave a partially written model.
 
 The **Capabilities** workspace is registry-driven. Scalar tabs are convenience views over
 the built-in scalar pack; vector, matrix, optimisation, and future packs do not require new

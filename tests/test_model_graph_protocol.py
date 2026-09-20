@@ -535,4 +535,4 @@ functions:
     payload = canonical_model_ir_payload(model)
     assert payload["schema_version"] == "3.0"
     assert payload["functions"][0]["expression"]["schema_version"] == "1.2"
-    assert desktop_engine.dispatch({"action": "health"})["protocol_version"] == 7
+    assert desktop_engine.dispatch({"action": "health"})["protocol_version"] == 8

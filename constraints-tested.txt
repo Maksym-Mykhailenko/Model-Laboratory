@@ -1,4 +1,4 @@
-# Exact Python dependency versions used for the v1.17.0 verification and sidecar packaging campaign.
+# Exact Python dependency versions used for the v1.18.0 verification and sidecar packaging campaign.
 pydantic==2.13.4
 pydantic_core==2.46.4
 annotated_types==0.8.0

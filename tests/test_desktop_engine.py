@@ -92,9 +92,9 @@ def _compiled_rename(current: str, name: str, instruction: str):
 def test_health_exposes_versioned_isolated_engine_contract() -> None:
     result = desktop_engine.dispatch({"action": "health"})
 
-    assert result["version"] == __version__ == "1.17.0"
+    assert result["version"] == __version__ == "1.18.0"
     assert result["engine"] == "python-sidecar"
-    assert result["protocol_version"] == 7
+    assert result["protocol_version"] == 8
     assert result["process_mode"] == "persistent"
     assert result["cache"]["maximum_bytes"] == desktop_engine.MAX_CACHE_BYTES
     assert len(result["build_identity"]["source_tree_sha256"]) == 64
@@ -107,6 +107,23 @@ def test_example_model_is_available_through_the_engine_boundary() -> None:
 
     assert result["model"]["name"] == "Quadratic example"
     assert "functions:" in result["source"]
+    assert result["filename"] == "quadratic.yaml"
+
+
+def test_example_catalogue_is_bounded_and_examples_are_selected_by_safe_id() -> None:
+    catalogue = desktop_engine.dispatch({"action": "example_catalogue"})["examples"]
+
+    assert 4 <= len(catalogue) <= 12
+    assert {item["id"] for item in catalogue} >= {"quadratic", "surface", "probability"}
+    assert all(item["filename"].endswith(".yaml") for item in catalogue)
+    selected = desktop_engine.dispatch(
+        {"action": "example_model", "payload": {"example_id": "surface"}}
+    )
+    assert selected["filename"] == "surface.yaml"
+    with pytest.raises(desktop_engine.DesktopEngineError, match="not available"):
+        desktop_engine.dispatch(
+            {"action": "example_model", "payload": {"example_id": "../secrets"}}
+        )
 
 
 def test_model_inspection_and_analysis_are_json_safe() -> None:
@@ -396,6 +413,32 @@ def test_process_protocol_returns_bounded_structured_errors() -> None:
     assert response["id"] == 7
     assert response["ok"] is False
     assert response["error"]["type"] == "DesktopEngineError"
+
+
+def test_process_protocol_rejects_invalid_ids_and_falsey_non_object_payloads() -> None:
+    invalid_id = json.loads(
+        desktop_engine.handle_request(
+            json.dumps({"id": True, "action": "health", "payload": {}}).encode()
+        )
+    )
+    invalid_payload = json.loads(
+        desktop_engine.handle_request(
+            json.dumps({"id": 8, "action": "health", "payload": []}).encode()
+        )
+    )
+
+    assert invalid_id["ok"] is False
+    assert "positive integer" in invalid_id["error"]["message"]
+    assert invalid_payload["ok"] is False
+    assert "payload must be an object" in invalid_payload["error"]["message"]
+
+
+def test_protocol_errors_remain_single_line_json_frames() -> None:
+    response = desktop_engine.protocol_error("incomplete frame")
+
+    assert response.endswith(b"\n")
+    assert response.count(b"\n") == 1
+    assert json.loads(response)["error"]["type"] == "ProtocolError"
 
 
 def test_process_protocol_handles_multiple_requests_in_one_python_process() -> None:

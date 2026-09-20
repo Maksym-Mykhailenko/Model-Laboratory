@@ -1,6 +1,6 @@
 # Model Laboratory
 
-Model Laboratory 1.17.0 is a native desktop environment for creating, analysing, preserving,
+Model Laboratory 1.18.0 is a native desktop environment for creating, analysing, preserving,
 and reproducing mathematical experiments. It combines a Tauri 2 desktop host, a persistent Python
 scientific sidecar, typed model and artifact protocols, content-addressed experiment bundles, and
 a local authoring interpreter.
@@ -57,9 +57,9 @@ not carry executable extension code.
 
 ## Current release state
 
-Version 1.17.0 is the canonical source release for the initial architecture and thirteen-pack
+Version 1.18.0 is the release-hardened desktop distribution for the initial architecture and thirteen-pack
 roadmap. The verified catalogue contains 13 manifests, 34 object kinds, and 45 capabilities. The
-release includes 444 Python regression tests, frontend contract tests, analytical reference checks,
+release includes 451 Python regression tests, frontend contract tests, analytical reference checks,
 bundle and reproduction checks, protocol checks, and official-pack verification.
 
 The interpreter assets comprise a checksum-bound 150-case development benchmark and a
@@ -107,13 +107,16 @@ powershell -ExecutionPolicy Bypass -File scripts/build_windows.ps1
 ```
 
 The build script verifies its prerequisites, packages the Python sidecar, generates an immutable
-build-identity manifest, and invokes the Tauri release build.
+build-identity manifest, builds NSIS and MSI installers, verifies their signatures when signing is
+required, and writes a SHA-256 checksum manifest. See the
+[Windows release guide](docs/windows-release.md) for local and GitHub release instructions.
 
 ## Documentation
 
 Start with the [documentation index](docs/README.md). Principal references include:
 
 - [Desktop architecture](docs/architecture/desktop.md)
+- [Windows installer release](docs/windows-release.md)
 - [Official scientific packs](docs/science/official-packs.md)
 - [AI interpreter protocol](docs/ai/protocol.md)
 - [AI interpreter boundary](docs/ai/boundary.md)
@@ -122,6 +125,7 @@ Start with the [documentation index](docs/README.md). Principal references inclu
 - [Fine-tuning and candidate lifecycle](docs/ai/fine-tuning.md)
 - [Compatibility and migration](docs/compatibility/migration-notes.md)
 - [Verification state](docs/verification/desktop.md)
+- [1.18.0 release notes](docs/releases/RELEASE_NOTES_1.18.0.md)
 - [1.17.0 release notes](docs/releases/RELEASE_NOTES_1.17.0.md)
 
 ## Contributing, security, and citation

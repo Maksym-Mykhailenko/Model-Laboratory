@@ -1,6 +1,6 @@
 # Interpreter Stage 7 and candidate release pipeline
 
-Model Laboratory 1.17.0 implements the full fail-closed path from a reviewed Stage-6 corpus to a
+Model Laboratory 1.18.0 implements the full fail-closed path from a reviewed Stage-6 corpus to a
 locally selectable interpreter candidate. It does not bundle a trained adapter or invent the
 empirical work: baseline inference, human review, CUDA training, export, and candidate evaluation
 must be run on the authorised workstation.

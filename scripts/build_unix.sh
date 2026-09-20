@@ -4,8 +4,12 @@ set -eu
 project_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 cd "$project_root"
 
+python3 scripts/verify_release_version.py
 cargo check --manifest-path src-tauri/Cargo.toml --locked
 cargo test --manifest-path src-tauri/Cargo.toml --locked interpreter::tests
+cargo test --manifest-path src-tauri/Cargo.toml --locked response_
+cargo test --manifest-path src-tauri/Cargo.toml --locked pending_document_
+cargo test --manifest-path src-tauri/Cargo.toml --locked document_temp_
 python3 -m pip install --upgrade -r requirements-dev.txt -c constraints-tested.txt
 npm ci
 npm run test:frontend
