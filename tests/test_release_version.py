@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib.util
 from pathlib import Path
 import re
+import tomllib
 
 import pytest
 
@@ -56,3 +57,50 @@ def test_release_workflows_pin_actions_and_require_signed_tags() -> None:
     assert "Assert-UninstalledApplication $Msi" in smoke
     for extension in (".mlab", ".yaml", ".yml"):
         assert f'Assert-FileAssociation "{extension}" $Executable' in smoke
+
+
+def test_windows_release_inputs_are_locked_and_smoke_paths_are_normalized() -> None:
+    gitignore = (ROOT / ".gitignore").read_text(encoding="utf-8")
+    assert ".desktop-build/" in gitignore.splitlines()
+
+    lock = tomllib.loads((ROOT / "src-tauri" / "Cargo.lock").read_text(encoding="utf-8"))
+    packages = {(package["name"], package["version"]): package for package in lock["package"]}
+    hyper = packages[("hyper", "1.11.1")]
+    assert hyper["checksum"] == "27b501faa50e7a26c3d3560ca625132f4078a17771f4810baf70475ae48cbe43"
+    assert ("tokio-macros", "2.7.2") in packages
+    assert "tokio-macros" in packages[("tokio", "1.53.1")]["dependencies"]
+
+    build = (ROOT / "scripts" / "build_windows.ps1").read_text(encoding="utf-8")
+    assert 'Assert-NativeSuccess "cargo check --locked"' in build
+    assert 'Assert-NativeSuccess "Python test suite"' in build
+    assert 'Assert-NativeSuccess "Scientific sidecar build"' in build
+    assert build.index("python scripts/build_sidecar.py") < build.index(
+        "cargo check --manifest-path"
+    )
+
+    native_windows = (ROOT / "scripts" / "verify_native_interpreter.ps1").read_text(
+        encoding="utf-8"
+    )
+    assert native_windows.index("python scripts/build_sidecar.py") < native_windows.index(
+        "cargo check --manifest-path"
+    )
+    assert 'Assert-NativeSuccess "cargo check --locked"' in native_windows
+
+    native_unix = (ROOT / "scripts" / "verify_native_interpreter.sh").read_text(
+        encoding="utf-8"
+    )
+    assert native_unix.index("python3 scripts/build_sidecar.py") < native_unix.index(
+        "cargo check --manifest-path"
+    )
+
+    smoke = (ROOT / "scripts" / "smoke_test_windows_installers.ps1").read_text(encoding="utf-8")
+    assert "function ConvertFrom-RegistryPathValue" in smoke
+    assert "ConvertFrom-RegistryPathValue -Value $Record.InstallLocation" in smoke
+    assert 'Join-Path -Path $InstallLocation -ChildPath "Model Laboratory.exe"' in smoke
+    assert "Remove-InstalledApplicationBestEffort" in smoke
+
+    workflow = (ROOT / ".github" / "workflows" / "cross-platform-verification.yml").read_text(
+        encoding="utf-8"
+    )
+    assert "merge-multiple: true" not in workflow
+    assert "--merge observations/*/*.json" in workflow

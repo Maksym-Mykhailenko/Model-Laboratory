@@ -8,6 +8,12 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+function Assert-NativeSuccess([string]$Operation) {
+    if ($LASTEXITCODE -ne 0) {
+        throw "$Operation failed with exit code $LASTEXITCODE."
+    }
+}
+
 $ProjectRoot = Split-Path -Parent $PSScriptRoot
 Set-Location $ProjectRoot
 
@@ -66,23 +72,39 @@ if ($RustHost -notmatch 'pc-windows-msvc$') {
 Write-Host "Prerequisites: Python $PythonVersionText; Node.js $NodeVersionText; Rust host $RustHost"
 
 python scripts/verify_release_version.py
-if ($LASTEXITCODE -ne 0) { throw "Release metadata consistency verification failed." }
-cargo check --manifest-path src-tauri/Cargo.toml --locked
-cargo test --manifest-path src-tauri/Cargo.toml --locked interpreter::tests
-cargo test --manifest-path src-tauri/Cargo.toml --locked response_
-cargo test --manifest-path src-tauri/Cargo.toml --locked pending_document_
-cargo test --manifest-path src-tauri/Cargo.toml --locked document_temp_
+Assert-NativeSuccess "Release metadata consistency verification"
 python -m pip install --upgrade -r requirements-dev.txt -c constraints-tested.txt
-npm ci
-npm run test:frontend
-python -m pytest -q
-python verification/run_reference_verification.py
-python verification/run_bundle_verification.py
-python verification/run_reproduction_verification.py
-python verification/run_expression_ast_verification.py
-python verification/run_model_graph_protocol_verification.py
-python verification/run_official_packs_verification.py
+Assert-NativeSuccess "Python dependency installation"
 python scripts/build_sidecar.py
+Assert-NativeSuccess "Scientific sidecar build"
+cargo check --manifest-path src-tauri/Cargo.toml --locked
+Assert-NativeSuccess "cargo check --locked"
+cargo test --manifest-path src-tauri/Cargo.toml --locked interpreter::tests
+Assert-NativeSuccess "Rust interpreter tests"
+cargo test --manifest-path src-tauri/Cargo.toml --locked response_
+Assert-NativeSuccess "Rust response protocol tests"
+cargo test --manifest-path src-tauri/Cargo.toml --locked pending_document_
+Assert-NativeSuccess "Rust pending-document tests"
+cargo test --manifest-path src-tauri/Cargo.toml --locked document_temp_
+Assert-NativeSuccess "Rust document-temporary-file tests"
+npm ci
+Assert-NativeSuccess "npm ci"
+npm run test:frontend
+Assert-NativeSuccess "Frontend contract tests"
+python -m pytest -q
+Assert-NativeSuccess "Python test suite"
+python verification/run_reference_verification.py
+Assert-NativeSuccess "Reference verification"
+python verification/run_bundle_verification.py
+Assert-NativeSuccess "Bundle verification"
+python verification/run_reproduction_verification.py
+Assert-NativeSuccess "Reproduction verification"
+python verification/run_expression_ast_verification.py
+Assert-NativeSuccess "Expression-AST verification"
+python verification/run_model_graph_protocol_verification.py
+Assert-NativeSuccess "Model-graph protocol verification"
+python verification/run_official_packs_verification.py
+Assert-NativeSuccess "Official-packs verification"
 
 $TauriCli = Join-Path $ProjectRoot "node_modules\.bin\tauri.cmd"
 if (-not (Test-Path $TauriCli -PathType Leaf)) {
@@ -109,9 +131,7 @@ if ($CertificateThumbprint) {
 }
 
 & $TauriCli @BuildArguments
-if ($LASTEXITCODE -ne 0) {
-    throw "The Tauri Windows installer build failed."
-}
+Assert-NativeSuccess "Tauri Windows installer build"
 
 $VerificationScript = Join-Path $PSScriptRoot "verify_windows_bundle.ps1"
 if ($RequireSigned) {

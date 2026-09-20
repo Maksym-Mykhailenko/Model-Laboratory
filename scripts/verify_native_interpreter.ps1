@@ -3,6 +3,13 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+
+function Assert-NativeSuccess([string]$Operation) {
+    if ($LASTEXITCODE -ne 0) {
+        throw "$Operation failed with exit code $LASTEXITCODE."
+    }
+}
+
 $ProjectRoot = Split-Path -Parent $PSScriptRoot
 Set-Location $ProjectRoot
 
@@ -22,17 +29,25 @@ if ($IsWindows -and $RustHost -notmatch 'pc-windows-msvc$') {
 }
 
 Write-Host "Checking native interpreter Rust bridge..."
+python scripts/build_sidecar.py
+Assert-NativeSuccess "Scientific sidecar build"
 cargo check --manifest-path src-tauri/Cargo.toml --locked
+Assert-NativeSuccess "cargo check --locked"
 cargo test --manifest-path src-tauri/Cargo.toml --locked interpreter::tests
+Assert-NativeSuccess "Rust interpreter tests"
 cargo test --manifest-path src-tauri/Cargo.toml --locked response_
+Assert-NativeSuccess "Rust response protocol tests"
 
 Write-Host "Checking Python/compiler and webview contracts..."
 python -m pytest -q tests/test_desktop_interpreter_contract.py tests/test_interpreter.py tests/test_desktop_engine.py
+Assert-NativeSuccess "Python native-interpreter contract tests"
 npm run test:frontend
+Assert-NativeSuccess "Frontend contract tests"
 
 if ($LiveOllama) {
     Write-Host "Running live exact-frozen-base Ollama identity smoke test..."
     cargo test --manifest-path src-tauri/Cargo.toml --locked live_frozen_base_identity_smoke -- --ignored --nocapture
+    Assert-NativeSuccess "Live frozen-base identity smoke test"
 }
 
 Write-Host "Native interpreter verification passed."

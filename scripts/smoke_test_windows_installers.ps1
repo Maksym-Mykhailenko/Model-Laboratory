@@ -68,6 +68,23 @@ function Invoke-CheckedProcess {
     }
 }
 
+function ConvertFrom-RegistryPathValue {
+    param(
+        [AllowNull()][object]$Value,
+        [switch]$RemoveIconIndex
+    )
+    if ($null -eq $Value) { return $null }
+    $Text = [Environment]::ExpandEnvironmentVariables(([string]$Value).Trim())
+    if (-not $Text) { return $null }
+    if ($RemoveIconIndex) {
+        $Text = $Text -replace ',\s*-?\d+\s*$', ''
+    }
+    if ($Text -match '^"([^"]+)"') {
+        return $Matches[1]
+    }
+    return $Text.Trim('"')
+}
+
 function Get-ModelLaboratoryInstall {
     $Roots = @(
         "HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*",
@@ -95,8 +112,12 @@ function Wait-ForInstall([bool]$Present) {
 
 function Resolve-AppExecutable($Record) {
     $Candidates = @()
-    if ($Record.DisplayIcon) { $Candidates += ($Record.DisplayIcon -replace ',[0-9]+$', '').Trim('"') }
-    if ($Record.InstallLocation) { $Candidates += Join-Path $Record.InstallLocation "Model Laboratory.exe" }
+    $DisplayIcon = ConvertFrom-RegistryPathValue -Value $Record.DisplayIcon -RemoveIconIndex
+    if ($DisplayIcon) { $Candidates += $DisplayIcon }
+    $InstallLocation = ConvertFrom-RegistryPathValue -Value $Record.InstallLocation
+    if ($InstallLocation) {
+        $Candidates += Join-Path -Path $InstallLocation -ChildPath "Model Laboratory.exe"
+    }
     $Candidates += Join-Path $env:LOCALAPPDATA "Model Laboratory\Model Laboratory.exe"
     $Candidates += Join-Path $env:ProgramFiles "Model Laboratory\Model Laboratory.exe"
     $Executable = $Candidates | Where-Object { $_ -and (Test-Path $_ -PathType Leaf) } | Select-Object -First 1
@@ -174,6 +195,31 @@ function Invoke-NsisUninstall($Record) {
     Wait-ForInstall $false | Out-Null
 }
 
+function Remove-InstalledApplicationBestEffort {
+    $Record = Get-ModelLaboratoryInstall
+    if (-not $Record) { return }
+    try {
+        $UninstallCommand = [string]$Record.UninstallString
+        if ([int]$Record.WindowsInstaller -eq 1 -or $UninstallCommand -match '(?i)msiexec(?:\.exe)?') {
+            $ProductCode = [string]$Record.PSChildName
+            if ($ProductCode -notmatch '^\{[0-9A-Fa-f-]+\}$' -and $UninstallCommand -match '\{[0-9A-Fa-f-]+\}') {
+                $ProductCode = $Matches[0]
+            }
+            if ($ProductCode -notmatch '^\{[0-9A-Fa-f-]+\}$') {
+                throw "Could not determine the MSI product code for failure cleanup."
+            }
+            Invoke-CheckedProcess -FilePath "msiexec.exe" -ArgumentList @("/x", $ProductCode, "/qn", "/norestart") -SuccessCodes @(0, 1605, 3010)
+            Wait-ForInstall $false | Out-Null
+        } else {
+            Invoke-NsisUninstall $Record
+        }
+        Add-SmokeCheck "failure-cleanup" "PASS" "Removed the installed application after the smoke-test failure."
+    } catch {
+        Add-SmokeCheck "failure-cleanup" "FAIL" $_.Exception.Message
+        Write-Warning "Installer failure cleanup did not complete: $($_.Exception.Message)"
+    }
+}
+
 function Assert-UninstalledApplication($InstallInfo) {
     Wait-ForInstall $false | Out-Null
     for ($Attempt = 0; $Attempt -lt 30 -and (Test-Path $InstallInfo.executable -PathType Leaf); $Attempt += 1) {
@@ -229,6 +275,9 @@ try {
     $Evidence.error = $_.Exception.Message
     throw
 } finally {
+    if ($Evidence.status -eq "FAIL") {
+        Remove-InstalledApplicationBestEffort
+    }
     $Evidence.completed_at_utc = [DateTime]::UtcNow.ToString("o")
     Write-SmokeEvidence
     Write-Host "Installer smoke evidence written to $EvidencePath."

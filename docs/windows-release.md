@@ -34,7 +34,10 @@ may be supplied to test the upgrade path:
 
 Every smoke run writes `INSTALLER_SMOKE_TEST.json`, including installer SHA-256 values, runner
 identity, individual clean-install/upgrade outcomes, timestamps, and any failure message. Uninstall
-checks require both the installed executable and its registered open commands to be removed.
+checks require both the installed executable and its registered open commands to be removed. The
+smoke harness normalizes quoted registry paths written by either installer and attempts a quiet
+cleanup if a later assertion fails, so a failed run still leaves actionable evidence without
+contaminating subsequent package checks.
 
 ## GitHub release build
 
@@ -45,6 +48,10 @@ final review. The workflow looks up the newest earlier published release, downlo
 executable when one exists, and automatically exercises an in-place upgrade before the clean
 installer tests. If no previous installer exists—as expected for a first binary release—the
 receipt records the upgrade check as `NOT_RUN` without weakening the clean-install gates.
+Cargo's Windows-target lock graph is resolved in the committed lockfile, and every native build or
+verification command is checked immediately; the release stops at the first failed prerequisite.
+The scientific sidecar is built before Cargo evaluates Tauri's external-binary configuration, so a
+clean checkout does not depend on an ignored, pre-existing executable.
 
 For public distribution, configure these repository secrets:
 

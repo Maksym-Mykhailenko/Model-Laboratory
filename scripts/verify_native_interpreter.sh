@@ -8,6 +8,7 @@ for command in python3 node npm cargo rustc; do
     command -v "$command" >/dev/null 2>&1 || { printf '%s\n' "$command is required for native interpreter verification." >&2; exit 1; }
 done
 
+python3 scripts/build_sidecar.py
 cargo check --manifest-path src-tauri/Cargo.toml --locked
 cargo test --manifest-path src-tauri/Cargo.toml --locked interpreter::tests
 cargo test --manifest-path src-tauri/Cargo.toml --locked response_

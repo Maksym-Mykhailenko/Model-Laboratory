@@ -19,6 +19,7 @@ yarn-error.log*
 # Generic generated output
 dist/
 build/
+.desktop-build/
 
 # Rust and Tauri
 src-tauri/target/

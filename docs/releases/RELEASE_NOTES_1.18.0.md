@@ -26,6 +26,10 @@ remaining application-side reliability gaps found during the 1.17 review.
 - Every installer run emits a machine-readable pass/fail receipt with installer hashes; failed
   workflows retain that receipt as a diagnostic artifact, while successful receipts are shipped
   with the installers. Uninstall checks reject residual executables or application open commands.
+- Windows-target Cargo dependencies are fully represented in the committed lockfile, native build
+  failures stop the pipeline immediately, and quoted installer registry paths are normalized before
+  executable discovery. Clean builds create the ignored scientific sidecar before Cargo validates
+  Tauri's external binary, and failed smoke tests attempt package cleanup before publishing evidence.
 - GitHub Actions dependencies are pinned to immutable commits, and draft releases are created with
   the runner's authenticated GitHub CLI.
 
