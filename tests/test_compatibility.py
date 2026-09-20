@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
+import yaml
 
 from model_lab.canonical import canonical_json_sha256
 from model_lab.compatibility import (
@@ -56,7 +59,7 @@ def test_campaign_keeps_missing_platforms_visible() -> None:
     )
 
     assert not report.campaign_complete
-    assert len(report.missing_targets) == 3
+    assert len(report.missing_targets) == 4
     assert "MISSING" in report.to_markdown()
 
 
@@ -68,11 +71,37 @@ def test_campaign_rejects_duplicate_runner_evidence() -> None:
 
 def test_complete_campaign_requires_successful_cases_and_backend_diversity() -> None:
     observations = [
-        _observation(target, "OpenBLAS" if index < 3 else "Apple Accelerate")
-        for index, target in enumerate(DEFAULT_COMPATIBILITY_TARGETS)
+        _observation(
+            target,
+            "Apple Accelerate" if target.operating_system == "macOS" else "OpenBLAS",
+        )
+        for target in DEFAULT_COMPATIBILITY_TARGETS
     ]
     report = merge_compatibility_observations(observations)
 
     assert report.campaign_complete
     assert report.backend_count == 2
     assert not report.missing_targets
+
+
+def test_default_campaign_targets_match_ci_matrix() -> None:
+    workflow_path = (
+        Path(__file__).resolve().parents[1]
+        / ".github"
+        / "workflows"
+        / "cross-platform-verification.yml"
+    )
+    workflow = yaml.safe_load(workflow_path.read_text(encoding="utf-8"))
+    runner_platforms = {
+        "ubuntu-latest": ("Linux", "x86_64"),
+        "windows-latest": ("Windows", "x86_64"),
+        "macos-14": ("macOS", "arm64"),
+    }
+    workflow_targets: set[CompatibilityTarget] = set()
+    for entry in workflow["jobs"]["verify"]["strategy"]["matrix"]["include"]:
+        operating_system, architecture = runner_platforms[entry["os"]]
+        target = CompatibilityTarget(operating_system, architecture, entry["python"])
+        assert entry["artifact"] == target.key.lower().replace("py3.", "py3")
+        workflow_targets.add(target)
+
+    assert workflow_targets == set(DEFAULT_COMPATIBILITY_TARGETS)

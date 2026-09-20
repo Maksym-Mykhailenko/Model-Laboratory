@@ -114,7 +114,7 @@ jobs:
           --report-json compatibility-matrix.json
           --report-markdown COMPATIBILITY_MATRIX.md
       - name: Upload compatibility matrix
-        if: always()
+        if: always() && hashFiles('compatibility-matrix.json', 'COMPATIBILITY_MATRIX.md') != ''
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: compatibility-matrix
