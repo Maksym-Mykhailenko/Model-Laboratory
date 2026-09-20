@@ -107,11 +107,10 @@ jobs:
         with:
           pattern: "*-py*"
           path: observations
-          merge-multiple: true
       - name: Merge without inferring missing evidence
         run: >-
           python verification/run_cross_platform_campaign.py
-          --merge observations/*.json
+          --merge observations/*/*.json
           --report-json compatibility-matrix.json
           --report-markdown COMPATIBILITY_MATRIX.md
       - name: Upload compatibility matrix
