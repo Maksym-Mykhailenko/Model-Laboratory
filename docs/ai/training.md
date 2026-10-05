@@ -18,6 +18,10 @@ creation, edits of existing official objects, and paired clarification continuat
 train/validation proposal semantics are disjoint rather than paraphrases of identical property
 templates.
 
+The v1.19 declarative analysis-recipe kind is executable but is not part of this frozen authoring
+corpus. It will not be advertised as interpreter-authored until a dedicated reviewed corpus and
+benchmark cover the recipe language.
+
 ## Multi-turn records
 
 Context negotiation is paired: a hidden exact path is requested in turn zero and disclosed for

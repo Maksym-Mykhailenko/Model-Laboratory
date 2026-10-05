@@ -1,0 +1,237 @@
+name: Six-level Gaussian hierarchy and relaxation dispersion
+metadata:
+  description: >-
+    Reproduces the matched spectral profiles and ensemble-relaxation comparison for a
+    six-level precision-weighted linear-Gaussian hierarchy.
+  notes: >-
+    The two precision profiles use the four-decimal values reported in Section 4 of Maksym
+    Mykhailenko's manuscript "A scale-free measure of relaxation anisotropy in
+    precision-weighted variational inference". The analysis is entirely declarative and
+    executes through bounded installed primitives.
+  tags: [linear-gaussian, precision, hessian, relaxation, reproducibility]
+
+variables:
+  x1: {domain: [-20, 20], initial: 0}
+  x2: {domain: [-20, 20], initial: 0}
+  x3: {domain: [-20, 20], initial: 0}
+  x4: {domain: [-20, 20], initial: 0}
+  x5: {domain: [-20, 20], initial: 0}
+  x6: {domain: [-20, 20], initial: 0}
+
+parameters:
+  po: {default: 7.3497, domain: [0.0001, 100]}
+  p1: {default: 3.3811, domain: [0.0001, 100]}
+  p2: {default: 5.8474, domain: [0.0001, 100]}
+  p3: {default: 7.9421, domain: [0.0001, 100]}
+  p4: {default: 5.8474, domain: [0.0001, 100]}
+  p5: {default: 3.3811, domain: [0.0001, 100]}
+  pp: {default: 7.3497, domain: [0.0001, 100]}
+
+constants:
+  y: {value: 0}
+
+functions:
+  free_energy:
+    expression: >-
+      0.5*po*(y-x1)**2 + 0.5*p1*(x1-x2)**2 + 0.5*p2*(x2-x3)**2
+      + 0.5*p3*(x3-x4)**2 + 0.5*p4*(x4-x5)**2
+      + 0.5*p5*(x5-x6)**2 + 0.5*pp*x6**2
+    description: Quadratic variational free energy for the six-level hierarchy.
+
+matrix_functions:
+  hessian:
+    description: Precision-weighted Hessian of the quadratic free energy.
+    row_labels: [x1, x2, x3, x4, x5, x6]
+    column_labels: [x1, x2, x3, x4, x5, x6]
+    entries:
+      - ["po + p1", "-p1", "0", "0", "0", "0"]
+      - ["-p1", "p1 + p2", "-p2", "0", "0", "0"]
+      - ["0", "-p2", "p2 + p3", "-p3", "0", "0"]
+      - ["0", "0", "-p3", "p3 + p4", "-p4", "0"]
+      - ["0", "0", "0", "-p4", "p4 + p5", "-p5"]
+      - ["0", "0", "0", "0", "-p5", "p5 + pp"]
+
+objects:
+  matched-relaxation-profiles:
+    kind: org.modellab.composition.analysis-recipe
+    kind_version: "1.0"
+    references: ["matrix-function:hessian"]
+    properties:
+      steps:
+        - id: hessian_A
+          operation: matrix.evaluate
+          settings:
+            matrix: hessian
+            point: [0, 0, 0, 0, 0, 0]
+            parameter_values:
+              po: 7.3497
+              p1: 3.3811
+              p2: 5.8474
+              p3: 7.9421
+              p4: 5.8474
+              p5: 3.3811
+              pp: 7.3497
+        - id: hessian_B
+          operation: matrix.evaluate
+          settings:
+            matrix: hessian
+            point: [0, 0, 0, 0, 0, 0]
+            parameter_values:
+              po: 12.6953
+              p1: 2.5613
+              p2: 10.8862
+              p3: 0.6970
+              p4: 10.8862
+              p5: 2.5613
+              pp: 12.6953
+        - id: mu_A
+          operation: matrix.generalized-eigenvalues
+          inputs: {matrix: hessian_A}
+          settings: {require_positive: true}
+        - id: mu_B
+          operation: matrix.generalized-eigenvalues
+          inputs: {matrix: hessian_B}
+          settings: {require_positive: true}
+        - id: minimum_A
+          operation: array.expression
+          inputs: {mu: mu_A}
+          settings: {expression: "min(mu)"}
+        - id: minimum_B
+          operation: array.expression
+          inputs: {mu: mu_B}
+          settings: {expression: "min(mu)"}
+        - id: maximum_A
+          operation: array.expression
+          inputs: {mu: mu_A}
+          settings: {expression: "max(mu)"}
+        - id: maximum_B
+          operation: array.expression
+          inputs: {mu: mu_B}
+          settings: {expression: "max(mu)"}
+        - id: geometric_mean_A
+          operation: array.expression
+          inputs: {mu: mu_A}
+          settings: {expression: "exp(mean(log(mu)))"}
+        - id: geometric_mean_B
+          operation: array.expression
+          inputs: {mu: mu_B}
+          settings: {expression: "exp(mean(log(mu)))"}
+        - id: condition_A
+          operation: array.expression
+          inputs: {mu: mu_A}
+          settings: {expression: "max(mu) / min(mu)"}
+        - id: condition_B
+          operation: array.expression
+          inputs: {mu: mu_B}
+          settings: {expression: "max(mu) / min(mu)"}
+        - id: dispersion_A
+          operation: array.expression
+          inputs: {mu: mu_A}
+          settings: {expression: "std(log(mu))"}
+        - id: dispersion_B
+          operation: array.expression
+          inputs: {mu: mu_B}
+          settings: {expression: "std(log(mu))"}
+        - id: time
+          operation: array.logspace
+          settings: {start_exponent: -4, stop_exponent: 0.5, count: 6001, base: 10}
+        - id: residual_energy_A
+          operation: array.expression
+          inputs: {t: time, mu: mu_A}
+          settings: {expression: "mean(exp(-2 * outer(t, mu)), 1)"}
+        - id: residual_energy_B
+          operation: array.expression
+          inputs: {t: time, mu: mu_B}
+          settings: {expression: "mean(exp(-2 * outer(t, mu)), 1)"}
+        - id: effective_dimension_A
+          operation: array.expression
+          inputs: {t: time, mu: mu_A}
+          settings:
+            expression: >-
+              sum(exp(-2 * outer(t, mu)), 1)**2
+              / sum(exp(-4 * outer(t, mu)), 1)
+        - id: effective_dimension_B
+          operation: array.expression
+          inputs: {t: time, mu: mu_B}
+          settings:
+            expression: >-
+              sum(exp(-2 * outer(t, mu)), 1)**2
+              / sum(exp(-4 * outer(t, mu)), 1)
+        - id: effective_dimension_at_040_A
+          operation: array.expression
+          inputs: {mu: mu_A}
+          settings:
+            expression: >-
+              sum(exp(-0.8 * mu))**2 / sum(exp(-1.6 * mu))
+        - id: effective_dimension_at_040_B
+          operation: array.expression
+          inputs: {mu: mu_B}
+          settings:
+            expression: >-
+              sum(exp(-0.8 * mu))**2 / sum(exp(-1.6 * mu))
+        - id: t090_A
+          operation: series.first-crossing
+          inputs: {x: time, y: residual_energy_A}
+          settings: {threshold: 0.9, direction: below}
+        - id: t010_A
+          operation: series.first-crossing
+          inputs: {x: time, y: residual_energy_A}
+          settings: {threshold: 0.1, direction: below}
+        - id: recovery_breadth_A
+          operation: array.expression
+          inputs: {t010: t010_A, t090: t090_A}
+          settings: {expression: "log(t010 / t090)"}
+        - id: t090_B
+          operation: series.first-crossing
+          inputs: {x: time, y: residual_energy_B}
+          settings: {threshold: 0.9, direction: below}
+        - id: t010_B
+          operation: series.first-crossing
+          inputs: {x: time, y: residual_energy_B}
+          settings: {threshold: 0.1, direction: below}
+        - id: recovery_breadth_B
+          operation: array.expression
+          inputs: {t010: t010_B, t090: t090_B}
+          settings: {expression: "log(t010 / t090)"}
+      outputs:
+        Profile A relaxation rates: mu_A
+        Profile B relaxation rates: mu_B
+        Profile A minimum rate: minimum_A
+        Profile B minimum rate: minimum_B
+        Profile A maximum rate: maximum_A
+        Profile B maximum rate: maximum_B
+        Profile A geometric mean: geometric_mean_A
+        Profile B geometric mean: geometric_mean_B
+        Profile A condition number: condition_A
+        Profile B condition number: condition_B
+        Profile A dispersion: dispersion_A
+        Profile B dispersion: dispersion_B
+        Profile A t0.90: t090_A
+        Profile B t0.90: t090_B
+        Profile A t0.10: t010_A
+        Profile B t0.10: t010_B
+        Profile A recovery breadth: recovery_breadth_A
+        Profile B recovery breadth: recovery_breadth_B
+        Profile A effective dimension: effective_dimension_A
+        Profile B effective dimension: effective_dimension_B
+        Profile A effective dimension at t=0.4: effective_dimension_at_040_A
+        Profile B effective dimension at t=0.4: effective_dimension_at_040_B
+      views:
+        - title: Ensemble relaxation in matched six-level hierarchies
+          panels:
+            - title: Normalised expected residual energy
+              x: time
+              x_label: Time
+              x_scale: log
+              y_label: R(t)
+              series:
+                - {value: residual_energy_A, label: Profile A}
+                - {value: residual_energy_B, label: Profile B, line_dash: dash}
+            - title: Effective residual dimension
+              x: time
+              x_label: Time
+              x_scale: log
+              y_label: N_eff(t)
+              series:
+                - {value: effective_dimension_A, label: Profile A}
+                - {value: effective_dimension_B, label: Profile B, line_dash: dash}

@@ -1,12 +1,39 @@
 # Model Laboratory
 
-Model Laboratory 1.18.0 is a native desktop environment for creating, analysing, preserving,
-and reproducing mathematical experiments. It combines a Tauri 2 desktop host, a persistent Python
-scientific sidecar, typed model and artifact protocols, content-addressed experiment bundles, and
-a local authoring interpreter.
+[![Latest release](https://img.shields.io/github/v/release/Maksym-Mykhailenko/Model-Laboratory?display_name=tag&sort=semver)](https://github.com/Maksym-Mykhailenko/Model-Laboratory/releases/latest)
+[![Windows installer](https://github.com/Maksym-Mykhailenko/Model-Laboratory/actions/workflows/windows-release.yml/badge.svg)](https://github.com/Maksym-Mykhailenko/Model-Laboratory/actions/workflows/windows-release.yml)
+[![Cross-platform verification](https://github.com/Maksym-Mykhailenko/Model-Laboratory/actions/workflows/cross-platform-verification.yml/badge.svg?branch=main)](https://github.com/Maksym-Mykhailenko/Model-Laboratory/actions/workflows/cross-platform-verification.yml)
+[![License](https://img.shields.io/github/license/Maksym-Mykhailenko/Model-Laboratory)](LICENSE)
 
-The project is intended for students, researchers, lecturers, and developers of research software.
-It is local-first and licensed under Apache-2.0.
+A local-first desktop environment for creating, analysing, preserving, and reproducing
+mathematical experiments.
+
+**[Download Model Laboratory 1.19.0 for Windows (.exe)](https://github.com/Maksym-Mykhailenko/Model-Laboratory/releases/download/v1.19.0/Model.Laboratory_1.19.0_x64-setup.exe)**
+· [MSI, checksums, and release details](https://github.com/Maksym-Mykhailenko/Model-Laboratory/releases/tag/v1.19.0)
+
+> [!NOTE]
+> The v1.19.0 Windows installers are not Authenticode-signed, so Windows may display an
+> **Unknown publisher** or SmartScreen warning. Verify downloads with the published
+> [`SHA256SUMS.txt`](https://github.com/Maksym-Mykhailenko/Model-Laboratory/releases/download/v1.19.0/SHA256SUMS.txt).
+
+![Model Laboratory showing a controlled dynamical-system model and its state-space analysis](docs/assets/model-laboratory-analysis.png)
+
+*A controlled dynamical-system model, its typed analysis artifact, and the resulting state-space trajectory in one desktop workspace.*
+
+Model Laboratory combines a Tauri 2 desktop host, a persistent Python scientific sidecar,
+typed model and artifact protocols, content-addressed experiment bundles, and a local authoring
+interpreter. The project is intended for students, researchers, lecturers, and developers of
+research software. It is local-first and licensed under Apache-2.0.
+
+## Quick start
+
+1. **Install:** download the Windows `.exe`, run it, and acknowledge the expected unsigned-
+   publisher warning. The MSI is available for users who specifically need that package format.
+2. **Define and validate:** choose a bundled example, open a YAML model or `.mlab` experiment,
+   or start with a blank model. Review the source and select **Validate model** before computing.
+3. **Analyse and preserve:** run an applicable analysis, inspect its typed artifacts and
+   provenance, then use the **Experiment** workspace to prepare and save a reproducible `.mlab`
+   bundle.
 
 ## Why Model Laboratory
 
@@ -29,18 +56,22 @@ deterministic compiler validates those proposals before the scientific engine ca
 - Local Qwen authoring with bounded context and explicit acceptance provenance
 - Workload estimation and capability validation before execution
 - Persistent Python sidecar with a native Tauri desktop interface
-- Thirteen official scientific capability packs
+- Fourteen official scientific capability packs, including declarative analysis composition
 
 ## Scientific catalogue
 
-The initial catalogue covers multidimensional mathematics and units; probability and stochastic
-processes; graphs and networks; generative models and finite POMDPs; dynamical systems and control;
-spatial fields and PDEs; geometry and meshes; mechanics and structures; statistical inference;
-optimisation and inverse problems; electrical and electromagnetic systems; chemical and biological
-systems; and machine learning and computational intelligence.
+The catalogue covers declarative analysis composition; multidimensional mathematics and units;
+probability and stochastic processes; graphs and networks; generative models and finite POMDPs;
+dynamical systems and control; spatial fields and PDEs; geometry and meshes; mechanics and
+structures; statistical inference; optimisation and inverse problems; electrical and
+electromagnetic systems; chemical and biological systems; and machine learning and computational
+intelligence. Analysis recipes compose safe formulas, matrix evaluation, generalised spectra,
+threshold measurements, and multi-panel figures without installing model-specific Python code.
 
 The exact object kinds, capability versions, assumptions, and method boundaries are documented in
-[Official scientific packs](docs/science/official-packs.md).
+[Official scientific packs](docs/science/official-packs.md). The
+[six-level Gaussian flagship](examples/README.md) includes its YAML model, openable draft `.mlab`
+with a completed run, reference figure, and exact reproduction checks.
 
 ## Reproducibility and trust boundary
 
@@ -57,10 +88,13 @@ not carry executable extension code.
 
 ## Current release state
 
-Version 1.18.0 is the release-hardened desktop distribution for the initial architecture and thirteen-pack
-roadmap. The verified catalogue contains 13 manifests, 34 object kinds, and 45 capabilities. The
-release includes 451 Python regression tests, frontend contract tests, analytical reference checks,
-bundle and reproduction checks, protocol checks, and official-pack verification.
+Version 1.19.0 adds the first general-purpose composition layer to the release-hardened desktop
+distribution. The verified catalogue contains 14 manifests, 35 object kinds, and 46 capabilities.
+The included six-level linear-Gaussian hierarchy reproduces two matched-endpoint relaxation spectra,
+their log-spectral dispersion, threshold times, recovery breadth, effective dimension, and a
+two-panel comparison through one declarative recipe. The release includes 460 Python regression
+tests, frontend contract tests, analytical reference checks, bundle and reproduction checks,
+protocol checks, and official-pack verification.
 
 The interpreter assets comprise a checksum-bound 150-case development benchmark and a
 6,300-record compiler-replayed corpus. Its adapter lifecycle is at the review and environment-
@@ -118,6 +152,7 @@ Start with the [documentation index](docs/README.md). Principal references inclu
 - [Desktop architecture](docs/architecture/desktop.md)
 - [Windows installer release](docs/windows-release.md)
 - [Official scientific packs](docs/science/official-packs.md)
+- [Declarative analysis composition](docs/science/analysis-composition.md)
 - [AI interpreter protocol](docs/ai/protocol.md)
 - [AI interpreter boundary](docs/ai/boundary.md)
 - [Training corpus](docs/ai/training.md)
@@ -125,6 +160,7 @@ Start with the [documentation index](docs/README.md). Principal references inclu
 - [Fine-tuning and candidate lifecycle](docs/ai/fine-tuning.md)
 - [Compatibility and migration](docs/compatibility/migration-notes.md)
 - [Verification state](docs/verification/desktop.md)
+- [1.19.0 release notes](docs/releases/RELEASE_NOTES_1.19.0.md)
 - [1.18.0 release notes](docs/releases/RELEASE_NOTES_1.18.0.md)
 - [1.17.0 release notes](docs/releases/RELEASE_NOTES_1.17.0.md)
 

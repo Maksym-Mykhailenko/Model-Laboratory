@@ -62,12 +62,13 @@ def run(capability: str, source: str, settings=None):
 
 def test_official_catalogue_is_versioned_and_complete():
     catalogue = official_pack_catalogue(model("generative-systems.yaml"))
-    assert len(catalogue) == 13
+    assert len(catalogue) == 14
     assert all(item["distribution"] == "official-optional" and item["installed"] for item in catalogue)
-    assert sum(item["capability_count"] for item in catalogue) == 45
-    assert len(OFFICIAL_KIND_REGISTRY.descriptors) == 43
+    assert sum(item["capability_count"] for item in catalogue) == 46
+    assert len(OFFICIAL_KIND_REGISTRY.descriptors) == 44
     assert tuple(item.identifier for item in OFFICIAL_PACK_MANIFESTS) == (
         "org.modellab.pack.multidimensional-mathematics",
+        "org.modellab.pack.analysis-composition",
         "org.modellab.pack.probability-stochastic-systems",
         "org.modellab.pack.graphs-networks-discrete",
         "org.modellab.pack.generative-inference-decision-systems",

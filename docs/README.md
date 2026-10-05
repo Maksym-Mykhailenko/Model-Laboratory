@@ -16,6 +16,8 @@ The repository root README provides the short project introduction and developme
 
 - [Official scientific packs](science/official-packs.md) is the authoritative catalogue of pack
   manifests, object kinds, capabilities, settings, artifacts, methods, and declared boundaries.
+- [Declarative analysis composition](science/analysis-composition.md) defines the bounded recipe
+  language, content-addressed execution model, safety limits, and Gaussian flagship example.
 
 ## AI authoring system
 
@@ -38,6 +40,7 @@ The repository root README provides the short project introduction and developme
 ## Releases
 
 - [Release-readiness implementation](releases/RELEASE_READINESS_IMPLEMENTATION.md)
+- [Model Laboratory 1.19.0](releases/RELEASE_NOTES_1.19.0.md)
 - [Model Laboratory 1.18.0](releases/RELEASE_NOTES_1.18.0.md)
 - [Model Laboratory 1.17.0](releases/RELEASE_NOTES_1.17.0.md)
 - Earlier release notes and the 1.16.1 interpreter update are retained in [releases](releases/).

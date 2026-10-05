@@ -166,6 +166,11 @@ EXAMPLE_MODELS = {
         "category": "Fields",
         "description": "Structured spatial fields and continuum problems.",
     },
+    "gaussian-hierarchy-dispersion": {
+        "filename": "gaussian-hierarchy-dispersion.yaml",
+        "category": "Composable analysis",
+        "description": "A six-level Gaussian hierarchy with declarative spectral and relaxation analysis.",
+    },
 }
 MAX_REQUEST_BYTES = 192 * 1024 * 1024
 MAX_CACHE_BYTES = 32 * 1024 * 1024

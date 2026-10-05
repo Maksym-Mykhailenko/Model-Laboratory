@@ -1,6 +1,6 @@
 # Untouched-Qwen interpreter baseline
 
-Model Laboratory 1.18.0 retains the corrected Stage-5 evaluation contract for the local
+Model Laboratory 1.19.0 retains the corrected Stage-5 evaluation contract for the local
 authoring interpreter. Its purpose is to measure the **untouched, frozen** Qwen artifact before
 any LoRA/QLoRA training begins. The held-out benchmark, scorer, prompt assets, compiler
 identity, and decoding profile are versioned so the same campaign can later be rerun against
@@ -74,6 +74,9 @@ The 13 official-pack families contribute creation coverage for all 34 official o
 plus one existing-object edit and one held-out clarification-continuation case per pack. A benchmark
 preflight requires every expected official object kind to be exposed by the schema context generated
 from that exact case instruction.
+
+The v1.19 declarative analysis-recipe kind is outside this frozen 34-kind authoring surface. Recipe
+execution and reproduction are installed, but recipe generation is not claimed by this benchmark.
 
 Ten capability-boundary cases require an explicit `unable` response for SDEs, specialised or
 trainable neural networks, neural controllers, structural optimisation, solver-coupled parameter

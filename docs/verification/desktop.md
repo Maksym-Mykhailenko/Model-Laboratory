@@ -1,19 +1,19 @@
-# Version 1.18.0 desktop and scientific verification
+# Version 1.19.0 desktop and scientific verification
 
-Verification date: 2026-09-17 UTC
+Verification date: 2026-10-04 UTC
 
 ## Completed checks
 
 | Layer | Result |
 |---|---|
-| Python regression suite | 451/451 passed |
+| Python regression suite | 460/460 passed |
 | Frontend contract | 9/9 passed; `node --check` passed for `app.js` and `core.mjs` |
 | Reference verification | 49/49 passed |
 | Bundle verification | 37/37 passed |
 | Reproduction verification | 51/51 passed |
 | Expression AST | 33/33 passed |
 | Model Graph / Run protocol | 33/33 passed |
-| Official scientific packs | 54/54 passed; 13 manifests, 34 kinds, 45 capabilities |
+| Official scientific packs | 57/57 passed; 14 manifests, 35 kinds, 46 capabilities |
 | Interpreter benchmark assets | 150 cases validated; live frozen-Qwen run not performed |
 | Training corpus | 6,300/6,300 deep compiler/context replay passed |
 | Human review queue | 725/725 rows structurally bound; all decisions still pending |
@@ -21,12 +21,16 @@ Verification date: 2026-09-17 UTC
 
 ## Corrected boundaries
 
-The desktop and compiler now reject unsupported scientific composition before it can be mistaken
-for a working model. Independent schema availability does not imply an SDE solver, neural training,
-a specialised CNN/GNN/RNN, a neural controller, structural optimisation, solver-coupled fitting,
-or mesh/FEM PDE solving. Supported neighbouring requests—deterministic ODEs, fixed explicitly
-weighted dense networks, uniform-grid PDEs, static truss analysis, and explicit nonlinear residual
-fitting—remain available.
+The desktop now supports bounded declarative composition of installed numerical primitives. The
+new campaign verifies content-addressed recipe steps, safe derived expressions, symmetric
+generalised eigenspectra, declarative rendering, and exact reproduction of the six-level Gaussian
+flagship. Formula output shapes and cumulative stored values are bounded before allocation.
+
+Composition does not imply an uninstalled solver. The compiler still rejects requests for SDEs,
+neural training, specialised CNN/GNN/RNN architectures, neural controllers, structural
+optimisation, solver-coupled fitting, or mesh/FEM PDE solving. Supported neighbouring requests—
+deterministic ODEs, fixed explicitly weighted dense networks, uniform-grid PDEs, static truss
+analysis, explicit nonlinear residual fitting, and the new recipe vocabulary—remain available.
 
 Committed experiment receipts now have a complete safe-open path. Opening a receipt validates its
 immutable envelope and embedded experiment state, recompiles and checks the model identity, restores

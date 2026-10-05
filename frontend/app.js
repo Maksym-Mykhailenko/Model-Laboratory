@@ -586,6 +586,7 @@ function defaultCapabilitySettings(capability, model) {
   if (capability.id === "org.modellab.optimization.constrained") Object.assign(settings, { objective: "minimize", seeds: 32 });
   const graphObjects = model.structure.model_graph?.objects || [];
   const kindByCapability = {
+    "org.modellab.composition.run-analysis-recipe": "org.modellab.composition.analysis-recipe",
     "org.modellab.multidimensional.analyse-array": "org.modellab.multidimensional.array",
     "org.modellab.probability.analyse-distribution": "org.modellab.probability.discrete-distribution",
     "org.modellab.probability.evolve-markov-chain": "org.modellab.probability.markov-chain",

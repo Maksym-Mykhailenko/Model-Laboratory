@@ -1,48 +1,95 @@
 # Model Laboratory 1.18.0
 
-Version 1.18.0 turns the release-readiness work into the active desktop release and closes the
-remaining application-side reliability gaps found during the 1.17 review.
+Model Laboratory is a local-first desktop environment for defining mathematical models, running
+typed scientific analyses, and preserving the complete experiment as inspectable, reproducible
+evidence. Version 1.18.0 is the first packaged Windows desktop release and completes the release-
+readiness work begun in 1.17.
 
-## Desktop safety
+## Download
 
-- Scientific sidecar calls now have finite operation-class timeouts. A timed-out sidecar is
-  terminated and the next request starts a clean process.
-- Files opened through operating-system associations remain in a native pending queue until the
-  frontend has successfully opened and acknowledged them. Cancelling the unsaved-changes prompt
-  preserves the request and exposes a **Pending file** retry action.
-- Model names recovered from experiments and commit receipts are converted to portable YAML
-  filenames before they reach a native save dialog.
-- A later save removes stale, application-owned atomic-save temporary files for the same target;
-  unrelated files and fresh recovery evidence are not touched.
+For most Windows users:
 
-## Windows release pipeline
+- **[Download the `.exe` installer](https://github.com/Maksym-Mykhailenko/Model-Laboratory/releases/download/v1.18.0/Model.Laboratory_1.18.0_x64-setup.exe)**
+- [Download the MSI package](https://github.com/Maksym-Mykhailenko/Model-Laboratory/releases/download/v1.18.0/Model.Laboratory_1.18.0_x64_en-US.msi) if you specifically need MSI deployment
+- [SHA-256 checksums](https://github.com/Maksym-Mykhailenko/Model-Laboratory/releases/download/v1.18.0/SHA256SUMS.txt)
+- [Installer smoke-test receipt](https://github.com/Maksym-Mykhailenko/Model-Laboratory/releases/download/v1.18.0/INSTALLER_SMOKE_TEST.json)
 
-- NSIS and MSI installer builds run version/tag consistency checks before packaging.
-- Tagged releases support optional Authenticode signing. Without configured certificate secrets,
-  the same verified installers are released unsigned and the draft release displays a warning.
-- Installer smoke automation covers clean installation, executable launch, `.mlab`, `.yaml`, and
-  `.yml` open-command registration, and uninstall for both package formats. It automatically
-  discovers an earlier published NSIS build when available and exercises the upgrade path.
-- Every installer run emits a machine-readable pass/fail receipt with installer hashes; failed
-  workflows retain that receipt as a diagnostic artifact, while successful receipts are shipped
-  with the installers. Uninstall checks reject residual executables or application open commands.
-- Windows-target Cargo dependencies are fully represented in the committed lockfile, native build
-  failures stop the pipeline immediately, and quoted installer registry paths are normalized before
-  executable discovery. Clean builds create the ignored scientific sidecar before Cargo validates
-  Tauri's external binary, and failed smoke tests attempt package cleanup before publishing evidence.
-- MSI smoke discovery now resolves Tauri's Cargo-named `model-laboratory.exe` inside the
-  product-named installation directory and records all attempted paths if discovery fails. The
-  association gate recognizes WiX's advertised Windows Installer descriptors as well as literal
-  NSIS open commands, checks the deterministic product ProgID when an extension key does not list
-  it, and still verifies that uninstall removes either representation.
-- The compatibility campaign now treats Linux CPython 3.13 as an expected target, with a regression
-  check that keeps the report contract synchronized with the GitHub Actions runner matrix.
-- GitHub Actions dependencies are pinned to immutable commits, and draft releases are created with
-  the runner's authenticated GitHub CLI.
+> [!WARNING]
+> These installers are not Authenticode-signed. Windows may display an **Unknown publisher** or
+> SmartScreen warning. Verify the downloaded file against `SHA256SUMS.txt` before installation.
 
-## Release identity
+## Getting started
 
-Python, npm, Tauri, Rust, lockfiles, citation metadata, the desktop footer, and release tests use
-`1.18.0`. The serialized scientific protocols remain compatible with 1.17.0: Model IR 3.0,
-expression AST 1.2, `.mlab` 2.0, experiment state 6, Run 1.1, Artifact 1.0, and desktop sidecar
-protocol 8.
+1. Install and open Model Laboratory.
+2. Choose a bundled example, open a YAML model or `.mlab` experiment, or start with a blank model.
+3. Review and validate the model before running an analysis.
+4. Inspect the resulting typed artifacts, visualisations, provenance, and workload information.
+5. Use the **Experiment** workspace to prepare and save a reproducible `.mlab` bundle.
+
+Opening an experiment validates and inspects it; computation starts only after an explicit run or
+reproduction action.
+
+## What Model Laboratory provides
+
+- A native Tauri desktop interface backed by a persistent local Python scientific engine.
+- Typed model, run, artifact, view, provenance, and reproduction protocols.
+- Content-addressed `.mlab` bundles containing model state, settings, artifacts, environment data,
+  and integrity fingerprints.
+- Exact, tolerance-based, and stochastic reproduction reports.
+- Thirteen official scientific packs covering 34 object kinds and 45 capabilities.
+- A bounded local authoring interpreter whose proposals pass through deterministic compilation,
+  scientific validation, user review, and explicit acceptance.
+- Workload estimation before execution and an explicit distinction between live and committed
+  experiment state.
+
+## What is new in 1.18.0
+
+### Safer document lifecycle
+
+- Visible unsaved state and Save/Discard/Cancel protection for replacement and close actions.
+- Atomic native saves with conservative cleanup of application-owned stale temporary files.
+- Lossless pending-file handling for documents opened through Windows file associations.
+- Portable filenames for models recovered from experiments and commit receipts.
+
+### Hardened desktop protocol
+
+- Finite operation-class timeouts and fail-closed sidecar restart after a timeout.
+- Strict request and response identity checks, bounded framing, malformed-frame rejection, and
+  cumulative response limits.
+- Oversized input is drained safely without desynchronising the next request.
+
+### First-run experience
+
+- A guided **Define → Validate → Analyse** introduction.
+- Eight bundled examples with explicit blank-model and existing-file paths.
+- No automatic scientific computation before the user chooses a starting action.
+
+### Windows distribution
+
+- Verified NSIS `.exe` and MSI installers produced from the same tested source.
+- Automated clean install, launch, `.mlab`/`.yaml`/`.yml` association, and uninstall checks for
+  both package formats.
+- Version/tag consistency checks, SHA-256 manifests, pinned workflow dependencies, and a machine-
+  readable installer receipt.
+
+## Verification
+
+The release workflow completed successfully with:
+
+- 453 Python tests;
+- 9 frontend contract tests;
+- native Rust protocol and document-lifecycle tests;
+- 257 reference, bundle, reproduction, expression, protocol, and official-pack checks;
+- clean install, launch, file-association, and uninstall smoke tests for both Windows installers.
+
+The serialized protocols remain compatible with 1.17.0: Model IR 3.0, expression AST 1.2,
+`.mlab` 2.0, experiment state 6, Run 1.1, Artifact 1.0, and desktop sidecar protocol 8.
+
+## Feedback
+
+Report reproducible defects or usability problems through
+[GitHub Issues](https://github.com/Maksym-Mykhailenko/Model-Laboratory/issues). Please follow
+[`SECURITY.md`](https://github.com/Maksym-Mykhailenko/Model-Laboratory/blob/main/SECURITY.md)
+for vulnerabilities rather than opening a public issue.
+
+[Full changelog](https://github.com/Maksym-Mykhailenko/Model-Laboratory/compare/v1.17.0...v1.18.0)

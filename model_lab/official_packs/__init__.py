@@ -6,6 +6,7 @@ carry executable code.  The locally installed registry remains authoritative.
 """
 
 from .registry import (
+    INTERPRETER_KIND_DESCRIPTORS,
     OFFICIAL_CAPABILITY_DESCRIPTORS,
     OFFICIAL_KIND_DESCRIPTORS,
     OFFICIAL_KIND_REGISTRY,
@@ -17,6 +18,7 @@ from .registry import (
 )
 
 __all__ = [
+    "INTERPRETER_KIND_DESCRIPTORS",
     "OFFICIAL_CAPABILITY_DESCRIPTORS",
     "OFFICIAL_KIND_DESCRIPTORS",
     "OFFICIAL_KIND_REGISTRY",

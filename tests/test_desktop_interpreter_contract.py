@@ -32,7 +32,7 @@ def test_desktop_versions_are_consistent() -> None:
     tauri = json.loads((ROOT / "src-tauri" / "tauri.conf.json").read_text(encoding="utf-8"))
     cargo = tomllib.loads((ROOT / "src-tauri" / "Cargo.toml").read_text(encoding="utf-8"))
 
-    assert __version__ == package["version"] == tauri["version"] == cargo["package"]["version"] == "1.18.0"
+    assert __version__ == package["version"] == tauri["version"] == cargo["package"]["version"] == "1.19.0"
 
 
 def test_interpreter_review_controls_exist_and_are_not_placeholder_disabled() -> None:

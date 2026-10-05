@@ -7,6 +7,7 @@ from typing import Any
 from ..model import ModelIR
 from ..model_graph import CORE_KIND_REGISTRY, ModelGraph, ObjectKindRegistry
 from . import (
+    composition,
     dynamics,
     electrical,
     fields,
@@ -26,6 +27,7 @@ from .common import validate_all
 
 _MODULES = (
     multidimensional,
+    composition,
     probability,
     graphs,
     generative,
@@ -44,6 +46,15 @@ _MODULE_BY_PACK_ID = {module.MANIFEST.identifier: module for module in _MODULES}
 
 OFFICIAL_KIND_DESCRIPTORS = tuple(
     descriptor for module in _MODULES for descriptor in module.KIND_DESCRIPTORS
+)
+# The reviewed interpreter corpus predates the recipe language.  Recipes remain fully
+# executable and editable as model data, but they are not advertised as interpreter-
+# authored objects until a dedicated reviewed corpus and benchmark are released.
+INTERPRETER_KIND_DESCRIPTORS = tuple(
+    descriptor
+    for module in _MODULES
+    if module is not composition
+    for descriptor in module.KIND_DESCRIPTORS
 )
 OFFICIAL_CAPABILITY_DESCRIPTORS = tuple(
     descriptor for module in _MODULES for descriptor in module.CAPABILITY_DESCRIPTORS

@@ -6,7 +6,9 @@ from typing import Any, Mapping
 
 import numpy as np
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
+from .composition import ComposedAnalysisResult
 from .generative import (
     ActiveInferenceEvaluation, HiddenMarkovInference, MarkovBlanketAnalysis, POMDPDecision,
 )
@@ -102,6 +104,57 @@ def _trajectory(times: np.ndarray, values: np.ndarray, names: tuple[str, ...], t
     for index, name in enumerate(names):
         figure.add_trace(go.Scatter(x=times, y=values[:, index], mode="lines", name=name))
     return _layout(figure, title, x_title="Time", y_title="State")
+
+
+def _composed_analysis_figure(result: ComposedAnalysisResult) -> go.Figure | None:
+    if not result.views:
+        return None
+    view = result.views[0]
+    panels = list(view["panels"])
+    figure = make_subplots(
+        rows=1,
+        cols=len(panels),
+        subplot_titles=[str(panel.get("title", "")) for panel in panels],
+    )
+    for column, panel in enumerate(panels, start=1):
+        x = np.asarray(result.value(str(panel["x"])), dtype=np.float64).reshape(-1)
+        x_scale = str(panel.get("x_scale", "linear"))
+        if x_scale == "log" and np.any(x <= 0.0):
+            raise ValueError("A composed-analysis logarithmic axis requires positive x values.")
+        for series in panel["series"]:
+            y = np.asarray(result.value(str(series["value"])), dtype=np.float64).reshape(-1)
+            if x.size != y.size:
+                raise ValueError("A composed-analysis plot series is not aligned with its x values.")
+            label = str(series["label"])
+            figure.add_trace(
+                go.Scatter(
+                    x=x,
+                    y=y,
+                    mode="lines",
+                    name=label,
+                    legendgroup=label,
+                    showlegend=column == 1,
+                    line=dict(dash=str(series.get("line_dash", "solid"))),
+                ),
+                row=1,
+                col=column,
+            )
+        figure.update_xaxes(
+            title_text=str(panel.get("x_label", "")),
+            type=x_scale,
+            row=1,
+            col=column,
+        )
+        figure.update_yaxes(
+            title_text=str(panel.get("y_label", "")), row=1, col=column
+        )
+    figure.update_layout(
+        title=str(view["title"]),
+        template="plotly_white",
+        margin=dict(l=55, r=30, t=80, b=55),
+        legend_title_text="",
+    )
+    return figure
 
 
 def _complex_spectrum(values: tuple[complex, ...], title: str) -> go.Figure:
@@ -294,6 +347,8 @@ def _electrostatic_figure(result: ElectrostaticAnalysis) -> go.Figure:
 
 def create_official_pack_figure(result: object) -> go.Figure | None:
     """Return a renderer-owned view; never alter artifact scientific identity."""
+    if isinstance(result, ComposedAnalysisResult):
+        return _composed_analysis_figure(result)
     if isinstance(result, ArrayAnalysis):
         return _array(result.values, f"Array analysis · {result.object_id}")
     if isinstance(result, TensorContraction):

@@ -1,23 +1,60 @@
 {
   "suite": "official-packs",
-  "version": "1.18.0",
-  "passed": 54,
-  "total": 54,
+  "version": "1.19.0",
+  "passed": 57,
+  "total": 57,
   "checks": [
     {
       "name": "official manifest count",
       "passed": true,
-      "evidence": 13
+      "evidence": 14
     },
     {
       "name": "official kind count",
       "passed": true,
-      "evidence": 34
+      "evidence": 35
     },
     {
       "name": "official capability count",
       "passed": true,
-      "evidence": 45
+      "evidence": 46
+    },
+    {
+      "name": "composed generalized spectra",
+      "passed": true,
+      "evidence": {
+        "profile_a": [
+          0.9999977661733248,
+          5.128539580209231,
+          9.481965983215815,
+          12.402381462239276,
+          15.324736250610854,
+          24.159978957551495
+        ],
+        "profile_b": [
+          0.9999969104708798,
+          1.7298142172088053,
+          15.014852114923908,
+          15.09447090020387,
+          23.57545097460521,
+          24.160014882587323
+        ]
+      }
+    },
+    {
+      "name": "composed relaxation observables",
+      "passed": true,
+      "evidence": {
+        "Profile A dispersion": 1.0314012291521135,
+        "Profile B dispersion": 1.2815482391483428,
+        "Profile A recovery breadth": 4.134288795785893,
+        "Profile B recovery breadth": 4.74131909629676
+      }
+    },
+    {
+      "name": "composed exact reproduction",
+      "passed": true,
+      "evidence": "EXACT REPRODUCTION"
     },
     {
       "name": "matrix rank",
@@ -459,7 +496,7 @@
     {
       "name": "official renderers",
       "passed": true,
-      "evidence": 41
+      "evidence": 42
     },
     {
       "name": "interpreter context budget",

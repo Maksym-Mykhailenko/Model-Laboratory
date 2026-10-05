@@ -486,6 +486,11 @@ def test_existing_mixed_pack_model_does_not_inject_every_schema_for_model_level_
     for path in sorted((ROOT / "models").glob("*.yaml")):
         document = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
         for identifier, value in (document.get("objects") or {}).items():
+            # Dependency-bearing examples cannot be transplanted without the core
+            # functions they reference; this fixture intentionally tests standalone
+            # mixed-pack objects only.
+            if value.get("references"):
+                continue
             assert identifier not in objects
             objects[identifier] = value
     assert len(objects) >= 26
@@ -520,7 +525,11 @@ def test_existing_object_identifier_routes_only_its_kind_in_rich_model() -> None
     objects: dict[str, object] = {}
     for path in sorted((ROOT / "models").glob("*.yaml")):
         document = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-        objects.update(document.get("objects") or {})
+        objects.update({
+            identifier: value
+            for identifier, value in (document.get("objects") or {}).items()
+            if not value.get("references")
+        })
     source = yaml.safe_dump({"name": "rich-model", "objects": objects}, sort_keys=False)
     model = validate_model(parse_model_text(source))
     assert _official_kind_context_selection("Edit roof-truss.", model) == (

@@ -1,7 +1,8 @@
 # Official scientific packs
 
-Model Laboratory 1.16.0 implements the first thirteen official structured scientific packs.
-They use the same four-layer boundary as every future extension:
+Model Laboratory 1.16.0 implemented the first thirteen official structured scientific packs;
+1.19.0 adds declarative analysis composition as the fourteenth. They use the same four-layer
+boundary as every future extension:
 
 1. a strict namespaced Model Graph object schema;
 2. locally installed capability code with explicit workload estimation;
@@ -12,8 +13,8 @@ An `.mlab` may require a pack and preserve its data, runs, artifacts and views. 
 contain Python, JavaScript, a native library, or another executable pack payload. Opening a
 bundle never runs a capability.
 
-The v1.16 full distribution bundles and activates these thirteen pack implementations.
-Their manifests already declare `official-optional` distribution and dependencies; moving
+The v1.19 full distribution bundles and activates all fourteen pack implementations.
+Their manifests declare `official-optional` distribution and dependencies; moving
 later large packs into separately downloaded, signed packages does not require a new Model
 Graph or `.mlab` representation.
 
@@ -32,6 +33,20 @@ Graph or `.mlab` representation.
 - Units: seven SI base-dimension exponents identify compatibility. Conversion scale,
   affine offset and standard uncertainty are stored explicitly. Official physical packs consume
   the same registry and convert declared inputs to canonical SI before numerical work.
+
+### Declarative Analysis Composition
+
+- Pack: `org.modellab.pack.analysis-composition@1.0`
+- Object: `org.modellab.composition.analysis-recipe@1.0`
+- Capability: execute an ordered, content-addressed graph of bounded installed numerical
+  primitives and render one declarative multi-panel Plotly view
+- Operations: finite literals and coordinates, safe array formulas, scalar and matrix-function
+  evaluation, symmetric generalised eigenvalues, and interpolated series thresholds
+- Results: every step preserves its operation, referenced inputs, validated settings, value, and
+  SHA-256 digest; named outputs become one renderer-independent composed-analysis artifact
+- Boundary: recipes contain data and whitelisted formulas, never Python, imports, file/network
+  access, arbitrary calls, branches, loops, or document-supplied renderer code. See
+  [Declarative analysis composition](analysis-composition.md) for the complete language and limits.
 
 ### Probability, Stochastic Processes and Simulation
 
@@ -225,6 +240,9 @@ horizons, compatible action/state/observation dimensions and unique identities.
 Capability workload is estimated before execution. Individual runners also impose hard
 result bounds. Visualization is dimension- and result-specific; the existence of an
 arbitrary-rank tensor does not imply that every rank has a misleading spatial rendering.
+Analysis recipes additionally preflight broadcast and matrix-product shapes, bound every
+intermediate and cumulative stored result, require finite real values, and verify symmetry and
+positive-definite metric assumptions before generalised spectral analysis.
 
 These are bounded pack contracts, not exhaustive disciplinary coverage. In particular, this
 release does not yet implement continuous probability distributions, missing-data models,
@@ -239,6 +257,7 @@ reversible/thermodynamic reaction laws, stochastic chemical kinetics, symbolic i
 ## Examples
 
 - `models/multidimensional.yaml`
+- `models/gaussian-hierarchy-dispersion.yaml`
 - `models/probability.yaml`
 - `models/network.yaml`
 - `models/generative-systems.yaml`

@@ -41,10 +41,59 @@ def compiled(name: str):
     return source, validate_model(parse_model_text(source))
 
 
-check("official manifest count", len(OFFICIAL_PACK_MANIFESTS) == 13, len(OFFICIAL_PACK_MANIFESTS))
-check("official kind count", len(OFFICIAL_KIND_DESCRIPTORS) == 34, len(OFFICIAL_KIND_DESCRIPTORS))
+check("official manifest count", len(OFFICIAL_PACK_MANIFESTS) == 14, len(OFFICIAL_PACK_MANIFESTS))
+check("official kind count", len(OFFICIAL_KIND_DESCRIPTORS) == 35, len(OFFICIAL_KIND_DESCRIPTORS))
 official_capability_count = len(OFFICIAL_CAPABILITY_DESCRIPTORS)
-check("official capability count", official_capability_count == 45, official_capability_count)
+check("official capability count", official_capability_count == 46, official_capability_count)
+
+gaussian_source, gaussian = compiled("gaussian-hierarchy-dispersion.yaml")
+gaussian_outcome = run_registry.run(
+    "org.modellab.composition.run-analysis-recipe",
+    gaussian,
+    {"object_id": "matched-relaxation-profiles"},
+)
+gaussian_result = gaussian_outcome.results[0]
+check(
+    "composed generalized spectra",
+    np.allclose(
+        gaussian_result.outputs["Profile A relaxation rates"].value,
+        [1.000, 5.129, 9.482, 12.402, 15.325, 24.160],
+        atol=5e-4,
+    )
+    and np.allclose(
+        gaussian_result.outputs["Profile B relaxation rates"].value,
+        [1.000, 1.730, 15.015, 15.094, 23.575, 24.160],
+        atol=5e-4,
+    ),
+    {
+        "profile_a": gaussian_result.outputs["Profile A relaxation rates"].value.tolist(),
+        "profile_b": gaussian_result.outputs["Profile B relaxation rates"].value.tolist(),
+    },
+)
+check(
+    "composed relaxation observables",
+    np.isclose(gaussian_result.outputs["Profile A dispersion"].value, 1.031, atol=5e-4)
+    and np.isclose(gaussian_result.outputs["Profile B dispersion"].value, 1.282, atol=5e-4)
+    and np.isclose(gaussian_result.outputs["Profile A recovery breadth"].value, 4.134, atol=5e-4)
+    and np.isclose(gaussian_result.outputs["Profile B recovery breadth"].value, 4.741, atol=5e-4),
+    {
+        name: output.value
+        for name, output in gaussian_result.outputs.items()
+        if name.endswith("dispersion") or name.endswith("recovery breadth")
+    },
+)
+gaussian_state = create_run_experiment_state(
+    model_source=gaussian_source,
+    model=gaussian,
+    parameter_values=gaussian.parameter_defaults(),
+    run_outcomes=(gaussian_outcome,),
+)
+gaussian_reproduced = reproduce_run_experiment(gaussian_state, model=gaussian)
+check(
+    "composed exact reproduction",
+    gaussian_reproduced.report.status is ReproductionStatus.EXACT,
+    gaussian_reproduced.report.status.value,
+)
 
 multi_source, multi = compiled("multidimensional.yaml")
 array = run_registry.run("org.modellab.multidimensional.analyse-array", multi).results[0]
@@ -171,7 +220,7 @@ fuzzy = run_registry.run("org.modellab.intelligence.evaluate-fuzzy-system", lear
 check("fuzzy inference", np.all(np.diff(fuzzy.outputs) > 0.0), fuzzy.outputs.tolist())
 
 rendered = [
-    array, evolution, network_result, hmm, decision, blanket, active,
+    gaussian_result, array, evolution, network_result, hmm, decision, blanket, active,
     ode, equilibria, state_space, control_response, scalar_field, vector_field,
     diffusion, poisson, cloud, mesh, mesh_path, material, static, modal,
     dataset, linear_fit, groups, optimum, nonlinear_fit, inverse, dc, ac, diode,

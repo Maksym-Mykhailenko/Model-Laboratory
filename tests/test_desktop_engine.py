@@ -92,7 +92,7 @@ def _compiled_rename(current: str, name: str, instruction: str):
 def test_health_exposes_versioned_isolated_engine_contract() -> None:
     result = desktop_engine.dispatch({"action": "health"})
 
-    assert result["version"] == __version__ == "1.18.0"
+    assert result["version"] == __version__ == "1.19.0"
     assert result["engine"] == "python-sidecar"
     assert result["protocol_version"] == 8
     assert result["process_mode"] == "persistent"
@@ -148,7 +148,7 @@ def test_later_official_pack_is_discovered_run_and_rendered_through_desktop_boun
     inspected = desktop_engine.dispatch(
         {"action": "inspect_model", "payload": {"source": source}}
     )
-    assert len(inspected["capabilities"]["official_packs"]) == 13
+    assert len(inspected["capabilities"]["official_packs"]) == 14
     mechanics = next(
         item for item in inspected["capabilities"]["official_packs"]
         if item["id"] == "org.modellab.pack.mechanics-structures-materials"

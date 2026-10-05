@@ -8,7 +8,7 @@ import pytest
 
 from model_lab.builtin_packs import run_registry
 from model_lab.interpreter import _official_pack_context_selection
-from model_lab.official_packs import OFFICIAL_KIND_DESCRIPTORS
+from model_lab.official_packs import INTERPRETER_KIND_DESCRIPTORS
 from model_lab.parser import parse_model_text
 from model_lab.protocol import ProtocolError, portable_value
 from model_lab.validator import ModelValidationError, validate_model
@@ -357,7 +357,10 @@ def test_corpus_and_benchmark_cover_every_official_pack_and_kind() -> None:
                     value = operation.get("value")
                     if operation.get("path", [None])[0] == "objects" and isinstance(value, dict):
                         kinds_by_split[split].add(value.get("kind"))
-    official_kinds = {descriptor.kind for descriptor in OFFICIAL_KIND_DESCRIPTORS}
+    # The frozen v1.5 corpus and v1.6 benchmark cover the reviewed interpreter-
+    # authoring surface. Executable v1.19 analysis recipes are deliberately excluded
+    # until they have their own reviewed authoring corpus.
+    official_kinds = {descriptor.kind for descriptor in INTERPRETER_KIND_DESCRIPTORS}
     assert kinds_by_split["train"] == official_kinds
     assert kinds_by_split["validation"] == official_kinds
 
