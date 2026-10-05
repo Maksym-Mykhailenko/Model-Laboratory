@@ -35,6 +35,20 @@ research software. It is local-first and licensed under Apache-2.0.
    provenance, then use the **Experiment** workspace to prepare and save a reproducible `.mlab`
    bundle.
 
+## Flagship scientific case
+
+The [six-level Gaussian hierarchy case](docs/cases/gaussian-hierarchy-dispersion.md) reproduces a
+substantive result from *A scale-free measure of relaxation anisotropy in precision-weighted
+variational inference*. Two precision profiles match their minimum and maximum relaxation rates,
+condition number, and geometric-mean rate, yet retain different interior spectra, log-spectral
+dispersion, recovery breadth, and residual dimensionality.
+
+The case publishes the [YAML model](models/gaussian-hierarchy-dispersion.yaml),
+[reference results](examples/gaussian-hierarchy-dispersion-reference-results.json),
+[figure](docs/assets/gaussian-hierarchy-dispersion.png), checksums, and an openable
+[`.mlab` experiment](examples/gaussian-hierarchy-dispersion.mlab) together. Its 27-step analysis
+uses only general bounded composition operations; it does not require a Gaussian-specific runner.
+
 ## Why Model Laboratory
 
 Computational experiments often combine editable source, numerical settings, environment details,
@@ -70,8 +84,9 @@ threshold measurements, and multi-panel figures without installing model-specifi
 
 The exact object kinds, capability versions, assumptions, and method boundaries are documented in
 [Official scientific packs](docs/science/official-packs.md). The
-[six-level Gaussian flagship](examples/README.md) includes its YAML model, openable draft `.mlab`
-with a completed run, reference figure, and exact reproduction checks.
+[six-level Gaussian flagship case](docs/cases/gaussian-hierarchy-dispersion.md) includes its
+scientific question, equations, declared computation, YAML model, machine-readable results,
+openable `.mlab`, reference figure, checksums, interpretation, and reproduction instructions.
 
 ## Reproducibility and trust boundary
 
@@ -92,7 +107,7 @@ Version 1.19.1 hardens cross-platform reproduction for the general-purpose compo
 introduced in 1.19.0. The verified catalogue contains 14 manifests, 35 object kinds, and 46 capabilities.
 The included six-level linear-Gaussian hierarchy reproduces two matched-endpoint relaxation spectra,
 their log-spectral dispersion, threshold times, recovery breadth, effective dimension, and a
-two-panel comparison through one declarative recipe. The release includes 460 Python regression
+two-panel comparison through one declarative recipe. The release includes 461 Python regression
 tests, frontend contract tests, analytical reference checks, bundle and reproduction checks,
 protocol checks, and official-pack verification.
 
@@ -153,6 +168,7 @@ Start with the [documentation index](docs/README.md). Principal references inclu
 - [Windows installer release](docs/windows-release.md)
 - [Official scientific packs](docs/science/official-packs.md)
 - [Declarative analysis composition](docs/science/analysis-composition.md)
+- [Flagship case: six-level Gaussian hierarchy](docs/cases/gaussian-hierarchy-dispersion.md)
 - [AI interpreter protocol](docs/ai/protocol.md)
 - [AI interpreter boundary](docs/ai/boundary.md)
 - [Training corpus](docs/ai/training.md)

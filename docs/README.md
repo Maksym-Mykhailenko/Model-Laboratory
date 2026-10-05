@@ -14,6 +14,9 @@ The repository root README provides the short project introduction and developme
 
 ## Scientific system
 
+- [Scientific cases](cases/README.md) collects complete model, analysis, figure, result, and
+  experiment packages. The first case studies
+  [dispersion in a six-level Gaussian hierarchy](cases/gaussian-hierarchy-dispersion.md).
 - [Official scientific packs](science/official-packs.md) is the authoritative catalogue of pack
   manifests, object kinds, capabilities, settings, artifacts, methods, and declared boundaries.
 - [Declarative analysis composition](science/analysis-composition.md) defines the bounded recipe

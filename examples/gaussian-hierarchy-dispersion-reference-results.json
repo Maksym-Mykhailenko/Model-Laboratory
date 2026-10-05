@@ -1,0 +1,76 @@
+{
+  "format": "Model Laboratory flagship case reference summary",
+  "format_version": "1.0",
+  "case_id": "six-level-gaussian-relaxation-dispersion",
+  "scientific_source": {
+    "author": "Maksym Mykhailenko",
+    "title": "A scale-free measure of relaxation anisotropy in precision-weighted variational inference",
+    "section": "4"
+  },
+  "reference": {
+    "laboratory_version": "1.19.0",
+    "experiment_id": "156606ca-dcdc-5e3a-90a3-0a705e46b6ad",
+    "experiment_state_sha256": "8c7287c71ae1141ca751308e0d7b037f8974142300f3ca7df3069b37b376b962",
+    "artifact_id": "sha256:59f8c679bff954dcb5ededf19c68dbb909265711fd2aedf3c431b4aaa92c1437",
+    "model_source_sha256": "301e219e9e428eaf6da9cb59b2894d12b508986e0c17dfad114407b8b531458c",
+    "bundle_sha256": "8cb1d1a61c538247a39d82ec2588c502d3dc63f539e245b446c21331b1c5e6d4",
+    "author_approved_for_publication": false,
+    "relative_tolerance": 1e-08,
+    "absolute_tolerance": 1e-11
+  },
+  "profiles": {
+    "A": {
+      "precisions": [7.3497, 3.3811, 5.8474, 7.9421, 5.8474, 3.3811, 7.3497],
+      "relaxation_rates": [
+        0.9999977661733248,
+        5.128539580209231,
+        9.481965983215815,
+        12.402381462239276,
+        15.324736250610854,
+        24.159978957551495
+      ],
+      "minimum_rate": 0.9999977661733248,
+      "geometric_mean_rate": 7.788986718329964,
+      "maximum_rate": 24.159978957551495,
+      "condition_number": 24.16003292687752,
+      "log_spectral_dispersion": 1.0314012291521135,
+      "t_0_90": 0.0047942958863241465,
+      "t_0_10": 0.29938059293487745,
+      "recovery_ratio": 62.44516401018726,
+      "recovery_breadth": 4.134288795785893,
+      "effective_dimension_at_t_0_4": 1.0760463734415762
+    },
+    "B": {
+      "precisions": [12.6953, 2.5613, 10.8862, 0.697, 10.8862, 2.5613, 12.6953],
+      "relaxation_rates": [
+        0.9999969104708798,
+        1.7298142172088053,
+        15.014852114923908,
+        15.09447090020387,
+        23.57545097460521,
+        24.160014882587323
+      ],
+      "minimum_rate": 0.9999969104708798,
+      "geometric_mean_rate": 7.7890121286439795,
+      "maximum_rate": 24.160014882587323,
+      "condition_number": 24.16008952588746,
+      "log_spectral_dispersion": 1.2815482391483428,
+      "t_0_90": 0.004027037734370834,
+      "t_0_10": 0.4614391296366333,
+      "recovery_ratio": 114.58525101422384,
+      "recovery_breadth": 4.74131909629676,
+      "effective_dimension_at_t_0_4": 1.8508800798366039
+    }
+  },
+  "definitions": {
+    "log_spectral_dispersion": "population standard deviation of log relaxation rates",
+    "residual_energy": "mean(exp(-2 * mu * t))",
+    "recovery_breadth": "log(t_0_10 / t_0_90)",
+    "effective_dimension": "sum(exp(-2 * mu * t))^2 / sum(exp(-4 * mu * t))"
+  },
+  "notes": [
+    "The precision vectors are rounded to four decimal places.",
+    "The authoritative full artifact, environment receipt, and integrity manifest are stored in the .mlab bundle.",
+    "This compact summary is documentation and does not define a new Model Laboratory protocol schema."
+  ]
+}

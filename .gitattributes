@@ -8,6 +8,7 @@
 *.icns binary
 *.pdf binary
 *.zip binary
+*.mlab binary
 *.gguf binary
 *.safetensors binary
 *.pt binary

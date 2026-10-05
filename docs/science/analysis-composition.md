@@ -86,6 +86,10 @@ JavaScript.
 
 ## Six-level Gaussian flagship
 
+The complete [flagship scientific case](../cases/gaussian-hierarchy-dispersion.md) presents the
+question, equations, declared 27-step computation, full results, interpretation, assets,
+checksums, limitations, and reproduction procedure. The implementation summary follows.
+
 [`models/gaussian-hierarchy-dispersion.yaml`](../../models/gaussian-hierarchy-dispersion.yaml)
 implements the six-level linear-Gaussian example from *A scale-free measure of relaxation
 anisotropy in precision-weighted variational inference*. One recipe evaluates the tridiagonal
@@ -102,8 +106,8 @@ the reported summary quantities, samples ensemble relaxation, and renders a two-
 | Effective dimension at \(t=0.4\) | 1.076 | 1.851 |
 
 The automated test tolerances account for the four-decimal precision profiles reported in the
-example. The model, recipe, outputs, figure specification, content hashes, and exact reproduction
-check are all exercised by the release suite.
+example. The model, recipe, outputs, figure specification, content hashes, strict same-environment
+identity path, and tolerant cross-platform reproduction path are exercised by the release suite.
 
 ![Ensemble relaxation in the matched six-level Gaussian hierarchies](../assets/gaussian-hierarchy-dispersion.png)
 

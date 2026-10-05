@@ -26,7 +26,7 @@ experiment environments and fails its packaging self-test if any version resolve
 installed`. Composed-analysis numerical reproduction compares the complete recipe semantics and
 aligned numerical values while excluding only the value hashes derived from those same values.
 Strict artifact identity still covers the hashes; platform-level eigensolver rounding can now
-correctly produce `NUMERICAL REPRODUCTION` when it falls within the pre-frozen tolerances.
+correctly produce `NUMERICALLY REPRODUCED` when it falls within the pre-frozen tolerances.
 
 The desktop now supports bounded declarative composition of installed numerical primitives. The
 new campaign verifies content-addressed recipe steps, safe derived expressions, symmetric

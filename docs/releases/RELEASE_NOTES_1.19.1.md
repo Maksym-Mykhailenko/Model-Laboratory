@@ -29,7 +29,7 @@ compare the complete artifact, including every value hash. If strict identity di
 reproduction compares all recipe operations, input references, settings, outputs, views, and
 underlying numerical values while excluding only `value_sha256`, which is derived from values
 already being compared. A deviation inside the experiment's pre-frozen tolerances is reported as
-`NUMERICAL REPRODUCTION`; a changed recipe or out-of-tolerance result still fails.
+`NUMERICALLY REPRODUCED`; a changed recipe or out-of-tolerance result still fails.
 
 ## Corrected frozen-sidecar metadata
 
