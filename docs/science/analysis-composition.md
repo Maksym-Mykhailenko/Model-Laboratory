@@ -91,8 +91,9 @@ question, equations, declared 27-step computation, full results, interpretation,
 checksums, limitations, and reproduction procedure. The implementation summary follows.
 
 [`models/gaussian-hierarchy-dispersion.yaml`](../../models/gaussian-hierarchy-dispersion.yaml)
-implements the six-level linear-Gaussian example from *A scale-free measure of relaxation
-anisotropy in precision-weighted variational inference*. One recipe evaluates the tridiagonal
+implements the six-level linear-Gaussian example from
+[*A scale-free measure of relaxation anisotropy in precision-weighted variational inference*](https://doi.org/10.2139/ssrn.5853487).
+One recipe evaluates the tridiagonal
 free-energy Hessian for two precision profiles, computes both positive relaxation spectra, derives
 the reported summary quantities, samples ensemble relaxation, and renders a two-panel comparison.
 
@@ -112,10 +113,8 @@ identity path, and tolerant cross-platform reproduction path are exercised by th
 ![Ensemble relaxation in the matched six-level Gaussian hierarchies](../assets/gaussian-hierarchy-dispersion.png)
 
 The repository also includes an openable
-[`gaussian-hierarchy-dispersion.mlab`](../../examples/gaussian-hierarchy-dispersion.mlab) draft
-bundle containing the completed run and composed artifact. It is intentionally not labelled as an
-author-approved publication bundle; that status requires the explicit review-and-freeze action in
-the desktop application.
+[`gaussian-hierarchy-dispersion.mlab`](../../examples/gaussian-hierarchy-dispersion.mlab) bundle
+containing the completed run and composed artifact.
 
 ## Safety and workload bounds
 

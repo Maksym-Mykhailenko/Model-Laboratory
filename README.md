@@ -38,8 +38,8 @@ research software. It is local-first and licensed under Apache-2.0.
 ## Flagship scientific case
 
 The [six-level Gaussian hierarchy case](docs/cases/gaussian-hierarchy-dispersion.md) reproduces a
-substantive result from *A scale-free measure of relaxation anisotropy in precision-weighted
-variational inference*. Two precision profiles match their minimum and maximum relaxation rates,
+substantive result from [*A scale-free measure of relaxation anisotropy in precision-weighted
+variational inference*](https://doi.org/10.2139/ssrn.5853487). Two precision profiles match their minimum and maximum relaxation rates,
 condition number, and geometric-mean rate, yet retain different interior spectra, log-spectral
 dispersion, recovery breadth, and residual dimensionality.
 

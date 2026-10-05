@@ -5,11 +5,14 @@
 [view the reference results](../../examples/gaussian-hierarchy-dispersion-reference-results.json) ·
 [verify file checksums](../../examples/gaussian-hierarchy-dispersion-SHA256SUMS.txt)
 
-This case is the computational realisation of the six-level example in Section 4 of Maksym
-Mykhailenko's manuscript *A scale-free measure of relaxation anisotropy in precision-weighted
-variational inference*. It tests a specific claim: familiar summaries of a relaxation spectrum can
-be matched while its internal shape, scale-free dispersion, and finite-time recovery remain
-different.
+This case is the computational realisation of the six-level example in Section 4 of:
+
+> Mykhailenko, M. (2026). *A scale-free measure of relaxation anisotropy in
+> precision-weighted variational inference*. SSRN.
+> [https://doi.org/10.2139/ssrn.5853487](https://doi.org/10.2139/ssrn.5853487)
+
+It tests a specific claim: familiar summaries of a relaxation spectrum can be matched while its
+internal shape, scale-free dispersion, and finite-time recovery remain different.
 
 The entire analysis is declared in one Model Laboratory YAML document and executed through the
 general composition capability. No model-specific Python runner, notebook, network access, or
@@ -49,8 +52,8 @@ as `matrix_functions.hessian` in the [model source](../../models/gaussian-hierar
 The eigenvalues $\mu_i$ of this Hessian are the contraction rates of the exact linear flow
 $\dot{\delta x}=-H\delta x$.
 
-The two reflection-symmetric precision profiles use the four-decimal values reported in the
-manuscript:
+The two reflection-symmetric precision profiles use the four-decimal values reported in Section 4
+of the cited paper:
 
 | Precision | Profile A | Profile B |
 |---|---:|---:|
@@ -149,12 +152,6 @@ environment, the expected status is `EXACT REPRODUCTION`. Across supported platf
 eigensolver rounding may instead produce `NUMERICALLY REPRODUCED`. The environment can correctly
 remain `DIFFERENT`: mathematical result identity and environment identity are separate findings.
 
-The checked-in experiment was created by Model Laboratory 1.19.0 on Linux and is intentionally a
-draft/interchange bundle (`author_approved_for_publication = false`). It contains the completed Run
-Record and scientific artifact and is fully inspectable and reproducible in 1.19.1. The separate
-author-approval flag is asserted only when an author reviews and freezes the exact canonical review
-inside the application.
-
 ## Files and integrity
 
 | File | Purpose |
@@ -184,8 +181,13 @@ convenient small representation of the same reported outputs.
 
 ## Citation and reuse
 
-Use [`CITATION.cff`](../../CITATION.cff) to cite Model Laboratory. When citing the scientific
-construction, identify the accompanying manuscript as Maksym Mykhailenko, *A scale-free measure of
-relaxation anisotropy in precision-weighted variational inference*, Section 4. The software,
-documentation, model, figure, and checked-in example are distributed under the repository's
-Apache-2.0 terms unless a file states otherwise.
+Use [`CITATION.cff`](../../CITATION.cff) to cite Model Laboratory. Cite the scientific construction
+as:
+
+> Mykhailenko, M. (2026). *A scale-free measure of relaxation anisotropy in
+> precision-weighted variational inference*. SSRN.
+> [https://doi.org/10.2139/ssrn.5853487](https://doi.org/10.2139/ssrn.5853487)
+
+The six-level hierarchy is presented in Section 4. The software, documentation, model, figure, and
+checked-in example are distributed under the repository's Apache-2.0 terms unless a file states
+otherwise.

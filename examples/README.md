@@ -16,15 +16,11 @@ individual assets:
   [`gaussian-hierarchy-dispersion-SHA256SUMS.txt`](gaussian-hierarchy-dispersion-SHA256SUMS.txt)
 - Recipe language: [Declarative analysis composition](../docs/science/analysis-composition.md)
 
-The `.mlab` is a validated draft/interchange bundle produced by the 1.19.0 recipe capability. It
-contains the model, completed Run Record, composed-analysis artifact, environment receipt,
-provenance, and integrity fingerprints. Opening it performs inspection only; choose **Reproduce**
-to rerun and compare the artifact. Model Laboratory 1.19.1 can report minute cross-platform
+The `.mlab` is a validated experiment containing the model, completed Run Record,
+composed-analysis artifact, environment receipt, provenance, and integrity fingerprints. Opening
+it performs inspection only; choose **Reproduce** to rerun and compare the artifact. Model
+Laboratory 1.19.1 can report minute cross-platform
 eigensolver differences as `NUMERICALLY REPRODUCED` while retaining strict identity checking and
 reporting environment differences separately.
-
-The checked-in bundle is deliberately not marked `author_approved_for_publication`. Publication
-approval is an explicit author action in Model Laboratory: review the frozen experiment, approve
-its exact review digest, and save the resulting publication bundle.
 
 The complete release-source hashes are recorded in the case's checksum manifest.
