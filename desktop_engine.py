@@ -1698,6 +1698,10 @@ def _inspect_committed_experiment_action(payload: Mapping[str, Any]) -> dict[str
 
 def _health() -> dict[str, Any]:
     environment = dict(current_environment())
+    scientific_packages = {
+        package: environment[package]
+        for package in ("numpy", "scipy", "sympy", "pydantic", "PyYAML", "plotly")
+    }
     return {
         "application": "Model Laboratory",
         "version": __version__,
@@ -1715,6 +1719,7 @@ def _health() -> dict[str, Any]:
             "source_tree_sha256": environment["source_tree_sha256"],
             "git_commit_or_build_id": environment["git_commit_or_build_id"],
         },
+        "scientific_packages": scientific_packages,
         "interpreter": {
             "status": "deterministic_edit_compiler",
             "provider": "ollama",

@@ -21,6 +21,7 @@ from model_lab.build_identity import calculate_build_identity
 
 BUILD_ROOT = ROOT / ".desktop-build" / "sidecar"
 BINARIES = ROOT / "src-tauri" / "binaries"
+RECORDED_DISTRIBUTIONS = ("numpy", "scipy", "sympy", "pydantic", "PyYAML", "plotly")
 
 
 def _rust_host() -> str:
@@ -75,8 +76,10 @@ def build(target: str) -> Path:
         f"{ROOT / 'model_lab' / 'baseline'}{os.pathsep}model_lab/baseline",
         "--add-data",
         f"{identity_path}{os.pathsep}model_lab",
-        str(ROOT / "desktop_engine.py"),
     ]
+    for distribution in RECORDED_DISTRIBUTIONS:
+        command.extend(("--copy-metadata", distribution))
+    command.append(str(ROOT / "desktop_engine.py"))
     subprocess.run(command, cwd=ROOT, check=True)
     built = dist / f"model-lab-engine{_suffix(target)}"
     if not built.is_file():
@@ -119,6 +122,15 @@ def build(target: str) -> Path:
     packaged_identity = health["result"].get("build_identity", {})
     if packaged_identity.get("source_tree_sha256") != build_identity["source_tree_sha256"]:
         raise SystemExit("The packaged sidecar did not retain its source-tree identity.")
+    packaged_versions = health["result"].get("scientific_packages", {})
+    if set(packaged_versions) != set(RECORDED_DISTRIBUTIONS) or any(
+        packaged_versions.get(package) == "not installed"
+        for package in RECORDED_DISTRIBUTIONS
+    ):
+        raise SystemExit(
+            "The packaged sidecar did not retain scientific distribution metadata: "
+            + json.dumps(packaged_versions, sort_keys=True)
+        )
     example = responses[1]
     if (
         not example.get("ok")

@@ -51,7 +51,7 @@ retains an empty extension key that does not expose a default or `OpenWithProgid
 
 ## GitHub release build
 
-Pushing the version tag `v1.19.0` runs `windows-release.yml`, verifies that the tag exactly matches
+Pushing the version tag `v1.19.1` runs `windows-release.yml`, verifies that the tag exactly matches
 all release metadata, uploads the verified MSI,
 NSIS installer, checksum manifest, and smoke-test receipt, then creates a draft GitHub release for
 final review. The workflow looks up the newest earlier published release, downloads its NSIS

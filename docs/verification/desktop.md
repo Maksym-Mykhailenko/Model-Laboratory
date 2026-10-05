@@ -1,12 +1,12 @@
-# Version 1.19.0 desktop and scientific verification
+# Version 1.19.1 desktop and scientific verification
 
-Verification date: 2026-10-04 UTC
+Verification date: 2026-10-05 UTC
 
 ## Completed checks
 
 | Layer | Result |
 |---|---|
-| Python regression suite | 460/460 passed |
+| Python regression suite | 461/461 passed |
 | Frontend contract | 9/9 passed; `node --check` passed for `app.js` and `core.mjs` |
 | Reference verification | 49/49 passed |
 | Bundle verification | 37/37 passed |
@@ -20,6 +20,13 @@ Verification date: 2026-10-04 UTC
 | QLoRA preflight | `BLOCKED` truthfully on review, live baseline, environment receipt, pinned ML dependencies, and CUDA |
 
 ## Corrected boundaries
+
+The Windows sidecar now retains distribution metadata for every scientific dependency recorded in
+experiment environments and fails its packaging self-test if any version resolves as `not
+installed`. Composed-analysis numerical reproduction compares the complete recipe semantics and
+aligned numerical values while excluding only the value hashes derived from those same values.
+Strict artifact identity still covers the hashes; platform-level eigensolver rounding can now
+correctly produce `NUMERICAL REPRODUCTION` when it falls within the pre-frozen tolerances.
 
 The desktop now supports bounded declarative composition of installed numerical primitives. The
 new campaign verifies content-addressed recipe steps, safe derived expressions, symmetric

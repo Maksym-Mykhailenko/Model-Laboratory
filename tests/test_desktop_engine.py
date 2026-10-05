@@ -92,7 +92,7 @@ def _compiled_rename(current: str, name: str, instruction: str):
 def test_health_exposes_versioned_isolated_engine_contract() -> None:
     result = desktop_engine.dispatch({"action": "health"})
 
-    assert result["version"] == __version__ == "1.19.0"
+    assert result["version"] == __version__ == "1.19.1"
     assert result["engine"] == "python-sidecar"
     assert result["protocol_version"] == 8
     assert result["process_mode"] == "persistent"

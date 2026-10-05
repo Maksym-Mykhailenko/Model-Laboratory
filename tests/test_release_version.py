@@ -18,7 +18,7 @@ SPEC.loader.exec_module(MODULE)
 
 
 def test_release_metadata_and_notes_are_consistent() -> None:
-    assert MODULE.verify("refs/tags/v1.19.0") == "1.19.0"
+    assert MODULE.verify("refs/tags/v1.19.1") == "1.19.1"
 
 
 def test_release_tag_mismatch_is_rejected() -> None:

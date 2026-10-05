@@ -1,4 +1,5 @@
 from pathlib import Path
+from copy import deepcopy
 
 import numpy as np
 import pytest
@@ -9,11 +10,13 @@ from model_lab.builtin_packs import run_registry
 from model_lab.experiment import create_run_experiment_state
 from model_lab.official_packs.composition import (
     AnalysisRecipeError,
+    COMPOSED_NUMERIC,
     ComposedAnalysisResult,
     evaluate_safe_expression,
 )
 from model_lab.official_packs.renderers import create_official_pack_figure
 from model_lab.parser import parse_model_text
+from model_lab.protocol import ScientificArtifact, comparator_registry
 from model_lab.reproduction import ReproductionStatus, reproduce_run_experiment
 from model_lab.validator import ModelValidationError, validate_model
 
@@ -100,6 +103,54 @@ def test_composed_result_is_rendered_and_exactly_reproduced():
     assert checked_in.state.laboratory_version == "1.19.0"
     assert checked_in.author_approved_for_publication is False
     assert checked_in.state.artifacts[0]["artifact_type"] == "org.modellab.artifact.composed-analysis"
+
+
+def test_composed_numeric_reproduction_compares_values_not_derived_hashes():
+    reference = _run_flagship().artifacts[0]
+    descriptor = run_registry.descriptor(
+        "org.modellab.composition.run-analysis-recipe", "1.0"
+    ).output_types[0]
+
+    def changed_artifact(delta: float) -> ScientificArtifact:
+        data = deepcopy(reference.data)
+        selected = data["outputs"]["Profile A dispersion"]
+        step_id = selected["step_id"]
+        selected["value"] += delta
+        for step in data["steps"]:
+            step["value_sha256"] = "0" * 64
+            if step["step_id"] == step_id:
+                step["value"] += delta
+        for output in data["outputs"].values():
+            output["value_sha256"] = "0" * 64
+        return ScientificArtifact.create(
+            artifact_type=descriptor,
+            capability_id=reference.capability_id,
+            capability_version=reference.capability_version,
+            model_ir_sha256=reference.model_ir_sha256,
+            data=data,
+        )
+
+    within = comparator_registry.compare(
+        COMPOSED_NUMERIC,
+        reference,
+        changed_artifact(1e-12),
+        rtol=1e-8,
+        atol=1e-11,
+    )
+    assert within.reproduced is True
+    assert within.maximum_absolute_deviation == pytest.approx(1e-12)
+    assert within.details["semantic_structure_matches"] is True
+    assert within.details["ignored_derived_fields"] == ["value_sha256"]
+
+    outside = comparator_registry.compare(
+        COMPOSED_NUMERIC,
+        reference,
+        changed_artifact(1e-3),
+        rtol=1e-8,
+        atol=1e-11,
+    )
+    assert outside.reproduced is False
+    assert outside.maximum_absolute_deviation == pytest.approx(1e-3)
 
 
 def test_generalized_metric_and_safe_formula_primitives_are_reusable():

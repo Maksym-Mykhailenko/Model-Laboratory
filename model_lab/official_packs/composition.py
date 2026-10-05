@@ -22,7 +22,15 @@ from ..canonical import canonical_json_sha256
 from ..evaluator import evaluate_scalar_at_points
 from ..model import ModelIR
 from ..model_graph import ModelGraphError, ModelObject, ObjectKindDescriptor
-from ..protocol import ArtifactTypeDescriptor, CapabilityDescriptor, portable_value
+from ..protocol import (
+    ArtifactTypeDescriptor,
+    CapabilityDescriptor,
+    ComparisonOutcome,
+    ScientificArtifact,
+    comparator_registry,
+    compare_numeric_data,
+    portable_value,
+)
 from ..vector_analysis import analyse_matrix_function
 from .common import MAX_INLINE_VALUES, PackManifest, objects_of_kind, select_object
 
@@ -1002,7 +1010,45 @@ def _recipe_units(settings: Mapping[str, Any], model: ModelIR) -> int:
     return total
 
 
-NUMERIC = "org.modellab.comparator.numeric"
+COMPOSED_NUMERIC = "org.modellab.comparator.composed-analysis"
+
+
+def _comparison_projection(value: object) -> object:
+    """Remove only checksums derived from values compared elsewhere in the artifact."""
+    if isinstance(value, Mapping):
+        return {
+            str(key): _comparison_projection(item)
+            for key, item in sorted(value.items(), key=lambda pair: str(pair[0]))
+            if key != "value_sha256"
+        }
+    if isinstance(value, list):
+        return [_comparison_projection(item) for item in value]
+    return value
+
+
+def _compare_composed_analysis(
+    reference: ScientificArtifact,
+    current: ScientificArtifact,
+    rtol: float,
+    atol: float,
+) -> ComparisonOutcome:
+    """Compare recipe semantics and values without treating derived hashes as inputs.
+
+    Step and output hashes intentionally change when platform-level eigensolver rounding
+    changes.  Strict reproduction still compares the complete artifact hash first; this
+    tolerant path compares the underlying aligned values and all non-derived semantics.
+    """
+    return compare_numeric_data(
+        _comparison_projection(reference.data),
+        _comparison_projection(current.data),
+        rtol=rtol,
+        atol=atol,
+        comparator_id=COMPOSED_NUMERIC,
+        details={"ignored_derived_fields": ["value_sha256"]},
+    )
+
+
+comparator_registry.register(COMPOSED_NUMERIC, _compare_composed_analysis)
 
 CAPABILITY_DESCRIPTORS = (
     CapabilityDescriptor(
@@ -1021,7 +1067,7 @@ CAPABILITY_DESCRIPTORS = (
                 "org.modellab.artifact.composed-analysis",
                 "1.0",
                 "Composed scientific analysis",
-                NUMERIC,
+                COMPOSED_NUMERIC,
             ),
         ),
         _applicable,

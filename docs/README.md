@@ -40,6 +40,7 @@ The repository root README provides the short project introduction and developme
 ## Releases
 
 - [Release-readiness implementation](releases/RELEASE_READINESS_IMPLEMENTATION.md)
+- [Model Laboratory 1.19.1](releases/RELEASE_NOTES_1.19.1.md)
 - [Model Laboratory 1.19.0](releases/RELEASE_NOTES_1.19.0.md)
 - [Model Laboratory 1.18.0](releases/RELEASE_NOTES_1.18.0.md)
 - [Model Laboratory 1.17.0](releases/RELEASE_NOTES_1.17.0.md)

@@ -772,20 +772,44 @@ def _numeric_comparator(
     rtol: float,
     atol: float,
 ) -> ComparisonOutcome:
+    return compare_numeric_data(reference.data, current.data, rtol=rtol, atol=atol)
+
+
+def compare_numeric_data(
+    reference_data: Any,
+    current_data: Any,
+    *,
+    rtol: float,
+    atol: float,
+    comparator_id: str = "org.modellab.comparator.numeric",
+    details: Mapping[str, Any] | None = None,
+) -> ComparisonOutcome:
+    """Compare two portable scientific values under the generic numeric policy.
+
+    Capability-specific comparators may first remove fields that are deterministically
+    derived from the numerical values (for example, an internal value checksum), then
+    delegate the actual aligned/tolerance comparison here.  The complete artifact
+    checksum remains the strict-identity test performed before any comparator runs.
+    """
     if rtol < 0 or atol < 0:
         raise ProtocolError("Numerical tolerances must be non-negative.")
-    reference_science = _scientific_projection(reference.data)
-    current_science = _scientific_projection(current.data)
+    _namespaced(comparator_id, "Comparator")
+    reference_science = _scientific_projection(reference_data)
+    current_science = _scientific_projection(current_data)
     left = _numeric_leaves(reference_science)
     right = _numeric_leaves(current_science)
     structure_matches = _numeric_skeleton(reference_science) == _numeric_skeleton(current_science)
     if set(left) != set(right) or not left or not structure_matches:
         return ComparisonOutcome(
             False,
-            "org.modellab.comparator.numeric",
+            comparator_id,
             None,
             None,
-            {"aligned": False, "semantic_structure_matches": structure_matches},
+            {
+                "aligned": False,
+                "semantic_structure_matches": structure_matches,
+                **dict(details or {}),
+            },
         )
     absolute = [abs(left[path] - right[path]) for path in left]
     relative = [
@@ -798,7 +822,7 @@ def _numeric_comparator(
     )
     return ComparisonOutcome(
         reproduced,
-        "org.modellab.comparator.numeric",
+        comparator_id,
         max(absolute, default=0.0),
         max(relative, default=0.0),
         {
@@ -807,6 +831,7 @@ def _numeric_comparator(
             "value_count": len(left),
             "rtol": rtol,
             "atol": atol,
+            **dict(details or {}),
         },
     )
 

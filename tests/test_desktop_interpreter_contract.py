@@ -32,7 +32,7 @@ def test_desktop_versions_are_consistent() -> None:
     tauri = json.loads((ROOT / "src-tauri" / "tauri.conf.json").read_text(encoding="utf-8"))
     cargo = tomllib.loads((ROOT / "src-tauri" / "Cargo.toml").read_text(encoding="utf-8"))
 
-    assert __version__ == package["version"] == tauri["version"] == cargo["package"]["version"] == "1.19.0"
+    assert __version__ == package["version"] == tauri["version"] == cargo["package"]["version"] == "1.19.1"
 
 
 def test_interpreter_review_controls_exist_and_are_not_placeholder_disabled() -> None:
@@ -225,6 +225,10 @@ def test_sidecar_bundles_versioned_interpreter_assets() -> None:
     source = (ROOT / "scripts" / "build_sidecar.py").read_text(encoding="utf-8")
     assert "ROOT / 'model_lab' / 'baseline'" in source
     assert "model_lab/baseline" in source
+    assert "--copy-metadata" in source
+    for distribution in ("numpy", "scipy", "sympy", "pydantic", "PyYAML", "plotly"):
+        assert f'"{distribution}"' in source
+    assert "did not retain scientific distribution metadata" in source
 
 
 def test_native_interpreter_compile_verification_is_mandatory_in_ci_and_builds() -> None:
