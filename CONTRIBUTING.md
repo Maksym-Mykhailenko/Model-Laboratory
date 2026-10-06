@@ -46,13 +46,6 @@ description. The repository policy is documented in
 Do not commit downloaded model weights, local environments, platform build directories, generated
 sidecar binaries, candidate adapters, environment receipts, or promotion ledgers.
 
-## Generative-AI assistance
-
-Disclose substantive generative-AI assistance consistently with [GENERATIVE_AI.md](GENERATIVE_AI.md).
-Retain the provider and model when available, task instruction or prompt, unedited response,
-affected work, and the review or validation applied. Contributors remain responsible for ensuring
-that submitted material can be distributed under the project's licence.
-
 ## Contribution terms
 
 Unless explicitly stated otherwise, contributions intentionally submitted for inclusion are

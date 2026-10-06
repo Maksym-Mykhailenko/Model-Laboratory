@@ -15,6 +15,7 @@ cargo test --manifest-path src-tauri/Cargo.toml --locked document_temp_
 npm ci
 npm run test:frontend
 python3 -m pytest -q
+python3 scripts/verify_flagship_case.py
 python3 verification/run_reference_verification.py
 python3 verification/run_bundle_verification.py
 python3 verification/run_reproduction_verification.py

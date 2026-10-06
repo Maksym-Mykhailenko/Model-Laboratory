@@ -19,8 +19,6 @@ single consistent version and documentation structure.
 - Original project material is distributed under Apache-2.0.
 - `LICENSE`, `NOTICE`, and `LICENSING.md` define the project terms and scope.
 - `THIRD_PARTY_LICENSES.md` records principal third-party components and distribution considerations.
-- `GENERATIVE_AI.md` discloses the human-directed, AI-assisted development workflow and subsequent
-  provenance practice.
 - `CITATION.cff` supplies machine-readable software citation metadata.
 
 ## Documentation
@@ -29,8 +27,8 @@ single consistent version and documentation structure.
   documentation map.
 - Detailed architecture, science, AI, compatibility, verification, and historical release material
   is organised under `docs/`.
-- `CONTRIBUTING.md` defines the development, verification, generated-artifact, licensing, and
-  generative-AI contribution practices.
+- `CONTRIBUTING.md` defines the development, verification, generated-artifact, and licensing
+  contribution practices.
 - `SECURITY.md` records supported releases, reporting guidance, trust boundaries, and release
   handling.
 

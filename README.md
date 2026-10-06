@@ -8,13 +8,13 @@
 A local-first desktop environment for creating, analysing, preserving, and reproducing
 mathematical experiments.
 
-**[Download Model Laboratory 1.19.1 for Windows (.exe)](https://github.com/Maksym-Mykhailenko/Model-Laboratory/releases/download/v1.19.1/Model.Laboratory_1.19.1_x64-setup.exe)**
-· [MSI, checksums, and release details](https://github.com/Maksym-Mykhailenko/Model-Laboratory/releases/tag/v1.19.1)
+**[Download Model Laboratory 1.19.2 for Windows (.exe)](https://github.com/Maksym-Mykhailenko/Model-Laboratory/releases/download/v1.19.2/Model.Laboratory_1.19.2_x64-setup.exe)**
+· [MSI, checksums, and release details](https://github.com/Maksym-Mykhailenko/Model-Laboratory/releases/tag/v1.19.2)
 
 > [!NOTE]
-> The v1.19.1 Windows installers are not Authenticode-signed, so Windows may display an
+> The v1.19.2 Windows installers are not Authenticode-signed, so Windows may display an
 > **Unknown publisher** or SmartScreen warning. Verify downloads with the published
-> [`SHA256SUMS.txt`](https://github.com/Maksym-Mykhailenko/Model-Laboratory/releases/download/v1.19.1/SHA256SUMS.txt).
+> [`SHA256SUMS.txt`](https://github.com/Maksym-Mykhailenko/Model-Laboratory/releases/download/v1.19.2/SHA256SUMS.txt).
 
 ![Model Laboratory showing a controlled dynamical-system model and its state-space analysis](docs/assets/model-laboratory-analysis.png)
 
@@ -103,11 +103,11 @@ not carry executable extension code.
 
 ## Current release state
 
-Version 1.19.1 hardens cross-platform reproduction for the general-purpose composition layer
-introduced in 1.19.0. The verified catalogue contains 14 manifests, 35 object kinds, and 46 capabilities.
+Version 1.19.2 completes the frozen flagship case, aligns downloadable filenames with release
+checksums, and updates release maintenance for the general-purpose composition layer introduced in 1.19.0. The verified catalogue contains 14 manifests, 35 object kinds, and 46 capabilities.
 The included six-level linear-Gaussian hierarchy reproduces two matched-endpoint relaxation spectra,
 their log-spectral dispersion, threshold times, recovery breadth, effective dimension, and a
-two-panel comparison through one declarative recipe. The release includes 461 Python regression
+two-panel comparison through one declarative recipe. The release includes 466 Python regression
 tests, frontend contract tests, analytical reference checks, bundle and reproduction checks,
 protocol checks, and official-pack verification.
 
@@ -176,6 +176,7 @@ Start with the [documentation index](docs/README.md). Principal references inclu
 - [Fine-tuning and candidate lifecycle](docs/ai/fine-tuning.md)
 - [Compatibility and migration](docs/compatibility/migration-notes.md)
 - [Verification state](docs/verification/desktop.md)
+- [1.19.2 release notes](docs/releases/RELEASE_NOTES_1.19.2.md)
 - [1.19.1 release notes](docs/releases/RELEASE_NOTES_1.19.1.md)
 - [1.19.0 release notes](docs/releases/RELEASE_NOTES_1.19.0.md)
 - [1.18.0 release notes](docs/releases/RELEASE_NOTES_1.18.0.md)

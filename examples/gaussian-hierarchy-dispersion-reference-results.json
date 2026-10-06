@@ -12,26 +12,43 @@
     "section": "4"
   },
   "reference": {
-    "laboratory_version": "1.19.0",
-    "experiment_id": "156606ca-dcdc-5e3a-90a3-0a705e46b6ad",
-    "experiment_state_sha256": "8c7287c71ae1141ca751308e0d7b037f8974142300f3ca7df3069b37b376b962",
+    "laboratory_version": "1.19.2",
+    "experiment_id": "d1f280c4-1e59-5392-a53e-0401bdf41437",
+    "experiment_state_sha256": "15b15a0ebbca126600e698bbc866101164df116cc8ddb9a746cb178e96a87246",
     "artifact_id": "sha256:59f8c679bff954dcb5ededf19c68dbb909265711fd2aedf3c431b4aaa92c1437",
     "model_source_sha256": "301e219e9e428eaf6da9cb59b2894d12b508986e0c17dfad114407b8b531458c",
-    "bundle_sha256": "8cb1d1a61c538247a39d82ec2588c502d3dc63f539e245b446c21331b1c5e6d4",
+    "bundle_sha256": "55add17b8aa1a82a78f8c6f405cfa7d23605dd0d4dae323eaf54809d48ee146f",
+    "author_approved_for_publication": true,
+    "review_sha256": "b534ef9dfcfc547828030d6852fbad9dbbfe082ae35aaa4e91b6f98c82e6d49f",
     "relative_tolerance": 1e-08,
     "absolute_tolerance": 1e-11
   },
   "profiles": {
     "A": {
-      "precisions": [7.3497, 3.3811, 5.8474, 7.9421, 5.8474, 3.3811, 7.3497],
-      "relaxation_rates": [
-        0.9999977661733248,
-        5.128539580209231,
-        9.481965983215815,
-        12.402381462239276,
-        15.324736250610854,
-        24.159978957551495
+      "precisions": [
+        7.3497,
+        3.3811,
+        5.8474,
+        7.9421,
+        5.8474,
+        3.3811,
+        7.3497
       ],
+      "relaxation_rates": {
+        "dtype": "float64",
+        "encoding": "inline-array",
+        "shape": [
+          6
+        ],
+        "values": [
+          0.9999977661733248,
+          5.128539580209231,
+          9.481965983215815,
+          12.402381462239276,
+          15.324736250610854,
+          24.159978957551495
+        ]
+      },
       "minimum_rate": 0.9999977661733248,
       "geometric_mean_rate": 7.788986718329964,
       "maximum_rate": 24.159978957551495,
@@ -44,15 +61,30 @@
       "effective_dimension_at_t_0_4": 1.0760463734415762
     },
     "B": {
-      "precisions": [12.6953, 2.5613, 10.8862, 0.697, 10.8862, 2.5613, 12.6953],
-      "relaxation_rates": [
-        0.9999969104708798,
-        1.7298142172088053,
-        15.014852114923908,
-        15.09447090020387,
-        23.57545097460521,
-        24.160014882587323
+      "precisions": [
+        12.6953,
+        2.5613,
+        10.8862,
+        0.697,
+        10.8862,
+        2.5613,
+        12.6953
       ],
+      "relaxation_rates": {
+        "dtype": "float64",
+        "encoding": "inline-array",
+        "shape": [
+          6
+        ],
+        "values": [
+          0.9999969104708798,
+          1.7298142172088053,
+          15.014852114923908,
+          15.09447090020387,
+          23.57545097460521,
+          24.160014882587323
+        ]
+      },
       "minimum_rate": 0.9999969104708798,
       "geometric_mean_rate": 7.7890121286439795,
       "maximum_rate": 24.160014882587323,

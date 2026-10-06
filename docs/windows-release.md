@@ -14,7 +14,10 @@ Use a Windows machine with Python 3.11+, Node.js 20+, and the Rust MSVC toolchai
 ```
 
 The script writes installers and `SHA256SUMS.txt` under
-`src-tauri/target/release/bundle`. Unsigned output is functional and may be distributed, but
+`src-tauri/target/release/bundle`. The complete download set is staged under its `release-assets/`
+directory, including the exact-environment `SBOM.cdx.json`, complete frozen Gaussian case archive,
+and a checksum manifest covering every staged payload. Installer basenames are normalised before
+hashing so local names, GitHub downloads and checksum entries agree. Unsigned output is functional and may be distributed, but
 Windows can display **Unknown publisher** or SmartScreen warnings. Disclose that status and have
 users verify downloads against `SHA256SUMS.txt`.
 
@@ -51,9 +54,9 @@ retains an empty extension key that does not expose a default or `OpenWithProgid
 
 ## GitHub release build
 
-Pushing the version tag `v1.19.1` runs `windows-release.yml`, verifies that the tag exactly matches
+Pushing the version tag `v1.19.2` runs `windows-release.yml`, verifies that the tag exactly matches
 all release metadata, uploads the verified MSI,
-NSIS installer, checksum manifest, and smoke-test receipt, then creates a draft GitHub release for
+NSIS installer, checksum manifest, smoke-test receipt, SBOM and complete case archive, then creates a draft GitHub release for
 final review. The workflow looks up the newest earlier published release, downloads its NSIS
 executable when one exists, and automatically exercises an in-place upgrade before the clean
 installer tests. If no previous installer exists—as expected for a first binary release—the
@@ -75,3 +78,26 @@ as a configuration error. When neither secret exists, manual and tagged builds c
 unsigned installers and the generated draft release carries an explicit warning. Both paths run
 the same clean-install smoke tests for NSIS and MSI. Workflow actions are pinned to immutable
 commit SHAs; update those pins deliberately during dependency maintenance.
+
+The build job has read-only repository access. A separate publication job receives the write
+permission, checks the downloaded build artifacts against their manifest and uploads the draft.
+It refuses to replace installers in an already published release.
+
+## Repair and publish the 1.19.2 patch
+
+After committing the reviewed patch on `main`, use an authenticated GitHub CLI session:
+
+```sh
+python scripts/publish_release.py --publish
+```
+
+This replaces only the incorrect checksum asset on 1.19.1, pushes `main`, waits for its
+cross-platform checks, pushes the new 1.19.2 tag, waits for the Windows installer build, downloads
+and verifies all draft assets, and then publishes the patch. It does not move an existing tag or
+replace the 1.19.1 installers. A failure leaves the new release unpublished for inspection.
+
+To repair only the existing checksum asset:
+
+```sh
+python scripts/publish_release.py --repair-only
+```

@@ -140,14 +140,15 @@ residual covariance. Solid: Profile A. Dashed: Profile B.*
 
 ## Reproduce the experiment
 
-1. Install [Model Laboratory 1.19.1 or later](https://github.com/Maksym-Mykhailenko/Model-Laboratory/releases/latest).
+1. Install [Model Laboratory 1.19.2 or later](https://github.com/Maksym-Mykhailenko/Model-Laboratory/releases/latest).
 2. Download [`gaussian-hierarchy-dispersion.mlab`](../../examples/gaussian-hierarchy-dispersion.mlab).
 3. Select **Open experiment** and choose the downloaded bundle. Opening performs integrity and
    schema inspection but does not execute the analysis.
 4. Review the recorded workload and environment, then select **Reproduce**.
 5. Inspect the result-by-result comparison or export the JSON/text reproduction report.
 
-The bundle freezes `rtol = 1e-8` and `atol = 1e-11` before reproduction. On an identical numerical
+The 1.19.2 bundle includes the canonical frozen author review and opens as **Author-approved**.
+It freezes `rtol = 1e-8` and `atol = 1e-11` before reproduction. On an identical numerical
 environment, the expected status is `EXACT REPRODUCTION`. Across supported platforms, harmless
 eigensolver rounding may instead produce `NUMERICALLY REPRODUCED`. The environment can correctly
 remain `DIFFERENT`: mathematical result identity and environment identity are separate findings.
@@ -157,10 +158,10 @@ remain `DIFFERENT`: mathematical result identity and environment identity are se
 | File | Purpose |
 |---|---|
 | [`models/gaussian-hierarchy-dispersion.yaml`](../../models/gaussian-hierarchy-dispersion.yaml) | Human-readable model, Hessian, analysis recipe, outputs, and view specification. |
-| [`examples/gaussian-hierarchy-dispersion.mlab`](../../examples/gaussian-hierarchy-dispersion.mlab) | Openable experiment with the source, canonical Model IR, environment, provenance, Run Record, artifact, references, and integrity manifest. |
+| [`examples/gaussian-hierarchy-dispersion.mlab`](../../examples/gaussian-hierarchy-dispersion.mlab) | Frozen experiment with the source, canonical Model IR, environment, provenance, Run Record, artifact, references, author review, and integrity manifest. |
 | [`examples/gaussian-hierarchy-dispersion-reference-results.json`](../../examples/gaussian-hierarchy-dispersion-reference-results.json) | Compact machine-readable summary derived from the artifact in the bundle. |
 | [`docs/assets/gaussian-hierarchy-dispersion.png`](../assets/gaussian-hierarchy-dispersion.png) | Publication-scale reference rendering of the two declared panels. |
-| [`examples/gaussian-hierarchy-dispersion-SHA256SUMS.txt`](../../examples/gaussian-hierarchy-dispersion-SHA256SUMS.txt) | SHA-256 manifest for the four case assets. |
+| [`examples/gaussian-hierarchy-dispersion-SHA256SUMS.txt`](../../examples/gaussian-hierarchy-dispersion-SHA256SUMS.txt) | SHA-256 manifest for the model, bundle, reference JSON, figure and case page; verify from the repository root. |
 
 The `.mlab` manifest additionally checks every member inside the container. The authoritative
 full-precision numerical values are the typed artifact in that bundle; the JSON summary provides a

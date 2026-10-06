@@ -24,6 +24,17 @@ if ($MsiInstallers.Count -lt 1) {
 
 $Installers = @($NsisInstallers + $MsiInstallers)
 $ChecksumLines = foreach ($Installer in $Installers | Sort-Object FullName) {
+    # GitHub converts spaces in uploaded asset names to dots. Name the actual files
+    # before hashing so downloads and SHA256SUMS.txt use the same basename.
+    $AssetName = [regex]::Replace($Installer.Name, '[^A-Za-z0-9._-]', '.')
+    if ($AssetName -ne $Installer.Name) {
+        $AssetPath = Join-Path $Installer.DirectoryName $AssetName
+        if (Test-Path -LiteralPath $AssetPath) {
+            throw "Release asset name collision: $AssetPath"
+        }
+        Rename-Item -LiteralPath $Installer.FullName -NewName $AssetName
+        $Installer = Get-Item -LiteralPath $AssetPath
+    }
     if ($Installer.Length -lt 1MB) {
         throw "Installer is implausibly small: $($Installer.FullName)"
     }

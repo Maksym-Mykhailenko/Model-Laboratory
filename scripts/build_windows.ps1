@@ -93,6 +93,8 @@ npm run test:frontend
 Assert-NativeSuccess "Frontend contract tests"
 python -m pytest -q
 Assert-NativeSuccess "Python test suite"
+python scripts/verify_flagship_case.py
+Assert-NativeSuccess "Frozen flagship case verification"
 python verification/run_reference_verification.py
 Assert-NativeSuccess "Reference verification"
 python verification/run_bundle_verification.py
@@ -152,4 +154,12 @@ if ($RunInstallerSmoke) {
     & (Join-Path $PSScriptRoot "smoke_test_windows_installers.ps1") @SmokeParameters
 }
 
-Write-Host "Installers are available under src-tauri\target\release\bundle."
+$BundleRoot = Join-Path $ProjectRoot "src-tauri\target\release\bundle"
+python scripts/build_release_sbom.py --output (Join-Path $BundleRoot "SBOM.cdx.json")
+Assert-NativeSuccess "Release SBOM generation"
+$AssetArguments = @("scripts/prepare_release_assets.py", "--bundle-root", $BundleRoot)
+if ($RunInstallerSmoke) { $AssetArguments += "--require-smoke" }
+& python @AssetArguments
+Assert-NativeSuccess "Release asset and checksum staging"
+
+Write-Host "Release downloads are available under src-tauri\target\release\bundle\release-assets."

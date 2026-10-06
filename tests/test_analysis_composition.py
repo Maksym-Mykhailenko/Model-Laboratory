@@ -5,6 +5,7 @@ import numpy as np
 import pytest
 
 import desktop_engine
+from model_lab import __version__
 from model_lab.bundle import create_run_mlab_bundle, load_mlab_bundle
 from model_lab.builtin_packs import run_registry
 from model_lab.experiment import create_run_experiment_state
@@ -100,7 +101,9 @@ def test_composed_result_is_rendered_and_exactly_reproduced():
 
     checked_in = load_mlab_bundle(FLAGSHIP_BUNDLE.read_bytes())
     assert checked_in.state.model_source == source
-    assert checked_in.state.laboratory_version == "1.19.0"
+    assert checked_in.state.laboratory_version == __version__
+    assert checked_in.author_approved_for_publication
+    assert checked_in.authoring_document["status"] == "FROZEN"
     assert checked_in.state.artifacts[0]["artifact_type"] == "org.modellab.artifact.composed-analysis"
 
 

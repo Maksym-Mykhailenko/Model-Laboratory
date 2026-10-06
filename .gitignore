@@ -23,6 +23,7 @@ build/
 
 # Rust and Tauri
 src-tauri/target/
+verification/glib-iterator/target/
 src-tauri/gen/
 src-tauri/binaries/*
 !src-tauri/binaries/.gitkeep

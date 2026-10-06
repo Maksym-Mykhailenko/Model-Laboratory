@@ -1,7 +1,7 @@
 param(
     [string]$BundleRoot = "",
     [string]$PreviousNsisInstaller = "",
-    [string]$ExpectedVersion = "1.19.1",
+    [string]$ExpectedVersion = "1.19.2",
     [string]$EvidencePath = ""
 )
 

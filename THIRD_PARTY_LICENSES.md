@@ -8,6 +8,7 @@ GUI licence.
 | Component | Role | Licence family |
 |---|---|---|
 | Tauri and official shell plugin | Native desktop host | MIT / Apache-2.0 |
+| Vendored GLib 0.18.5 with upstream iterator soundness fix | GTK3-compatible Linux dependency | MIT; upstream licence and fix provenance retained in `src-tauri/vendor/glib/` |
 | Plotly.js 3.7.0 | Offline 2D and WebGL 3D rendering | MIT |
 | Python | Scientific sidecar runtime | PSF |
 | NumPy | Array computation | BSD-3-Clause |

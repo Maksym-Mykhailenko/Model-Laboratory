@@ -5,7 +5,7 @@ extension declarations as potentially untrusted inputs.
 
 ## Supported release
 
-Security maintenance currently targets the latest 1.17.x source and release line. Historical
+Security maintenance currently targets the latest 1.19.x source and release line. Historical
 formats remain covered by the compatibility and safe-open rules documented in the repository.
 
 ## Reporting a vulnerability
@@ -38,3 +38,12 @@ Please use a public issue only after a coordinated fix or disclosure has been pr
 Release builds should be produced from a tagged source state, preserve dependency lockfiles,
 generate build-identity evidence, and publish cryptographic checksums. Third-party dependencies and
 vendored assets should be reviewed against the resolved release locks.
+
+## Linux GLib dependency
+
+The GTK3 desktop stack uses the 0.18 GLib API. `src-tauri/vendor/glib` backports the upstream
+mutable-pointer fix for [RUSTSEC-2024-0429](https://rustsec.org/advisories/RUSTSEC-2024-0429.html).
+The Cargo patch applies to the transitive GTK dependency, and CI runs the affected iterator
+tests with release optimisations. The package retains its truthful 0.18.5 version, so a
+version-only scanner can still flag it. The source and fix provenance are recorded in
+[`MODEL_LAB_PATCH.md`](src-tauri/vendor/glib/MODEL_LAB_PATCH.md).

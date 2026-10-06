@@ -9,6 +9,7 @@ on:
       - "frontend/**"
       - "desktop_engine.py"
       - "verification/run_cross_platform_campaign.py"
+      - "verification/glib-iterator/**"
       - "requirements.txt"
       - "requirements-dev.txt"
       - "constraints-tested.txt"
@@ -17,6 +18,18 @@ on:
       - "src-tauri/**"
       - "scripts/verify_native_interpreter.ps1"
       - "scripts/verify_native_interpreter.sh"
+      - "scripts/verify_flagship_case.py"
+      - "scripts/**"
+      - "examples/**"
+      - "models/gaussian-hierarchy-dispersion.yaml"
+      - "docs/cases/**"
+      - "docs/releases/**"
+      - "CITATION.cff"
+      - ".github/workflows/**"
+      - ".gitattributes"
+
+permissions:
+  contents: read
 
 jobs:
   verify:
@@ -50,6 +63,8 @@ jobs:
       - run: python -m pip install --upgrade pip
       - run: python -m pip install -r requirements-dev.txt -c constraints-tested.txt
       - run: python -m pytest -q
+      - name: Verify the frozen flagship case and all case checksums
+        run: python scripts/verify_flagship_case.py
       - name: Record real reproduction evidence
         run: python verification/run_cross_platform_campaign.py --output compatibility-observation.json
       - name: Upload runner evidence
@@ -70,6 +85,17 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run test:frontend
+
+  linux-glib-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Install GLib development headers
+        run: sudo apt-get update && sudo apt-get install -y libglib2.0-dev
+      - name: Verify GTK3-compatible iterator fix with optimisations
+        run: cargo test --manifest-path verification/glib-iterator/Cargo.toml --locked --release
 
   native-interpreter:
     runs-on: windows-latest

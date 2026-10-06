@@ -1,0 +1,10 @@
+[package]
+name = "model-laboratory-glib-regression"
+version = "1.0.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+glib = { path = "../../src-tauri/vendor/glib" }
+
+[workspace]
