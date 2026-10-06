@@ -84,7 +84,7 @@ def test_complete_campaign_requires_successful_cases_and_backend_diversity() -> 
     assert not report.missing_targets
 
 
-def test_default_campaign_targets_match_ci_matrix() -> None:
+def test_default_campaign_targets_match_bounded_ci_matrix() -> None:
     workflow_path = (
         Path(__file__).resolve().parents[1]
         / ".github"
@@ -97,8 +97,12 @@ def test_default_campaign_targets_match_ci_matrix() -> None:
         "windows-latest": ("Windows", "x86_64"),
         "macos-14": ("macOS", "arm64"),
     }
+    strategy = workflow["jobs"]["verify"]["strategy"]
+    assert strategy["fail-fast"] is False
+    assert strategy["max-parallel"] == 2
+
     workflow_targets: set[CompatibilityTarget] = set()
-    for entry in workflow["jobs"]["verify"]["strategy"]["matrix"]["include"]:
+    for entry in strategy["matrix"]["include"]:
         operating_system, architecture = runner_platforms[entry["os"]]
         target = CompatibilityTarget(operating_system, architecture, entry["python"])
         assert entry["artifact"] == target.key.lower().replace("py3.", "py3")
